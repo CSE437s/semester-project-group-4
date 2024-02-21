@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { supabase } from "../utils/supabaseClient";
+import React, { useState } from 'react';
+import { supabase } from '../supabaseClient';
 
 const Register = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
