@@ -26,6 +26,7 @@ export default function Auth() {
         alert(error.message)
       } else {
         alert('Logged in successfully!')
+        history.push('/Dashboard')
       }
     } else {
       const { error } = await supabase.auth.signUp({ email, password })
@@ -33,7 +34,8 @@ export default function Auth() {
       if (error) {
         alert(error.message)
       } else {
-        alert('Signed up successfully! Please check your email for verification.')
+        alert('Signed up successfully!')
+        history.push('/Dashboard');
       }
     }
     setLoading(false)
