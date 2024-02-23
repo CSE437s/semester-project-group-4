@@ -1,10 +1,9 @@
-import 'src/css/share.css'
-
+import './css/share.css'
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // for API requests
-import ImageCarousel from './ImageCarousel'; //must make this component !!!! or add it to this page
+// import axios from 'axios'; // for API requests
+// import ImageCarousel from './ImageCarousel'; //must make this component !!!! or add it to this page
 
-const SocialMediaPage = () => {
+const Share = () => {
   const [topSongs, setTopSongs] = useState([]);
 
   useEffect(() => {

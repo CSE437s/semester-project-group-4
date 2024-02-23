@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient'
 import Auth from './Auth'
 import Account from './Account'
-import Dashboard from './Dashboard'
+import Share from './Share'
 
 function App() {
   const [session, setSession] = useState(null)

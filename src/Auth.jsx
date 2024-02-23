@@ -26,7 +26,7 @@ export default function Auth() {
         alert(error.message)
       } else {
         alert('Logged in successfully!')
-        history.push('/Dashboard')
+        history.push('/Share')
       }
     } else {
       const { error } = await supabase.auth.signUp({ email, password })
@@ -35,7 +35,7 @@ export default function Auth() {
         alert(error.message)
       } else {
         alert('Signed up successfully!')
-        history.push('/Dashboard');
+        history.push('/Share');
       }
     }
     setLoading(false)
@@ -44,7 +44,7 @@ export default function Auth() {
   return (
     <div className="row flex flex-center">
       <div className="col-6 form-widget">
-        <h1 className="header">Supabase + React</h1>
+        <h1 className="header">groove</h1>
         {isLogin ? (
           <>
             <p className="description">Sign in with your username and password below</p>
