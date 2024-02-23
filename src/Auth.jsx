@@ -3,18 +3,19 @@ import { supabase } from './supabaseClient'
 
 export default function Auth() {
   const [loading, setLoading] = useState(false)
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
   const handleLogin = async (event) => {
     event.preventDefault()
 
     setLoading(true)
-    const { error } = await supabase.auth.signInWithOtp({ email })
+    const { error } = await supabase.auth.signIn({ email: username, password })
 
     if (error) {
-      alert(error.error_description || error.message)
+      alert(error.message)
     } else {
-      alert('Check your email for the login link!')
+      alert('Logged in successfully!')
     }
     setLoading(false)
   }
@@ -23,21 +24,31 @@ export default function Auth() {
     <div className="row flex flex-center">
       <div className="col-6 form-widget">
         <h1 className="header">Supabase + React</h1>
-        <p className="description">Sign in via magic link with your email below</p>
+        <p className="description">Sign in with your username and password below</p>
         <form className="form-widget" onSubmit={handleLogin}>
           <div>
             <input
               className="inputField"
-              type="email"
-              placeholder="Your email"
-              value={email}
+              type="text"
+              placeholder="Username"
+              value={username}
               required={true}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          <div>
+            <input
+              className="inputField"
+              type="password"
+              placeholder="Password"
+              value={password}
+              required={true}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <div>
             <button className={'button block'} disabled={loading}>
-              {loading ? <span>Loading</span> : <span>Send magic link</span>}
+              {loading ? <span>Loading</span> : <span>Login</span>}
             </button>
           </div>
         </form>
