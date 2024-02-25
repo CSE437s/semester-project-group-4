@@ -34,7 +34,7 @@ const Share = () => {
         {/* Share Page */}
         <div className="share-page">
           <h2>Your Top 3 Songs</h2>
-          <ImageCarousel songs={topSongs} />
+          {/* <ImageCarousel songs={topSongs} /> */}
         </div>
       </div>
     </div>
