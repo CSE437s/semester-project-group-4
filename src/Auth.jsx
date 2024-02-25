@@ -25,7 +25,7 @@ export default function Auth() {
       if (error) {
         alert(error.message)
       } else {
-        alert('Logged in successfully!')
+        console.log('Logged in successfully!')
         navigate('/Share')
       }
     } else {
@@ -34,7 +34,7 @@ export default function Auth() {
       if (error) {
         alert(error.message)
       } else {
-        alert('Signed up successfully!')
+        console.log('Signed up successfully!')
         navigate('/Share');
       }
     }
