@@ -20,13 +20,13 @@ export default function Auth() {
 
     setLoading(true)
     if (isLogin) {
-      const { error } = await supabase.auth.signIn({ email: username, password })
+      const { error } = await supabase.auth.signInWithPassword({ email: username, password })
 
       if (error) {
         alert(error.message)
       } else {
         alert('Logged in successfully!')
-        history.push('/Share')
+        navigate('/Share')
       }
     } else {
       const { error } = await supabase.auth.signUp({ email, password })
@@ -35,7 +35,7 @@ export default function Auth() {
         alert(error.message)
       } else {
         alert('Signed up successfully!')
-        history.push('/Share');
+        navigate('/Share');
       }
     }
     setLoading(false)
