@@ -26,7 +26,7 @@ export default function Auth() {
         alert(error.message)
       } else {
         console.log('Logged in successfully!')
-        navigate('/Share')
+        // navigate('/Share')
       }
     } else {
       const { error } = await supabase.auth.signUp({ email, password })
@@ -35,7 +35,7 @@ export default function Auth() {
         alert(error.message)
       } else {
         console.log('Signed up successfully!')
-        navigate('/Share');
+        // navigate('/Share');
       }
     }
     setLoading(false)
@@ -124,3 +124,5 @@ export default function Auth() {
     </div>
   )
 }
+
+// we used the supabase tutorial to create this page

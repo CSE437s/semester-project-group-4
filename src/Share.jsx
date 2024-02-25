@@ -1,5 +1,5 @@
-import './css/share.css'
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; // import Link from react-router-dom
 // import axios from 'axios'; // for API requests
 // import ImageCarousel from './ImageCarousel'; //must make this component !!!! or add it to this page
 
@@ -25,7 +25,7 @@ const Share = () => {
       <div className="sidebar">
         <div className="sidebar-title">Groove</div>
         <div className="sidebar-buttons">
-          <button className="sidebar-button">Profile</button>
+          <Link to="./Account" className="sidebar-button">Profile</Link> {/* Use Link to route to Account.jsx */}
           <button className="sidebar-button">Share</button>
           <button className="sidebar-button">Feed</button>
         </div>
