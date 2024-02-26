@@ -28,7 +28,8 @@ function App() {
           <Auth />
         ) : (
           <Routes>
-            <Route path="/" element={<Navigate to="./Auth" />} />
+            <Route path="/" element={<Navigate to="./Share" />} />
+            <Route path="/Auth" element={<Auth />} />
             <Route path="/Share" element={<Share key={session.user.id} session={session} />} />
             <Route path="/Account" element={<Account key={session.user.id} session={session} />} />
           </Routes>
