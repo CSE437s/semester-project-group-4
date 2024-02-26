@@ -61,5 +61,3 @@ export default function Profile({ session }) {
         </div>
     );
 };
-
-// export default Profile;
