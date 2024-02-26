@@ -4,6 +4,11 @@ import { supabase } from './supabaseClient'
 import Auth from './Auth'
 import Account from './Account'
 import Share from './Share'
+// import { createRoot } from 'react-dom/client';
+import { render } from 'react-dom';
+
+// npm install react react-dom
+
 
 function App() {
   const [session, setSession] = useState(null)
