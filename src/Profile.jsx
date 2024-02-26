@@ -8,29 +8,17 @@ const Profile = () => {
     const [following, setFollowing] = useState(0);
 
     useEffect(() => {
-        // Fetch followers and following counts from Supabase
-        const fetchCounts = async () => {
-            let { data: followersData, error: followersError } = await supabase
-                .from('followers')
-                .select('count(*)')
-                .eq('user_id', 'session.user.id'); // Replace 'session.user.id' with the actual user ID
-
-            let { data: followingData, error: followingError } = await supabase
-                .from('following')
-                .select('count(*)')
-                .eq('user_id', 'session.user.id'); // Replace 'session.user.id' with the actual user ID
-
-            if (followersData && !followersError) {
-                setFollowers(followersData[0].count);
-            }
-
-            if (followingData && !followingError) {
-                setFollowing(followingData[0].count);
+        // Fetch followers and following counts from the users list
+        const fetchCounts = async (userId) => {
+            let user = users.find(user => user.id === userId);
+            if (user) {
+                setFollowers(user.followerCount);
+                setFollowing(user.followingCount);
             }
         };
 
-        fetchCounts();
-    }, []);
+        fetchCounts('session.user.id');
+    }, [users]);
 
     return (
         <div className="app-container">
