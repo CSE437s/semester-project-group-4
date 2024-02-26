@@ -1,33 +1,62 @@
-import './App.css'
-import { useState, useEffect } from 'react'
-import { supabase } from './supabaseClient'
-import Auth from './Auth'
-import Account from './Account'
-import Share from './Share'
-// import { createRoot } from 'react-dom/client';
-import { render } from 'react-dom';
-
-// npm install react react-dom
-
+import './App.css';
+import { useState, useEffect } from 'react';
+import { supabase } from './supabaseClient';
+import Auth from './Auth';
+import Account from './Account';
+import Share from './Share';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { createRoot } from 'react-dom/client';
 
 function App() {
-  const [session, setSession] = useState(null)
+  const [session, setSession] = useState(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-    })
+      setSession(session);
+    });
 
     supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-  }, [])
+      setSession(session);
+    });
+  }, []);
 
   return (
-    <div className="container" style={{ padding: '50px 0 100px 0' }}>
-      {!session ? <Auth /> : <Share key={session.user.id} session={session} />}
-    </div>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/Account" />} />
+        <Route path="/Account" element={<Account key={session.user.id} session={session} />} />
+        <Route path="/Share" element={<Share key={session.user.id} session={session} />} />
+        {/* Add more routes as needed */}
+      </Routes>
+      
+    </Router>
+  );
 }
 
-export default App
+
+/*
+<div className="container" style={{ padding: '50px 0 100px 0' }}>
+        {!session ? (
+          <Auth />
+        ) : (
+          <Routes>
+            <Route path="./Account" element={<Account key={session.user.id} session={session} />} />
+            <Route path="./Share" element={<Share key={session.user.id} session={session} />} />
+            
+            </Routes>
+            )}
+          </div>
+
+
+
+*/
+
+// const rootElement = document.getElementById("root");
+// if (rootElement.hasChildNodes()) {
+//   createRoot(rootElement, { hydrate: true }).render(<App />);
+// } else {
+//   createRoot(rootElement).render(<App />);
+// }
+
+export default App;
+
