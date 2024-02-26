@@ -4,6 +4,8 @@ import { supabase } from './supabaseClient';
 import Auth from './Auth';
 import Account from './Account';
 import Share from './Share';
+import Profile from './Profile';
+import Feed from './Feed';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
 
@@ -32,6 +34,9 @@ function App() {
             <Route path="/Auth" element={<Auth />} />
             <Route path="/Share" element={<Share key={session.user.id} session={session} />} />
             <Route path="/Account" element={<Account key={session.user.id} session={session} />} />
+            <Route path="/Profile" element={<Profile key={session.user.id} session={session} />} />
+            <Route path="/Feed" element={<Feed key={session.user.id} session={session} />} />
+
           </Routes>
         )}
       </div>
