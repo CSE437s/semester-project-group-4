@@ -1,27 +1,36 @@
 import './css/share.css'
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// import { Link } from 'react-router-dom';
-// import axios from 'axios'; // for API requests
-// import ImageCarousel from './ImageCarousel'; //must make this component !!!! or add it to this page
+import { supabase } from './supabaseClient'; // Import your Supabase client
 
 const Profile = () => {
-    const [topSongs, setTopSongs] = useState([]);
+    const [followers, setFollowers] = useState(0);
+    const [following, setFollowing] = useState(0);
 
     useEffect(() => {
-        // Fetch user's top 3 songs from Spotify API
-        const fetchTopSongs = async () => {
-            try {
-                const response = await axios.get('https://api.spotify.com/v1/me/top/tracks?limit=3');
-                setTopSongs(response.data.items);
-            } catch (error) {
-                console.error('Error fetching top songs:', error);
+        // Fetch followers and following counts from Supabase
+        const fetchCounts = async () => {
+            let { data: followersData, error: followersError } = await supabase
+                .from('followers')
+                .select('count(*)')
+                .eq('user_id', 'session.user.id'); // Replace 'session.user.id' with the actual user ID
+
+            let { data: followingData, error: followingError } = await supabase
+                .from('following')
+                .select('count(*)')
+                .eq('user_id', 'session.user.id'); // Replace 'session.user.id' with the actual user ID
+
+            if (followersData && !followersError) {
+                setFollowers(followersData[0].count);
+            }
+
+            if (followingData && !followingError) {
+                setFollowing(followingData[0].count);
             }
         };
 
-        fetchTopSongs();
+        fetchCounts();
     }, []);
-
 
     return (
         <div className="app-container">
@@ -31,14 +40,17 @@ const Profile = () => {
                     <Link to="/Profile" className="sidebar-button">Profile</Link>
                     <Link to="/Share" className="sidebar-button">Share</Link>
                     <Link to="/Feed" className="sidebar-button">Feed</Link>
-                    {/* <button className="sidebar-button">Share</button>
-          <button className="sidebar-button">Feed</button> */}
                 </div>
             </div>
             <div className="main-content">
-                <div className="share-page">
-                    <h2>Your Top 3 Songs</h2>
-
+                <div className="profile-page">
+                    <div className="profile-section">
+                        <img src="profile.jpg" alt="Profile" className="profile-picture" />
+                        <p>Followers: {followers}</p>
+                        <p>Following: {following}</p>
+                        <button>Add Friend</button>
+                        <button>Connect to Spotify</button>
+                    </div>
                 </div>
             </div>
         </div>

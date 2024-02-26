@@ -34,7 +34,10 @@ export default function Auth() {
       if (error) {
         alert(error.message)
       } else {
-        console.log('Signed up successfully!')
+        // const { data, error } = await supabase
+        //   .from('profiles')
+        //   .insert([{ id: user.id, username }]);
+        alert('Signed up successfully! Verify your email.')
         // navigate('/Share');
       }
     }
@@ -79,7 +82,7 @@ export default function Auth() {
           </>
         ) : (
           <>
-            <p className="description">Sign up with your email, username, and password below</p>
+            <p className="description"></p>
             <form className="form-widget" onSubmit={handleAuth}>
               <div>
                 <input
@@ -91,7 +94,7 @@ export default function Auth() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              <div>
+              {/* <div>
                 <input
                   className="inputField"
                   type="text"
@@ -100,7 +103,7 @@ export default function Auth() {
                   required={true}
                   onChange={(e) => setUsername(e.target.value)}
                 />
-              </div>
+              </div> */}
               <div>
                 <input
                   className="inputField"
