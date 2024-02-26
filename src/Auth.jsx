@@ -37,7 +37,7 @@ export default function Auth() {
         // const { data, error } = await supabase
         //   .from('profiles')
         //   .insert([{ id: user.id, username }]);
-        alert('Signed up successfully! Verify your email.')
+        alert('Signed up successfully! Verify your email before loggin in.')
         // navigate('/Share');
       }
     }
@@ -50,7 +50,7 @@ export default function Auth() {
         <h1 className="header">groove</h1>
         {isLogin ? (
           <>
-            <p className="description">Sign in with your username and password below</p>
+            <p className="description"></p>
             <form className="form-widget" onSubmit={handleAuth}>
               <div>
                 <input
