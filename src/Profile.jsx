@@ -3,22 +3,45 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from './supabaseClient'; // Import your Supabase client
 
-const Profile = () => {
-    const [followers, setFollowers] = useState(0);
-    const [following, setFollowing] = useState(0);
 
+export default function Profile({ session }) {
+
+    // const Profile = ({ profiles }) => {
+    // const [followers, setFollowers] = useState(0);
+    // const [following, setFollowing] = useState(0);
+
+    let followers = 0;
+    let following = 0;
     useEffect(() => {
-        // Fetch followers and following counts from the users list
-        const fetchCounts = async (userId) => {
-            let user = users.find(user => user.id === userId);
-            if (user) {
-                setFollowers(user.followerCount);
-                setFollowing(user.followingCount);
-            }
-        };
+        let ignore = false
+        async function getProfile() {
+            // setLoading(true)
+            const { user } = session
 
-        fetchCounts('session.user.id');
-    }, [users]);
+            const { data, error } = await supabase
+                .from('profiles')
+                .select(`followingCount, followersCount`)
+                .eq('id', user.id)
+                .single()
+
+            if (!ignore) {
+                if (error) {
+                    console.warn(error)
+                } else if (data) {
+                    setUsername(data.username)
+                    setAvatarUrl(data.avatar_url)
+                }
+            }
+
+            // setLoading(false)
+        }
+
+        getProfile()
+
+        return () => {
+            ignore = true
+        }
+    }, [session])
 
     return (
         <div className="app-container">
@@ -45,4 +68,4 @@ const Profile = () => {
     );
 };
 
-export default Profile;
+// export default Profile;

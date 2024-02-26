@@ -7,7 +7,7 @@ import Share from './Share';
 import Profile from './Profile';
 import Feed from './Feed';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { createRoot } from 'react-dom/client';
+// import { createRoot } from 'react-dom/client';
 
 function App() {
   const [session, setSession] = useState(null);
