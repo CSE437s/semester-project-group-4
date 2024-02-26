@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient'
 import Avatar from './Avatar'
+import { useNavigate } from "react-router-dom";
 
 export default function Account({ session }) {
   const [loading, setLoading] = useState(true)
   const [username, setUsername] = useState(null)
   const [avatar_url, setAvatarUrl] = useState(null)
+  const navigate = useNavigate();
 
   useEffect(() => {
     let ignore = false
@@ -62,6 +64,7 @@ export default function Account({ session }) {
   }
 
   return (
+    
     <form onSubmit={updateProfile} className="form-widget">
 
       <Avatar
@@ -96,6 +99,11 @@ export default function Account({ session }) {
       <div>
         <button className="button block" type="button" onClick={() => supabase.auth.signOut()}>
           Sign Out
+        </button>
+      </div>
+      <div>
+        <button className="button block" type="button" onClick={() => navigate('/Share')}>
+          Back
         </button>
       </div>
     </form>
