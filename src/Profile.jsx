@@ -37,10 +37,14 @@ export default function Profile({ session }) {
     }, [session]);
 
     const handleAddFriend = async () => {
+        const { user } = session;
         const { data, error } = await supabase
             .from('friends')
             .insert([
-                { id: session.user.id, is_friends_with: username },
+                // { id: user.id, is_friends_with: username },
+                
+                { id: user.id, is_friends_with: '73af47a6-91c1-4b96-892a-fd6a4790c06e' },
+
             ]);
 
         if (error) {
