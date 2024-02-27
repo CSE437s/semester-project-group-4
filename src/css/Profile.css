@@ -1,0 +1,55 @@
+/* App Container */
+.app-container {
+    display: flex;
+    /* justify-content: flex-start; */
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+  }
+  
+  .sidebar-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar-buttons {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .sidebar-button {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #555;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .sidebar-button:hover {
+    background-color: #777;
+  }
+  
+  /* Main Content */
+  .main-content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  /* Share Page */
+  .share-page {
+    background-color: #f0f0f0;
+    padding: 20px;
+  }
+  
+  .share-page h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  

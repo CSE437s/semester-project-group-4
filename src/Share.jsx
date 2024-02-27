@@ -19,20 +19,20 @@ const Share = () => {
   const TOKEN = "https://accounts.spotify.com/api/token";
   //const TRACKS = "/api/v1/me/top/tracks?offset=0&limit=5&time_range=short_term"; //getting top 5 tracks from last 4 weeks
   const TRACKS = "https://accounts.spotify.com/api/v1/me/top/tracks?offset=0&limit=5&time_range=short_term";
-  useEffect(() => {
-    onPageLoad();
-    // Fetch user's top 3 songs from Spotify API
-    // const fetchTopSongs = async () => {
-    //   try {
-    //     const response = await axios.get('https://api.spotify.com/v1/me/top/tracks?limit=3');
-    //     setTopSongs(response.data.items);
-    //   } catch (error) {
-    //     console.error('Error fetching top songs:', error);
-    //   }
-    // };
+  // useEffect(() => {
+  //   onPageLoad();
+  //   // Fetch user's top 3 songs from Spotify API
+  //   // const fetchTopSongs = async () => {
+  //   //   try {
+  //   //     const response = await axios.get('https://api.spotify.com/v1/me/top/tracks?limit=3');
+  //   //     setTopSongs(response.data.items);
+  //   //   } catch (error) {
+  //   //     console.error('Error fetching top songs:', error);
+  //   //   }
+  //   // };
 
-    // fetchTopSongs();
-  }, []);
+  //   // fetchTopSongs();
+  // }, []);
 
   // function authorize() {
   //   let url = AUTHORIZE;
