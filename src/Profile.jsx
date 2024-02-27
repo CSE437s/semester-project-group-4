@@ -10,9 +10,9 @@ export default function Profile({ session }) {
     const [username, setUsername] = useState('');
 
 
-    let client_id= "1892c29e22e44ec686fa22a8e891b0f9";
+    let client_id = "1892c29e22e44ec686fa22a8e891b0f9";
     let redirect = "http://localhost:5173/Share"; //takes us back here after agreeing to Spotify
-  
+
     const AUTHORIZE = "https://accounts.spotify.com/authorize";
 
     useEffect(() => {
@@ -50,7 +50,7 @@ export default function Profile({ session }) {
         url += "&show_dialog=true";
         url += "&scope=user-read-private user-read-email user-read-playback-state user-top-read";
         window.location.href = url;
-      }
+    }
 
     const handleAddFriend = async () => {
         //find other users uuid
@@ -72,26 +72,26 @@ export default function Profile({ session }) {
             return;
         }
 
-        // Check if they are already friends
-        const { data: alreadyFriendsData, error: alreadyFriendsError } = await supabase
-            .from('friends')
-            .select('*')
-            .eq('id', session.user.id)
-            .eq('is_friends_with', friendData.id)
-            .single();
+        // Check if they are already friends (buggy dont uncomment)
+        // const { data: alreadyFriendsData, error: alreadyFriendsError } = await supabase
+        //     .from('friends')
+        //     .select('*')
+        //     .eq('id', session.user.id)
+        //     .eq('is_friends_with', friendData.id)
+        //     .single();
 
-        if (alreadyFriendsError) {
-            console.error('Error checking friendship status: ', alreadyFriendsError);
-            alert("sorry there was an error");
-            return;
-        }
+        // if (alreadyFriendsError) {
+        //     console.error('Error checking friendship status: ', alreadyFriendsError);
+        //     alert("sorry there was an error");
+        //     return;
+        // }
 
-        if (alreadyFriendsData) {
-            console.log('You are already friends with this user');
-            alert("you are already friends");
-            return;
-        }
-//end check if already friend
+        // if (alreadyFriendsData) {
+        //     console.log('You are already friends with this user');
+        //     alert("you are already friends");
+        //     return;
+        // }
+        //end check if already friend
         const { data, error } = await supabase
             .from('friends')
             .insert([
