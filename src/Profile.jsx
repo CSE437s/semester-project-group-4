@@ -15,32 +15,32 @@ export default function Profile({ session }) {
 
     const AUTHORIZE = "https://accounts.spotify.com/authorize";
 
-    useEffect(() => {
-        let ignore = false;
-        async function getProfile() {
-            const { user } = session;
+    // useEffect(() => {
+    //     let ignore = false;
+    //     async function getProfile() {
+    //         const { user } = session;
 
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('friendCount')
-                .eq('id', user.id)
-                .single();
+    //         const { data, error } = await supabase
+    //             .from('profiles')
+    //             .select('friendCount')
+    //             .eq('id', user.id)
+    //             .single();
 
-            if (!ignore) {
-                if (error) {
-                    console.warn(error);
-                } else if (data) {
-                    setFriendCount(data.friendCount);
-                }
-            }
-        }
+    //         if (!ignore) {
+    //             if (error) {
+    //                 console.warn(error);
+    //             } else if (data) {
+    //                 setFriendCount(data.friendCount);
+    //             }
+    //         }
+    //     }
 
-        getProfile();
+    //     getProfile();
 
-        return () => {
-            ignore = true;
-        }
-    }, [session]);
+    //     return () => {
+    //         ignore = true;
+    //     }
+    // }, [session]);
 
     function authorize() {
         let url = AUTHORIZE;
