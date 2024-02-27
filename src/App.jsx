@@ -1,4 +1,4 @@
-import './App.css';
+import './css/App.css';
 import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import Auth from './Auth';
@@ -25,7 +25,7 @@ function App() {
   return (
     <Router>
 
-      <div className="container" style={{ padding: '50px 0 100px 0' }}>
+      <div className="container_main">
         {!session ? (
           <Auth />
         ) : (
