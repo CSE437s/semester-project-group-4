@@ -8,13 +8,16 @@ import { Link } from 'react-router-dom';
 const Share = () => {
   const [topSongs, setTopSongs] = useState([]);
 
+  let [access_token, setAccessToken] = useState('');
+  let [refresh_token, setRefreshToken] = useState('');
   let client_id= "1892c29e22e44ec686fa22a8e891b0f9";
   let client_secret = "011fa442dd504a46b6bd4d89aeab4036";
   let redirect = "http://localhost:5173/Share"; //takes us back here after agreeing to Spotify
 
   const AUTHORIZE = "https://accounts.spotify.com/authorize";
   const TOKEN = "https://accounts.spotify.com/api/token";
-  const TRACKS = "https://accounts.spotify.com/v1/me/top/tracks?offset=0&limit=5&time_range=short_term" //getting top 5 tracks from last 4 weeks
+  //const TRACKS = "/api/v1/me/top/tracks?offset=0&limit=5&time_range=short_term"; //getting top 5 tracks from last 4 weeks
+  const TRACKS = "https://accounts.spotify.com/api/v1/me/top/tracks?offset=0&limit=5&time_range=short_term";
   useEffect(() => {
     onPageLoad();
     // Fetch user's top 3 songs from Spotify API
@@ -73,7 +76,6 @@ const Share = () => {
     body += "&redirect_uri=" + encodeURI(redirect);
     body += "&client_id=" + client_id;
     body += "&client_secret=" + client_secret;
-    console.log(body);
     callAuthApi(body);
   }
 
@@ -83,8 +85,9 @@ const Share = () => {
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.setRequestHeader('Authorization', 'Basic ' + btoa(client_id + ":" + client_secret));
     xhr.send(body);
-    console.log(xhr);
-    xhr.onload = handleAuthResponse();
+    xhr.onload = function() {
+      handleAuthResponse(xhr);
+    }
   }
 
   function refreshAccessToken() {
@@ -95,50 +98,64 @@ const Share = () => {
     callAuthApi(body);
   }
 
-  function handleAuthResponse() {
-    console.log("handleAuthR");
-    if(this.status == 200) {
-      var data=JSON.parse(this.responseText);
-      if (data.access_token != undefined) {
-        access_token = data.access_token;
-        localStorage.setItem("access_token", access_token);
+  function handleAuthResponse(xhr) {
+    if (xhr.status === 200) {
+      var data = JSON.parse(xhr.responseText);
+      if (data.access_token) {
+        setAccessToken(data.access_token);
+        localStorage.setItem("access_token", data.access_token);
+        getSongs(data.access_token);
       }
-      if (data.refresh_token != undefined) {
-        refresh = data.refresh_token;
-        localStorage.setItem("refresh_token", refresh_token);
+      if (data.refresh_token) {
+        setRefreshToken(data.refresh_token);
+        localStorage.setItem("refresh_token", data.refresh_token);
       }
-      getSongs();
     } else {
-      console.log("here: " + this.responseText);
-      alert(this.responseText);
+      console.error("Error fetching access token:", xhr.status, xhr.responseText);
+      alert("Error fetching access token. Please try again.");
     }
   }
 
   function getSongs() {
+    console.log("getSongs");
     callApi("GET", TRACKS, null, handleSongResponse);
   }
 
   function callApi(method, url, body, callback) {
+    console.log("callApi");
     let xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', 'Bearer' + localStorage.getItem("access_token"));
+    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem("access_token"));
     xhr.send(body);
     xhr.onload = callback;
   }
 
   function handleSongResponse() {
-    if(this.status == 200) {
-      var data=JSON.parse(this.responseText);
-      console.log(data);
-      songList(data);
-    } else if (this.status == 401) {
-      refreshAccessToken();
+    if (this.status === 200) {
+      try {
+        var data = JSON.parse(this.responseText);
+        setTopSongs(data.items);
+      } catch (error) {
+        console.error("Error parsing JSON response:", error);
+        console.log("Response text:", this.responseText); // Log the response text
+        alert("Error parsing response. Check console for details.");
+      }
+    } else if (this.status === 401) {
+      // Handle token expiration or invalid token
+      alert("Token expired or invalid. Please login again.");
     } else {
-      console.log(this.responseText);
-      alert(this.responseText);
+      // Check if the response is HTML error page
+      if (this.getResponseHeader('content-type').indexOf('text/html') !== -1) {
+        console.error("HTML Error response:", this.responseText);
+        alert("Error fetching songs. Check console for details.");
+      } else {
+        console.error("Non-JSON error response:", this.responseText);
+        alert("Error fetching songs. Check console for details.");
+      }
     }
   }
+  
 
   //functions below to display song data rn; we could change later
   const list = document.getElementById('list');
@@ -178,7 +195,7 @@ const Share = () => {
       song.appendChild(span);
 
       list_text.appendChild(song);
-      list_text.appendChild(arist);
+      list_text.appendChild(artist);
       list_text.appendChild(ref);
       list_item.appendChild(list_text);
       list_item.appendChild(img);
