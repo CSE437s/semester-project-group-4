@@ -7,8 +7,7 @@ import { supabase } from './supabaseClient';
 export default function Profile({ session }) {
 
     const [friendCount, setFriendCount] = useState(0);
-    // const [following, setFollowing] = useState(0);
-
+    const [username, setUsername] = useState('');
 
     useEffect(() => {
         let ignore = false;
@@ -37,6 +36,20 @@ export default function Profile({ session }) {
         }
     }, [session]);
 
+    const handleAddFriend = async () => {
+        const { data, error } = await supabase
+            .from('friends')
+            .insert([
+                { id: session.user.id, is_friends_with: username },
+            ]);
+
+        if (error) {
+            console.error('Error adding friend: ', error);
+        } else {
+            console.log('Friend added successfully: ', data);
+        }
+    };
+
     return (
         <div className="app-container">
             <div className="sidebar">
@@ -52,9 +65,9 @@ export default function Profile({ session }) {
                     <div className="profile-section">
                         <img src="profile.jpg" alt="Profile" className="profile-picture" />
                         <p>Friends: {friendCount}</p>
-                        {/* <p>Following: {following}</p> */}
-                        <button>Add Friend</button>
-                        <button>Connect to Spotify</button>
+                        <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} />
+                        <button onClick={handleAddFriend}>Add Friend</button>
+                        {/* <button>Connect to Spotify</button> */}
                     </div>
                 </div>
             </div>
