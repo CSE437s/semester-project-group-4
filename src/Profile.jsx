@@ -43,30 +43,50 @@ export default function Profile({ session }) {
             .select('id')
             .eq('username', username)
             .single();
-    
+
         if (friendError) {
             console.error('Error fetching friend UUID: ', friendError);
+            alert("Could not find a friend with this username");
             return;
         }
-    
+
         //add both your ids to list
         if (!friendData) {
-            console.error('No user found with this username');
+            alert('No user found with this username');
             return;
         }
-            const { data, error } = await supabase
+
+        // Check if they are already friends
+        const { data: alreadyFriendsData, error: alreadyFriendsError } = await supabase
+            .from('friends')
+            .select('*')
+            .eq('id', session.user.id)
+            .eq('is_friends_with', friendData.id)
+            .single();
+
+        if (alreadyFriendsError) {
+            console.error('Error checking friendship status: ', alreadyFriendsError);
+            return;
+        }
+
+        if (alreadyFriendsData) {
+            console.log('You are already friends with this user');
+            return;
+        }
+
+        const { data, error } = await supabase
             .from('friends')
             .insert([
                 { id: session.user.id, is_friends_with: friendData.id },
             ]);
-    
+
         if (error) {
             console.error('Error adding friend: ', error);
         } else {
             console.log('Friend added successfully: ', data);
         }
     };
-    
+
 
     return (
         <div className="app-container">
