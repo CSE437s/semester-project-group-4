@@ -9,9 +9,16 @@ function Sidebar() {
       <div className="sidebarName sidebar-heading">groove</div>
       <div className="sideBarPages">
 
-        <Link to="/Profile" className="sideBarPage list-group-item list-group-item-action">Profile</Link>
-        <Link to="/Share" className="sideBarPage list-group-item list-group-item-action">Share</Link>
-        <Link to="/Feed" className="sideBarPage list-group-item list-group-item-action">Feed</Link>
+        {/* <Link to="/Profile" className="sideBarPage list-group-item list-group-item-action">Profile</Link> */}
+        <div className="sideBarDiv">
+        <Link to="/Profile" className="sideBarPage">Profile</Link>
+        </div>
+        <div className="sideBarDiv">
+        <Link to="/Share" className="sideBarPage">Share</Link>
+        </div>
+        <div className="sideBarDiv">
+        <Link to="/Feed" className="sideBarPage">Feed</Link>
+        </div>
       </div>
     </div>
   );
