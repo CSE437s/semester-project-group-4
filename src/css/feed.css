@@ -1,0 +1,47 @@
+/* App Container */
+.app-container {
+    display: flex;
+    height:100%;
+    width: 100%;
+  }
+  
+/* Main Content */
+.main-content {
+    flex: 1;
+    /* padding: 20px; */
+    margin: 4%;
+}
+
+/* header */
+h2 {
+    font-family: 'FigTree', sans-serif;
+    font-weight: 700;
+    color: black;
+    font-size: xxx-large;
+    letter-spacing: 2px;
+}
+
+.header {
+    padding-bottom: 3%;
+}
+
+.headerText {
+    font-family: 'FigTree', sans-serif;
+    font-weight: 400;
+    color: black;
+    font-size: medium;
+    letter-spacing: 1px;
+  }
+  
+  /* Feed Page */
+  .feed-page {
+    background-color: #f0f0f0;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .feed-page h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  

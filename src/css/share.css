@@ -1,46 +1,37 @@
 /* App Container */
 .app-container {
     display: flex;
-    /* justify-content: flex-start; */
+    height:100%;
+    width: 100%;
   }
   
-  /* Sidebar */
-  .sidebar {
-    width: 200px;
-    background-color: #333;
-    color: #fff;
-    padding: 20px;
-  }
-  
-  .sidebar-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .sidebar-buttons {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .sidebar-button {
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #555;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-  }
-  
-  .sidebar-button:hover {
-    background-color: #777;
-  }
-  
-  /* Main Content */
-  .main-content {
-    flex: 1;
-    padding: 20px;
-  }
+/* Main Content */
+.main-content {
+  flex: 1;
+  /* padding: 20px; */
+  margin: 4%;
+}
+
+/* header */
+h2 {
+  font-family: 'FigTree', sans-serif;
+  font-weight: 700;
+  color: black;
+  font-size: xxx-large;
+  letter-spacing: 2px;
+}
+
+.header {
+  padding-bottom: 3%;
+}
+
+.headerText {
+  font-family: 'FigTree', sans-serif;
+  font-weight: 400;
+  color: black;
+  font-size: medium;
+  letter-spacing: 1px;
+}
   
   /* Share Page */
   .share-page {

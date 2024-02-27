@@ -1,6 +1,7 @@
 import './css/share.css'
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Sidebar from './components/Sidebar';
 // import { Link } from 'react-router-dom';
 // import axios from 'axios'; // for API requests
 // import ImageCarousel from './ImageCarousel'; //must make this component !!!! or add it to this page
@@ -18,30 +19,30 @@ const Share = () => {
   const TOKEN = "https://accounts.spotify.com/api/token";
   //const TRACKS = "/api/v1/me/top/tracks?offset=0&limit=5&time_range=short_term"; //getting top 5 tracks from last 4 weeks
   const TRACKS = "https://accounts.spotify.com/api/v1/me/top/tracks?offset=0&limit=5&time_range=short_term";
-  // useEffect(() => {
-  //   onPageLoad();
-  //   // Fetch user's top 3 songs from Spotify API
-  //   // const fetchTopSongs = async () => {
-  //   //   try {
-  //   //     const response = await axios.get('https://api.spotify.com/v1/me/top/tracks?limit=3');
-  //   //     setTopSongs(response.data.items);
-  //   //   } catch (error) {
-  //   //     console.error('Error fetching top songs:', error);
-  //   //   }
-  //   // };
+  useEffect(() => {
+    onPageLoad();
+    // Fetch user's top 3 songs from Spotify API
+    // const fetchTopSongs = async () => {
+    //   try {
+    //     const response = await axios.get('https://api.spotify.com/v1/me/top/tracks?limit=3');
+    //     setTopSongs(response.data.items);
+    //   } catch (error) {
+    //     console.error('Error fetching top songs:', error);
+    //   }
+    // };
 
-  //   // fetchTopSongs();
-  // }, []);
+    // fetchTopSongs();
+  }, []);
 
-  function authorize() {
-    let url = AUTHORIZE;
-    url += "?client_id=" + client_id;
-    url += "&response_type=code";
-    url += "&redirect_uri=" + encodeURI(redirect);
-    url += "&show_dialog=true";
-    url += "&scope=user-read-private user-read-email user-read-playback-state user-top-read";
-    window.location.href = url;
-  }
+  // function authorize() {
+  //   let url = AUTHORIZE;
+  //   url += "?client_id=" + client_id;
+  //   url += "&response_type=code";
+  //   url += "&redirect_uri=" + encodeURI(redirect);
+  //   url += "&show_dialog=true";
+  //   url += "&scope=user-read-private user-read-email user-read-playback-state user-top-read";
+  //   window.location.href = url;
+  // }
 
   function onPageLoad() {
     console.log("Pagelaod");
@@ -135,7 +136,7 @@ const Share = () => {
     if (this.status === 200) {
       try {
         var data = JSON.parse(this.responseText);
-        setTopSongs(data.items);
+        songList(data);
       } catch (error) {
         console.error("Error parsing JSON response:", error);
         console.log("Response text:", this.responseText); // Log the response text
@@ -143,6 +144,7 @@ const Share = () => {
       }
     } else if (this.status === 401) {
       // Handle token expiration or invalid token
+      refreshAccessToken();
       alert("Token expired or invalid. Please login again.");
     } else {
       // Check if the response is HTML error page
@@ -207,15 +209,12 @@ const Share = () => {
 
   return (
     <div className="app-container">
-      <div className="sidebar">
-        <div className="sidebar-title">Groove</div>
-        <div className="sidebar-buttons">
-          <Link to="/Profile" className="sidebar-button">Profile</Link>
-          <Link to="/Share" className="sidebar-button">Share</Link>
-          <Link to="/Feed" className="sidebar-button">Feed</Link>
-        </div>
-      </div>
+      <Sidebar />
       <div className="main-content">
+        <div className="header">
+          <h2>Share</h2>
+          <p className="headerText">Select one of your top songs from the past week to share</p>
+        </div>
         {/* Share Page */}
         <div className="share-page">
           <h2>Your Top 3 Songs</h2>
@@ -229,9 +228,9 @@ const Share = () => {
           </div>
         </div>
       </div>
-      <div className="spotify-login">
+      {/* <div className="spotify-login">
         <button className="spotify-login-button" onClick={authorize}>Login to Spotify</button>
-      </div>
+      </div> */}
     </div>
   );
 };
