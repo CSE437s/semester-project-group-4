@@ -37,22 +37,36 @@ export default function Profile({ session }) {
     }, [session]);
 
     const handleAddFriend = async () => {
-        const { user } = session;
-        const { data, error } = await supabase
+        //find other users uuid
+        const { data: friendData, error: friendError } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('username', username)
+            .single();
+    
+        if (friendError) {
+            console.error('Error fetching friend UUID: ', friendError);
+            return;
+        }
+    
+        //add both your ids to list
+        if (!friendData) {
+            console.error('No user found with this username');
+            return;
+        }
+            const { data, error } = await supabase
             .from('friends')
             .insert([
-                // { id: user.id, is_friends_with: username },
-                
-                { id: user.id, is_friends_with: '73af47a6-91c1-4b96-892a-fd6a4790c06e' },
-
+                { id: session.user.id, is_friends_with: friendData.id },
             ]);
-
+    
         if (error) {
             console.error('Error adding friend: ', error);
         } else {
             console.log('Friend added successfully: ', data);
         }
     };
+    
 
     return (
         <div className="app-container">
