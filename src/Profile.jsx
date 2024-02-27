@@ -102,6 +102,7 @@ export default function Profile({ session }) {
             console.error('Error adding friend: ', error);
         } else {
             console.log('Friend added successfully: ', data);
+            alert("friend added");
         }
     };
 
