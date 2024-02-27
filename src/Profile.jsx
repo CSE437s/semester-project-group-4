@@ -117,7 +117,7 @@ export default function Profile({ session }) {
                     </div>
                     <div className="profile-section">
                         <img src="profile.jpg" alt="Profile" className="profile-picture" />
-                        <p>Friends: {friendCount}</p>
+                        {/* <p>Friends: {friendCount}</p> */}
                         <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} />
                         <button onClick={handleAddFriend}>Add Friend</button>
                         <button onClick={authorize}>Connect to Spotify</button>
