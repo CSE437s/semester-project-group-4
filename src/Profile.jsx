@@ -3,6 +3,7 @@ import './css/Profile.css'
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from './supabaseClient';
+import Sidebar from './Sidebar';
 
 export default function Profile({ session }) {
 
@@ -56,26 +57,26 @@ export default function Profile({ session }) {
             return;
         }
 
-    //     // Check if they are already friends
-    //     const { data: alreadyFriendsData, error: alreadyFriendsError } = await supabase
-    //         .from('friends')
-    //         .select('*')
-    //         .eq('id', session.user.id)
-    //         .eq('is_friends_with', friendData.id)
-    //         .single();
+        // Check if they are already friends
+        const { data: alreadyFriendsData, error: alreadyFriendsError } = await supabase
+            .from('friends')
+            .select('*')
+            .eq('id', session.user.id)
+            .eq('is_friends_with', friendData.id)
+            .single();
 
-    //     if (alreadyFriendsError) {
-    //         console.error('Error checking friendship status: ', alreadyFriendsError);
-    //         alert("sorry there was an error");
-    //         return;
-    //     }
+        if (alreadyFriendsError) {
+            console.error('Error checking friendship status: ', alreadyFriendsError);
+            alert("sorry there was an error");
+            return;
+        }
 
-    //     if (alreadyFriendsData) {
-    //         console.log('You are already friends with this user');
-    //         alert("you are already friends");
-    //         return;
-    //     }
-
+        if (alreadyFriendsData) {
+            console.log('You are already friends with this user');
+            alert("you are already friends");
+            return;
+        }
+//end check if already friend
         const { data, error } = await supabase
             .from('friends')
             .insert([
@@ -92,14 +93,15 @@ export default function Profile({ session }) {
 
     return (
         <div className="app-container">
-            <div className="sidebar">
+            {/* <div className="sidebar">
                 <div className="sidebar-title">groove</div>
                 <div className="sidebar-buttons">
                     <Link to="/Profile" className="sidebar-button">Profile</Link>
                     <Link to="/Share" className="sidebar-button">Share</Link>
                     <Link to="/Feed" className="sidebar-button">Feed</Link>
                 </div>
-            </div>
+            </div> */}
+            <Sidebar />
             <div className="main-content">
                 <div className="profile-page">
                     <div className="profile-section">
