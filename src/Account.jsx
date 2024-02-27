@@ -1,3 +1,4 @@
+import './css/Account.css';
 import { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient'
 import Avatar from './Avatar'
@@ -69,7 +70,7 @@ export default function Account({ session }) {
 
       <Avatar
         url={avatar_url}
-        size={150}
+        size={350}
         onUpload={(event, url) => {
           updateProfile(event, url)
         }}
