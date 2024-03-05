@@ -1,27 +1,40 @@
-import './css/feed.css'
+import './css/feed.css';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
-// import axios from 'axios'; // for API requests
+import Post from './components/Post'; // A new component for music posts
 
+// Mock data for demonstration
+const mockPosts = [
+    {
+        id: 1,
+        user: 'Friend 1',
+        songTitle: 'Song Title 1',
+        artist: 'Artist 1',
+        likes: 10,
+        comments: [
+            { user: 'User A', comment: 'Great song!' },
+            { user: 'User B', comment: 'Love this!' },
+        ],
+    },
+    {
+        id: 2,
+        user: 'Friend 2',
+        songTitle: 'Song Title 2',
+        artist: 'Artist 2',
+        likes: 20,
+        comments: [
+            { user: 'User C', comment: 'My favorite.' },
+        ],
+    },
+];
 
 const Feed = () => {
-    const [topSongs, setTopSongs] = useState([]);
+    const [posts, setPosts] = useState(mockPosts);
 
-    // useEffect(() => {
-    //     // Fetch user's top 3 songs from Spotify API
-    //     const fetchTopSongs = async () => {
-    //         try {
-    //             const response = await axios.get('https://api.spotify.com/v1/me/top/tracks?limit=3');
-    //             setTopSongs(response.data.items);
-    //         } catch (error) {
-    //             console.error('Error fetching top songs:', error);
-    //         }
-    //     };
-
-    //     fetchTopSongs();
-    // }, []);
-
+    useEffect(() => {
+        setPosts(mockPosts); // In a real app, you would fetch this data
+    }, []);
 
     return (
         <div className="app-container">
@@ -29,18 +42,14 @@ const Feed = () => {
             <div className="main-content">
                 <div className="header">
                     <h2>Feed</h2>
-                    <p className="headerText">View what your friend’s have been listening to</p>
+                    <p className="headerText">View what your friends have been listening to</p>
                 </div>
-                <div className="feed-page">
-                    <h2>Friend's Suggestion 1</h2>
-                </div>
-                <div className="feed-page">
-                    <h2>Friend's Suggestion 2</h2>
-                </div>
+                {posts.map(post => (
+                    <Post key={post.id} post={post} />
+                ))}
             </div>
         </div>
     );
 };
 
 export default Feed;
-
