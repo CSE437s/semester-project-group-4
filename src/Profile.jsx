@@ -12,7 +12,7 @@ export default function Profile({ session }) {
 
 
     let client_id = "1892c29e22e44ec686fa22a8e891b0f9";
-    let redirect = "http://localhost:5173/Share"; //takes us back here after agreeing to Spotify
+    let redirect = "https://semester-project-group-4.vercel.app/Share"; //takes us back here after agreeing to Spotify
 
     const AUTHORIZE = "https://accounts.spotify.com/authorize";
 
@@ -170,14 +170,19 @@ export default function Profile({ session }) {
                         {/* <p>Friends: {friendCount}</p> */}
                         <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} />
                         <button onClick={handleAddFriend}>Add Friend</button>
+                        <Link to="/Account" className="">Account Settings</Link>
+
                         <button onClick={authorize}>Connect to Spotify</button>
 
 
                         <div className="friendsList">
-                            <h3 id="friendsTitle">Friends</h3>
+                            <h3 id="friendsTitle">🎵 My Friends 🎵</h3>
                             <ul>
                                 {friends.map((friend) => (
-                                    <li key={friend}>{friend}</li>
+                                    <li key={friend}>
+                                        {friend}
+                                        <button onClick={() => handleRemoveFriend(friend)}>Remove</button>
+                                    </li>
                                 ))}
                             </ul>
                         </div>
