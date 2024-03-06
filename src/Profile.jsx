@@ -109,6 +109,8 @@ export default function Profile({ session }) {
 
 
     //displaying current friends:
+
+
     async function getFriends() {
         const { data: friendDataList, error } = await supabase
             .from('friends')
@@ -129,23 +131,27 @@ export default function Profile({ session }) {
             try {
                 const friendProfilesArray = await Promise.all(friendProfilesPromises);
                 friendProfilesArray.sort((a, b) => a.id - b.id);
-                setFriends(friendProfilesArray);
-                setFriendCount(friends.length);
+
+                // Map the friend profiles to just the usernames
+                const friendUsernames = friendProfilesArray.map(profile => profile.data.username);
+                console.log("friendProfilesArray:", friendProfilesArray);
+                console.log(friendUsernames);
+                setFriends(friendUsernames);
+                console.log(friendUsernames);
+
+                setFriendCount(friendUsernames.length); // Fix this line to use friendUsernames instead of friends
 
             } catch (error) {
                 console.error("Error fetching profiles for friends:", error)
             }
-
         }
-
     }
+
 
 
     useEffect(() => {
         getFriends();
     }, [session]);
-
-
 
 
 
@@ -171,7 +177,7 @@ export default function Profile({ session }) {
                             <h3 id="friendsTitle">Friends</h3>
                             <ul>
                                 {friends.map((friend) => (
-                                    <li key={friend.id}>{friend.username}</li>
+                                    <li key={friend}>{friend}</li>
                                 ))}
                             </ul>
                         </div>
