@@ -8,6 +8,7 @@ export default function Profile({ session }) {
 
     const [friendCount, setFriendCount] = useState(0);
     const [username, setUsername] = useState('');
+    const [friends, setFriends] = useState([]);
 
 
     let client_id = "1892c29e22e44ec686fa22a8e891b0f9";
@@ -107,6 +108,49 @@ export default function Profile({ session }) {
     };
 
 
+    //displaying current friends:
+    async function getFriends() {
+        const { data: friendDataList, error } = await supabase
+            .from('friends')
+            .select('is_friends_with')
+            .eq('id', session.user.id);
+
+        if (error) {
+            console.error('Error fetching friends: ', error);
+        }
+
+        if (friendDataList) {
+            const friendIdsSet = new Set(friendDataList.map(friend => friend.is_friends_with));
+
+            const friendProfilesPromises = Array.from(friendIdsSet).map(async id => {
+                return await supabase.from('profiles').select('*').eq('id', id).single();
+            });
+
+            try {
+                const friendProfilesArray = await Promise.all(friendProfilesPromises);
+                friendProfilesArray.sort((a, b) => a.id - b.id);
+                setFriends(friendProfilesArray);
+                setFriendCount(friends.length);
+
+            } catch (error) {
+                console.error("Error fetching profiles for friends:", error)
+            }
+
+        }
+
+    }
+
+
+    useEffect(() => {
+        getFriends();
+    }, [session]);
+
+
+
+
+
+    //end display current friends
+
     return (
         <div className="app-container">
             <Sidebar />
@@ -121,7 +165,18 @@ export default function Profile({ session }) {
                         <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} />
                         <button onClick={handleAddFriend}>Add Friend</button>
                         <button onClick={authorize}>Connect to Spotify</button>
+
+
+                        <div className="friendsList">
+                            <h3 id="friendsTitle">Friends</h3>
+                            <ul>
+                                {friends.map((friend) => (
+                                    <li key={friend.id}>{friend.username}</li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
