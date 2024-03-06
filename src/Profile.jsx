@@ -131,22 +131,16 @@ export default function Profile({ session }) {
             try {
                 const friendProfilesArray = await Promise.all(friendProfilesPromises);
                 friendProfilesArray.sort((a, b) => a.id - b.id);
-
-                // Map the friend profiles to just the usernames
                 const friendUsernames = friendProfilesArray.map(profile => profile.data.username);
                 console.log("friendProfilesArray:", friendProfilesArray);
                 console.log(friendUsernames);
                 setFriends(friendUsernames);
-                console.log(friendUsernames);
-
-                setFriendCount(friendUsernames.length); // Fix this line to use friendUsernames instead of friends
-
+                setFriendCount(friendUsernames.length);
             } catch (error) {
                 console.error("Error fetching profiles for friends:", error)
             }
         }
     }
-
 
 
     useEffect(() => {
