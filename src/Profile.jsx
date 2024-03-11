@@ -103,9 +103,44 @@ export default function Profile({ session }) {
             console.error('Error adding friend: ', error);
         } else {
             console.log('Friend added successfully: ', data);
-            alert("friend added");
+            getFriends()
+            // alert("friend added");
         }
     };
+
+
+    const handleRemoveFriend = async (friendUsername) => {
+        // Find the friend's profile based on the username
+        const { data: friendData, error: friendError } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('username', friendUsername)
+            .single();
+
+        if (friendError) {
+            console.error('Error fetching friend UUID: ', friendError);
+            alert("Error removing friend");
+            return;
+        }
+
+        // Remove the friend relationship from the database
+        const { error } = await supabase
+            .from('friends')
+            .delete()
+            .eq('id', session.user.id)
+            .eq('is_friends_with', friendData.id);
+
+        if (error) {
+            console.error('Error removing friend: ', error);
+            alert("Error removing friend");
+        } else {
+            console.log('Friend removed successfully');
+            // alert("Friend removed");
+            // Refresh the friend list
+            getFriends();
+        }
+    };
+
 
 
     //displaying current friends:
