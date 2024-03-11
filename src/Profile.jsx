@@ -80,26 +80,22 @@ export default function Profile({ session }) {
             return;
         }
 
-        // Check if they are already friends (buggy dont uncomment)
-        // const { data: alreadyFriendsData, error: alreadyFriendsError } = await supabase
-        //     .from('friends')
-        //     .select('*')
-        //     .eq('id', session.user.id)
-        //     .eq('is_friends_with', friendData.id)
-        //     .single();
+        const friendId = friendData.id;
 
-        // if (alreadyFriendsError) {
-        //     console.error('Error checking friendship status: ', alreadyFriendsError);
-        //     alert("sorry there was an error");
-        //     return;
-        // }
+        // Inserting the inverse relationship (friend adding you as a friend)
+        const { data: inverseInsertData, error: inverseInsertError } = await supabase
+            .from('friends')
+            .insert([
+                { id: friendId, is_friends_with: session.user.id },
+            ]);
 
-        // if (alreadyFriendsData) {
-        //     console.log('You are already friends with this user');
-        //     alert("you are already friends");
-        //     return;
-        // }
-        //end check if already friend
+        if (inverseInsertError) {
+            console.error('Error adding inverse friend: ', inverseInsertError);
+            // You may handle this error differently based on your app logic
+        }
+
+
+
         const { data, error } = await supabase
             .from('friends')
             .insert([
@@ -189,40 +185,6 @@ export default function Profile({ session }) {
         getFriends();
     }, [session]);
     //end display current friends
-
-    // return (
-    //     <div className="app-container bg-light">
-    //         <Sidebar />
-    //         <div className="container main-content py-5">
-    //             <div className="header text-center mb-5">
-    //                 <h2 className="display-3 text-primary">Profile</h2>
-    //                 <button onClick={authorize} className="btn btn-info mb-2 float-right">Connect to Spotify</button>
-    //             </div>
-    //             <div className="mb-3">
-    //                 <Link to="/Account" className="btn btn-link text-decoration-none">
-    //                     <FontAwesomeIcon icon={faCog} className="mr-1 text-secondary" /> Account Settings
-    //                 </Link>
-    //             </div>
-    //             <div className="profile-section text-center">
-    //                 <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" />
-    //                 <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
-    //                 <button onClick={handleAddFriend} className="btn btn-success mb-4">Add Friend</button>
-
-    //                 <div className="friendsList mt-5">
-    //                     <h3 className="text-center mt-4">🎵 My Friends 🎵</h3>
-    //                     <ul className="list-group mt-4">
-    //                         {friends.map((friend) => (
-    //                             <li key={friend} className="list-group-item d-flex justify-content-between align-items-center my-2">
-    //                                 {friend}
-    //                                 <button onClick={() => handleRemoveFriend(friend)} className="btn btn-danger btn-sm">Remove</button>
-    //                             </li>
-    //                         ))}
-    //                     </ul>
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     </div>
-    // );
 
     return (
         <div className="app-container bg-light">
