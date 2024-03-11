@@ -103,7 +103,7 @@ export default function Account({ session }) {
         </button>
       </div>
       <div>
-        <button className="button block" type="button" onClick={() => navigate('/Share')}>
+        <button className="button block" type="button" onClick={() => navigate('/Profile')}>
           Back
         </button>
       </div>
