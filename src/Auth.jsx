@@ -37,7 +37,7 @@ export default function Auth() {
         // const { data, error } = await supabase
         //   .from('profiles')
         //   .insert([{ id: user.id, username }]);
-        alert('Signed up successfully! Verify your email before loggin in.')
+        alert('Signed up successfully! Verify your email before logging in.')
         // navigate('/Share');
       }
     }
