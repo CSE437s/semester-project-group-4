@@ -1,8 +1,15 @@
-import './css/Profile.css'
+import './css/Profile2.css'
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from './supabaseClient'; // Import your Supabase client
 import Sidebar from './components/Sidebar';
+
+//for icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
+
+
+
 
 export default function Profile({ session }) {
 
@@ -181,44 +188,75 @@ export default function Profile({ session }) {
     useEffect(() => {
         getFriends();
     }, [session]);
-
-
-
     //end display current friends
+
+    // return (
+    //     <div className="app-container">
+    //         <Sidebar />
+    //         <div className="container main-content">
+    //             <div className="header text-center">
+    //                 <h2 className="display-3">Profile</h2>
+    //             </div>
+    //             <div className="mb-3">
+    //                 <Link to="/Account" className="">
+    //                     <FontAwesomeIcon icon={faCog} className="mr-1" /> Account Settings
+    //                 </Link>
+    //             </div>
+    //             <div className="profile-section">
+    //                 <img src="profile.jpg" alt="Profile" className="profile-picture rounded-circle mx-auto d-block" />
+    //                 <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control mb-2" />
+    //                 <button onClick={handleAddFriend} className="btn btn-primary mb-2">Add Friend</button>
+    //                 <button onClick={authorize} className="btn btn-secondary mb-2">Connect to Spotify</button>
+
+    //                 <div className="friendsList">
+    //                     <h3 className="text-center mt-4">🎵 My Friends 🎵</h3>
+    //                     <ul className="list-group">
+    //                         {friends.map((friend) => (
+    //                             <li key={friend} className="list-group-item d-flex justify-content-between align-items-center">
+    //                                 {friend}
+    //                                 <button onClick={() => handleRemoveFriend(friend)} className="btn btn-danger btn-sm">Remove</button>
+    //                             </li>
+    //                         ))}
+    //                     </ul>
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     </div>
+    // );
 
     return (
         <div className="app-container">
             <Sidebar />
-            <div className="main-content">
-                <div className="profile-page">
-                    <div className="header">
-                        <h2>Profile</h2>
+            <div className="container main-content">
+                <div className="header text-center my-4">
+                    <h2 className="display-4">Profile</h2>
+                </div>
+                <div className="mb-3">
+                    <Link to="/Account" className="btn btn-link">
+                        <FontAwesomeIcon icon={faCog} className="mr-1" /> Account Settings
+                    </Link>
+                </div>
+                <div className="profile-section">
+                    <img src="profile.jpg" alt="Profile" className="profile-picture rounded-circle mx-auto d-block mb-3" />
+                    <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control mb-3" />
+                    <button onClick={handleAddFriend} className="btn btn-primary mr-2">Add Friend</button>
+                    <button onClick={authorize} className="btn btn-secondary">Connect to Spotify</button>
+
+                    <div className="friendsList mt-4">
+                        <h3 className="text-center mb-3">🎵 My Friends 🎵</h3>
+                        <ul className="list-group">
+                            {friends.map((friend) => (
+                                <li key={friend} className="list-group-item d-flex justify-content-between align-items-center">
+                                    {friend}
+                                    <button onClick={() => handleRemoveFriend(friend)} className="btn btn-danger btn-sm">Remove</button>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
-                    <div className="profile-section">
-                        <img src="profile.jpg" alt="Profile" className="profile-picture" />
-                        {/* <p>Friends: {friendCount}</p> */}
-                        <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} />
-                        <button onClick={handleAddFriend}>Add Friend</button>
-                        <Link to="/Account" className="">Account Settings</Link>
-
-                        <button onClick={authorize}>Connect to Spotify</button>
-
-
-                        <div className="friendsList">
-                            <h3 id="friendsTitle">🎵 My Friends 🎵</h3>
-                            <ul>
-                                {friends.map((friend) => (
-                                    <li key={friend}>
-                                        {friend}
-                                        <button onClick={() => handleRemoveFriend(friend)}>Remove</button>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
     );
+
+
 };
