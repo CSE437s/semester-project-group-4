@@ -11,27 +11,26 @@ export default function Profile({ session }) {
     const [friends, setFriends] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
 
+
+    let client_id = "1892c29e22e44ec686fa22a8e891b0f9";
+    let redirect = "https://semester-project-group-4.vercel.app/Share"; //takes us back here after agreeing to Spotify
+
+    const AUTHORIZE = "https://accounts.spotify.com/authorize";
+
+    function authorize() {
+        let url = AUTHORIZE;
+        url += "?client_id=" + client_id;
+        url += "&response_type=code";
+        url += "&redirect_uri=" + encodeURI(redirect);
+        url += "&show_dialog=true";
+        url += "&scope=user-read-private user-read-email user-read-playback-state user-top-read";
+        window.location.href = url;
+    }
+
     useEffect(() => {
         getFriends();
         getPendingRequests();
     }, [session]);
-
-    // async function getPendingRequests() {
-    //     const { data: pendingData, error } = await supabase
-    //         .from('friend_requests')
-    //         .select('from_user')
-    //         .eq('to_user', session.user.id);
-
-    //     if (error) {
-    //         console.error('Error fetching pending requests:', error);
-    //         return;
-    //     }
-
-    //     if (pendingData) {
-    //         const pendingUserIds = pendingData.map(request => request.from_user);
-    //         setPendingRequests(pendingUserIds);
-    //     }
-    // }
 
     async function getPendingRequests() {
         const { data: pendingData, error } = await supabase
@@ -69,33 +68,11 @@ export default function Profile({ session }) {
         }
     }
 
-
-
-
-
-
-
-
-
-
-    // async function handleAcceptRequest(fromUserId) {
-    //     // Add the friendship
-    //     await addFriend(fromUserId);
-    //     // Remove the request
-    //     await removeRequest(fromUserId);
-    // }
-
     async function handleAcceptRequest(username) {
         const userId = pendingRequests.find(user => user.username === username).id;
         await acceptRequest(userId);
         await removeRequest(fromUserId);
     }
-
-    // async function handleRejectRequest(fromUserId) {
-    //     // Remove the request
-    //     await removeRequest(fromUserId);
-    // }
-
 
     async function handleRejectRequest(username) {
         const userId = pendingRequests.find(user => user.username === username).id;
@@ -119,41 +96,6 @@ export default function Profile({ session }) {
             getFriends();
         }
     }
-
-
-    // async function addFriend(friendId) {
-    //     const { data, error } = await supabase
-    //         .from('friends')
-    //         .insert([{ id: session.user.id, is_friends_with: friendId }]);
-
-    //     if (error) {
-    //         console.error('Error adding friend:', error);
-    //     } else {
-    //         console.log('Friend added successfully:', data);
-    //         getFriends();
-    //     }
-    // }
-
-    // async function removeFriend(friendId) {
-    //     const { error } = await supabase
-    //         .from('friends')
-    //         .delete()
-    //         .eq('id', session.user.id)
-    //         .eq('is_friends_with', friendId);
-
-    //     if (error) {
-    //         console.error('Error removing friend:', error);
-    //     } else {
-    //         console.log('Friend removed successfully');
-    //         // Remove the inverse relationship
-    //         await supabase
-    //             .from('friends')
-    //             .delete()
-    //             .eq('id', friendId)
-    //             .eq('is_friends_with', session.user.id);
-    //         getFriends();
-    //     }
-    // }
 
     const handleRemoveFriend = async (friendUsername) => {
         // Find the friend's profile based on the username
@@ -202,8 +144,6 @@ export default function Profile({ session }) {
             getFriends();
         }
     };
-
-
 
     async function removeRequest(fromUserId) {
         const { error } = await supabase
@@ -305,6 +245,9 @@ export default function Profile({ session }) {
                         </div>
                     </div>
                 </div>
+                <div className="col text-right">
+                            <button onClick={authorize} className="btn btn-info mb-2">Connect to Spotify</button>
+                        </div>
                 <div className="profile-section text-center">
                     <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it)" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" />
                     <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
@@ -338,8 +281,6 @@ export default function Profile({ session }) {
                             ))}
                         </ul>
                     </div>
-
-
                 </div>
             </div>
         </div>
