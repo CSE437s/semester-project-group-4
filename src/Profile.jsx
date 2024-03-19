@@ -170,6 +170,7 @@ export default function Profile({ session }) {
 
         if (error) {
             console.error('Error fetching friend:', error);
+            alert("There are no users with this username");
             return;
         }
 
@@ -237,21 +238,21 @@ export default function Profile({ session }) {
             <div className="container main-content py-5">
                 <div className="header text-center mb-5">
                     <h2 className="display-3 text-primary">Profile</h2>
-                    <div className="row">
+                    {/* <div className="row">
                         <div className="col">
                             <Link to="/Account" className="btn btn-link text-decoration-none">
                                 <FontAwesomeIcon icon={faCog} className="mr-1 text-secondary" /> Account Settings
                             </Link>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="col text-right">
                             <button onClick={authorize} className="btn btn-info mb-2">Connect to Spotify</button>
                         </div>
                 <div className="profile-section text-center">
-                    <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it)" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" />
+                    {/* <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it)" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" /> */}
                     <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
-                    <button onClick={handleAddFriend} className="btn btn-success mb-4">Add Friend</button>
+                    <button onClick={handleAddFriend} className="btn btn-info mb-4">Add Friend</button>
 
                     <div className="friendsList mt-5">
                         <h3 className="text-center mt-4">🎵 My Friends 🎵</h3>
@@ -274,7 +275,7 @@ export default function Profile({ session }) {
                                 <li key={request.id} className="list-group-item d-flex justify-content-between align-items-center my-2">
                                     <span>Pending request from {request.username}</span>
                                     <div>
-                                        <button onClick={() => handleAcceptRequest(request.id)} className="btn btn-success btn-sm mx-2">Accept</button>
+                                        <button onClick={() => handleAcceptRequest(request.id)} className="btn btn-info btn-sm mx-2">Accept</button>
                                         <button onClick={() => handleRejectRequest(request.id)} className="btn btn-danger btn-sm">Reject</button>
                                     </div>
                                 </li>

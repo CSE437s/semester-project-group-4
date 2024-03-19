@@ -94,16 +94,6 @@ export default function Auth() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              {/* <div>
-                <input
-                  className="inputField"
-                  type="text"
-                  placeholder="Username"
-                  value={username}
-                  required={true}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </div> */}
               <div>
                 <input
                   className="inputField"
