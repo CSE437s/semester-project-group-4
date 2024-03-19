@@ -69,6 +69,8 @@ export default function Profile({ session }) {
     }
 
     async function handleAcceptRequest(username) {
+        alert(pendingRequests)
+
         const userId = pendingRequests.find(user => user.username === username).id;
         await acceptRequest(userId);
         await removeRequest(fromUserId);
@@ -77,6 +79,8 @@ export default function Profile({ session }) {
     async function handleRejectRequest(username) {
         const userId = pendingRequests.find(user => user.username === username).id;
         // await rejectRequest(userId);
+        alert(pendingRequests)
+
         await removeRequest(fromUserId);
     }
 
@@ -160,7 +164,7 @@ export default function Profile({ session }) {
         }
     }
 
-    async function handleAddFriend() {
+    async function handleSendFriendRequest() {
         // Find the user by username
         const { data: friendData, error } = await supabase
             .from('profiles')
@@ -252,7 +256,7 @@ export default function Profile({ session }) {
                 <div className="profile-section text-center">
                     {/* <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it)" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" /> */}
                     <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
-                    <button onClick={handleAddFriend} className="btn btn-info mb-4">Add Friend</button>
+                    <button onClick={handleSendFriendRequest} className="btn btn-info mb-4">Add Friend</button>
 
                     <div className="friendsList mt-5">
                         <h3 className="text-center mt-4">🎵 My Friends 🎵</h3>
