@@ -9,7 +9,6 @@ function Sidebar() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate('/login'); // Adjust this if your login route differs
   };
 
   return (
