@@ -96,6 +96,24 @@ export default function Profile({ session }) {
             getFriends();
         }
     }
+    // async function handleRemoveFriend(friendId) {
+    //     const { error } = await supabase
+    //         .from('friends')
+    //         .delete()
+    //         .eq('id', session.user.id)
+    //         .eq('is_friends_with', friendId);
+
+    //     if (error) {
+    //         console.error('Error removing friend:', error);
+    //     } else {
+    //         console.log(`Friend ${friendId} removed successfully`);
+
+    //         // Remove inverse relationship (if exists)
+    //         await supabase.from("friends").delete().where("is_friends_with", "=", session.user.id).andWhere("id", "=", friendId);
+
+    //         getFriends();
+    //     }
+    // }
 
 
     async function handleAddFriend() {
