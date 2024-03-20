@@ -11,28 +11,30 @@ export default function Profile({ session }) {
     const [friends, setFriends] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
 
+    //SPOTIFY
+
+    let client_id = "1892c29e22e44ec686fa22a8e891b0f9";
+    let redirect = "https://semester-project-group-4.vercel.app/Share"; //takes us back here after agreeing to Spotify
+
+    const AUTHORIZE = "https://accounts.spotify.com/authorize";
+
+    function authorize() {
+        let url = AUTHORIZE;
+        url += "?client_id=" + client_id;
+        url += "&response_type=code";
+        url += "&redirect_uri=" + encodeURI(redirect);
+        url += "&show_dialog=true";
+        url += "&scope=user-read-private user-read-email user-read-playback-state user-top-read";
+        window.location.href = url;
+    }
+
+
+    //END SPOTIFY
+
     useEffect(() => {
         getFriends();
         getPendingRequests();
     }, [session]);
-
-    // async function getPendingRequests() {
-    //     const { data: pendingData, error } = await supabase
-    //         .from('friend_requests')
-    //         .select('from_user')
-    //         .eq('to_user', session.user.id);
-
-    //     if (error) {
-    //         console.error('Error fetching pending requests:', error);
-    //         return;
-    //     }
-
-    //     if (pendingData) {
-    //         const pendingUserIds = pendingData.map(request => request.from_user);
-    //         setPendingRequests(pendingUserIds);
-    //         console.log("pendingRequests: " + pendingUserIds);
-    //     }
-    // }
 
     async function getPendingRequests() {
         const { data: pendingData, error } = await supabase
@@ -263,8 +265,6 @@ export default function Profile({ session }) {
     }
 
     return (
-
-
         <div className="app-container bg-light">
             <Sidebar />
             <div className="container main-content py-5">
@@ -278,8 +278,8 @@ export default function Profile({ session }) {
                         </div>
                     </div> */}
                 </div>
-                <div className="col text-right">
-                    {/* <button onClick={authorize} className="btn btn-info mb-2">Connect to Spotify</button> */}
+                <div className="col text-center">
+                    <button onClick={authorize} className="btn btn-info mb-2">Connect to Spotify</button>
                 </div>
                 <div className="profile-section text-center">
                     {/* <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it)" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" /> */}
@@ -303,6 +303,21 @@ export default function Profile({ session }) {
                     <div className="pending-requests mt-5">
                         <h3 className="text-center mt-4">Pending Requests</h3>
                         <ul className="list-group mt-4">
+                            {pendingRequests.map(requestUserId => (
+                                <li key={requestUserId} className="list-group-item d-flex justify-content-between align-items-center my-2">
+                                    <span>Pending request from {requestUserId}</span>
+                                    <div>
+                                        <button onClick={() => handleAcceptRequest(requestUserId)} className="btn btn-success btn-sm mx-2">Accept</button>
+                                        <button onClick={() => handleRejectRequest(requestUserId)} className="btn btn-danger btn-sm">Reject</button>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* <div className="pending-requests mt-5">
+                        <h3 className="text-center mt-4">Pending Requests</h3>
+                        <ul className="list-group mt-4">
                             {pendingRequests.map(request => (
                                 <li key={request.id} className="list-group-item d-flex justify-content-between align-items-center my-2">
                                     <span>Pending request from {request.username}</span>
@@ -313,59 +328,9 @@ export default function Profile({ session }) {
                                 </li>
                             ))}
                         </ul>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
-
-        // <div className="app-container bg-light">
-        //     <Sidebar />
-        //     <div className="container main-content py-5">
-        //         <div className="header text-center mb-5">
-        //             <h2 className="display-3 text-primary">Profile</h2>
-        //             {/* <div className="row">
-        //                 <div className="col">
-        //                     <Link to="/Account" className="btn btn-link text-decoration-none">
-        //                         <FontAwesomeIcon icon={faCog} className="mr-1 text-secondary" /> Account Settings
-        //                     </Link>
-        //                 </div>
-        //             </div> */}
-        //         </div>
-        //         <div className="profile-section text-center">
-        //             <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it)" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" />
-        //             <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
-        //             <button onClick={handleSendFriendRequest} className="btn btn-success mb-4">Add Friend</button>
-
-        //             <div className="friendsList mt-5">
-        //                 <h3 className="text-center mt-4">🎵 My Friends 🎵</h3>
-        //                 <ul className="list-group mt-4">
-        //                     {friends.map(friend => (
-        //                         <li key={friend} className="list-group-item d-flex justify-content-between align-items-center my-2">
-        //                             {friend}
-        //                             <button onClick={() => handleRemoveFriend(friend)} className="btn btn-danger btn-sm">
-        //                                 <FontAwesomeIcon icon={faTrash} />
-        //                             </button>
-        //                         </li>
-        //                     ))}
-        //                 </ul>
-        //             </div>
-
-        //             <div className="pending-requests mt-5">
-        //                 <h3 className="text-center mt-4">Pending Requests</h3>
-        //                 <ul className="list-group mt-4">
-        //                     {pendingRequests.map(requestUserId => (
-        //                         <li key={requestUserId} className="list-group-item d-flex justify-content-between align-items-center my-2">
-        //                             <span>Pending request from {requestUserId}</span>
-        //                             <div>
-        //                                 <button onClick={() => handleAcceptRequest(requestUserId)} className="btn btn-success btn-sm mx-2">Accept</button>
-        //                                 <button onClick={() => handleRejectRequest(requestUserId)} className="btn btn-danger btn-sm">Reject</button>
-        //                             </div>
-        //                         </li>
-        //                     ))}
-        //                 </ul>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
     );
 }
