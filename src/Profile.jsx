@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 export default function Profile({ session }) {
@@ -10,22 +10,6 @@ export default function Profile({ session }) {
     const [username, setUsername] = useState('');
     const [friends, setFriends] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
-
-
-    let client_id = "1892c29e22e44ec686fa22a8e891b0f9";
-    let redirect = "https://semester-project-group-4.vercel.app/Share"; //takes us back here after agreeing to Spotify
-
-    const AUTHORIZE = "https://accounts.spotify.com/authorize";
-
-    function authorize() {
-        let url = AUTHORIZE;
-        url += "?client_id=" + client_id;
-        url += "&response_type=code";
-        url += "&redirect_uri=" + encodeURI(redirect);
-        url += "&show_dialog=true";
-        url += "&scope=user-read-private user-read-email user-read-playback-state user-top-read";
-        window.location.href = url;
-    }
 
     useEffect(() => {
         getFriends();
@@ -45,57 +29,30 @@ export default function Profile({ session }) {
 
         if (pendingData) {
             const pendingUserIds = pendingData.map(request => request.from_user);
-            const pendingUsersPromises = pendingUserIds.map(async id => {
-                const { data: userData, error: userError } = await supabase
-                    .from('profiles')
-                    .select('id', 'username')
-                    .eq('id', id)
-                    .single();
-                if (userData) {
-                    return userData;
-                } else {
-                    console.error('Error fetching user data:', userError);
-                    return null;
-                }
-            });
-
-            try {
-                console.log("HERE" + pendingUsersPromises)
-                const pendingUsersData = await Promise.allSettled(pendingUsersPromises);
-                console.log("pendingUserData: " + pendingUsersData);
-                setPendingRequests(pendingUsersData.filter(user => user !== null));
-            } catch (error) {
-                console.error('Error fetching pending requests data:', error);
-            }
+            setPendingRequests(pendingUserIds);
         }
     }
 
-    async function handleAcceptRequest(username) {
-        console.log(pendingRequests)
-
-        // const userId = pendingRequests.find(user => user.username === username).id;
-        const userId = pendingRequests.find(user => user.username === username).id;
-        await acceptRequest(userId);
+    async function handleAcceptRequest(fromUserId) {
+        // Add the friendship
+        await addFriend(fromUserId);
+        // Remove the request
         await removeRequest(fromUserId);
     }
 
-    async function handleRejectRequest(username) {
-        const userId = pendingRequests.find(user => user.username === username).id;
-        // await rejectRequest(userId);
-        alert(pendingRequests)
-
+    async function handleRejectRequest(fromUserId) {
+        // Remove the request
         await removeRequest(fromUserId);
     }
-
 
     async function addFriend(friendId) {
         const { data, error } = await supabase
             .from('friends')
             .insert([
-                { id: session.user.id, is_friends_with: friendId },
-                { id: friendId, is_friends_with: session.user.id }
+                { user_id: session.user.id, friend_id: friendId },
+                { user_id: friendId, friend_id: session.user.id }
             ]);
-
+    
         if (error) {
             console.error('Error adding friend:', error);
         } else {
@@ -103,71 +60,30 @@ export default function Profile({ session }) {
             getFriends();
         }
     }
-
-    const handleRemoveFriend = async (friendUsername) => {
-        // Find the friend's profile based on the username
-        const { data: friendData, error: friendError } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('username', friendUsername)
-            .single();
-
-        if (friendError) {
-            console.error('Error fetching friend UUID: ', friendError);
-            alert("Error removing friend");
-            return;
-        }
-
-        // Remove the friend relationship from the database
+    
+    async function removeRequest(friendId) {
         const { error } = await supabase
             .from('friends')
             .delete()
-            .eq('id', session.user.id)
-            .eq('is_friends_with', friendData.id)
-
+            .eq('user_id', session.user.id)
+            .eq('friend_id', friendId);
+    
         if (error) {
-            console.error('Error removing friend: ', error);
-            alert("Error removing friend");
+            console.error('Error removing friend:', error);
         } else {
             console.log('Friend removed successfully');
-            // alert("Friend removed");
-            // Refresh the friend list
-            // getFriends();
-        }
-
-
-        const { error: error2 } = await supabase
-            .from('friends')
-            .delete()
-            .eq('id', friendData.id)
-            .eq('is_friends_with', session.user.id);
-        if (error2) {
-            console.error('Error removing friend: ', error);
-            alert("Error removing friend");
-        } else {
-            console.log('Friend removed successfully');
-            // alert("Friend removed");
-            // Refresh the friend list
+            // Remove the inverse relationship
+            await supabase
+                .from('friends')
+                .delete()
+                .eq('user_id', friendId)
+                .eq('friend_id', session.user.id);
             getFriends();
         }
-    };
-
-    async function removeRequest(fromUserId) {
-        const { error } = await supabase
-            .from('friend_requests')
-            .delete()
-            .eq('from_user', fromUserId)
-            .eq('to_user', session.user.id);
-
-        if (error) {
-            console.error('Error removing request:', error);
-        } else {
-            console.log('Request removed successfully');
-            getPendingRequests();
-        }
     }
+    
 
-    async function handleSendFriendRequest() {
+    async function handleAddFriend() {
         // Find the user by username
         const { data: friendData, error } = await supabase
             .from('profiles')
@@ -177,7 +93,6 @@ export default function Profile({ session }) {
 
         if (error) {
             console.error('Error fetching friend:', error);
-            alert("There are no users with this username");
             return;
         }
 
@@ -245,21 +160,18 @@ export default function Profile({ session }) {
             <div className="container main-content py-5">
                 <div className="header text-center mb-5">
                     <h2 className="display-3 text-primary">Profile</h2>
-                    {/* <div className="row">
+                    <div className="row">
                         <div className="col">
                             <Link to="/Account" className="btn btn-link text-decoration-none">
                                 <FontAwesomeIcon icon={faCog} className="mr-1 text-secondary" /> Account Settings
                             </Link>
                         </div>
-                    </div> */}
-                </div>
-                <div className="col text-right">
-                    <button onClick={authorize} className="btn btn-info mb-2">Connect to Spotify</button>
+                    </div>
                 </div>
                 <div className="profile-section text-center">
-                    {/* <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it)" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" /> */}
+                    <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it)" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" />
                     <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
-                    <button onClick={handleSendFriendRequest} className="btn btn-info mb-4">Add Friend</button>
+                    <button onClick={handleAddFriend} className="btn btn-success mb-4">Add Friend</button>
 
                     <div className="friendsList mt-5">
                         <h3 className="text-center mt-4">🎵 My Friends 🎵</h3>
@@ -278,12 +190,12 @@ export default function Profile({ session }) {
                     <div className="pending-requests mt-5">
                         <h3 className="text-center mt-4">Pending Requests</h3>
                         <ul className="list-group mt-4">
-                            {pendingRequests.map(request => (
-                                <li key={request.id} className="list-group-item d-flex justify-content-between align-items-center my-2">
-                                    <span>Pending request from {request.username}</span>
+                            {pendingRequests.map(requestUserId => (
+                                <li key={requestUserId} className="list-group-item d-flex justify-content-between align-items-center my-2">
+                                    <span>Pending request from {requestUserId}</span>
                                     <div>
-                                        <button onClick={() => handleAcceptRequest(request.id)} className="btn btn-info btn-sm mx-2">Accept</button>
-                                        <button onClick={() => handleRejectRequest(request.id)} className="btn btn-danger btn-sm">Reject</button>
+                                        <button onClick={() => handleAcceptRequest(requestUserId)} className="btn btn-success btn-sm mx-2">Accept</button>
+                                        <button onClick={() => handleRejectRequest(requestUserId)} className="btn btn-danger btn-sm">Reject</button>
                                     </div>
                                 </li>
                             ))}
