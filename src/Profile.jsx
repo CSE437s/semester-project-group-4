@@ -60,8 +60,8 @@ export default function Profile({ session }) {
             });
 
             try {
-                console.log("HERE"+pendingUsersPromises)
-                const pendingUsersData = await Promise.all(pendingUsersPromises);
+                console.log("HERE" + pendingUsersPromises)
+                const pendingUsersData = await Promise.allSettled(pendingUsersPromises);
                 console.log("pendingUserData: " + pendingUsersData);
                 setPendingRequests(pendingUsersData.filter(user => user !== null));
             } catch (error) {
@@ -71,8 +71,9 @@ export default function Profile({ session }) {
     }
 
     async function handleAcceptRequest(username) {
-        // alert(pendingRequests)
+        console.log(pendingRequests)
 
+        // const userId = pendingRequests.find(user => user.username === username).id;
         const userId = pendingRequests.find(user => user.username === username).id;
         await acceptRequest(userId);
         await removeRequest(fromUserId);
