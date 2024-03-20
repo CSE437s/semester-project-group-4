@@ -92,7 +92,44 @@ export default function Profile({ session }) {
         }
     }
 
-    async function addFriend(friendId) {
+    // async function addFriend(friendId) {
+    //     const { data, error } = await supabase
+    //         .from('friends')
+    //         .insert([
+    //             { id: session.user.id, is_friends_with: friendId },
+    //             { id: friendId, is_friends_with: session.user.id }
+    //         ]);
+
+    //     if (error) {
+    //         console.error('Error adding friend:', error);
+    //     } else {
+    //         console.log('Friend added successfully:', data);
+    //         getFriends();
+    //     }
+    // }
+
+    async function addFriend(friendUsername) {
+        // Fetch friendID from the profiles table using friendUsername
+        const { data: profilesData, error: profilesError } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('username', friendUsername)
+            .single();
+
+        if (profilesError) {
+            console.error('Error fetching friendID:', profilesError);
+            return;
+        }
+
+        // If friendID is not found, handle the error
+        if (!profilesData) {
+            console.error('Friend not found with the given username:', friendUsername);
+            return;
+        }
+
+        const friendId = profilesData.id;
+
+        // Insert records into the friends table
         const { data, error } = await supabase
             .from('friends')
             .insert([
@@ -107,6 +144,7 @@ export default function Profile({ session }) {
             getFriends();
         }
     }
+
 
     async function handleRemoveFriend(friendUsername) {
         // Fetch friend's UUID from the friends table
