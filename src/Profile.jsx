@@ -45,6 +45,21 @@ export default function Profile({ session }) {
         await removeRequest(fromUserId);
     }
 
+    async function removeRequest(fromUserId) {
+        const { error } = await supabase
+            .from('friend_requests')
+            .delete()
+            .eq('from_user', fromUserId)
+            .eq('to_user', session.user.id);
+
+        if (error) {
+            console.error('Error removing request:', error);
+        } else {
+            console.log('Request removed successfully');
+            getPendingRequests();
+        }
+    }
+
     async function addFriend(friendId) {
         const { data, error } = await supabase
             .from('friends')
@@ -52,7 +67,7 @@ export default function Profile({ session }) {
                 { id: session.user.id, is_friends_with: friendId },
                 { id: friendId, is_friends_with: session.user.id }
             ]);
-    
+
         if (error) {
             console.error('Error adding friend:', error);
         } else {
@@ -60,14 +75,14 @@ export default function Profile({ session }) {
             getFriends();
         }
     }
-    
-    async function removeRequest(friendId) {
+
+    async function handleRemoveFriend(friendId) {
         const { error } = await supabase
             .from('friends')
             .delete()
             .eq('id', session.user.id)
             .eq('is_friends_with', friendId);
-    
+
         if (error) {
             console.error('Error removing friend:', error);
         } else {
@@ -81,7 +96,7 @@ export default function Profile({ session }) {
             getFriends();
         }
     }
-    
+
 
     async function handleAddFriend() {
         // Find the user by username
