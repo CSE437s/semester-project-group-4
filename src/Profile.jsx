@@ -49,8 +49,8 @@ export default function Profile({ session }) {
         const { data, error } = await supabase
             .from('friends')
             .insert([
-                { user_id: session.user.id, friend_id: friendId },
-                { user_id: friendId, friend_id: session.user.id }
+                { id: session.user.id, is_friends_with: friendId },
+                { id: friendId, is_friends_with: session.user.id }
             ]);
     
         if (error) {
@@ -65,8 +65,8 @@ export default function Profile({ session }) {
         const { error } = await supabase
             .from('friends')
             .delete()
-            .eq('user_id', session.user.id)
-            .eq('friend_id', friendId);
+            .eq('id', session.user.id)
+            .eq('is_friends_with', friendId);
     
         if (error) {
             console.error('Error removing friend:', error);
@@ -76,8 +76,8 @@ export default function Profile({ session }) {
             await supabase
                 .from('friends')
                 .delete()
-                .eq('user_id', friendId)
-                .eq('friend_id', session.user.id);
+                .eq('id', friendId)
+                .eq('is_friends_with', session.user.id);
             getFriends();
         }
     }
