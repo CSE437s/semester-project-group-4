@@ -60,7 +60,9 @@ export default function Profile({ session }) {
             });
 
             try {
+                console.log("HERE"+pendingUsersPromises)
                 const pendingUsersData = await Promise.all(pendingUsersPromises);
+                console.log("pendingUserData: " + pendingUsersData);
                 setPendingRequests(pendingUsersData.filter(user => user !== null));
             } catch (error) {
                 console.error('Error fetching pending requests data:', error);
@@ -69,7 +71,7 @@ export default function Profile({ session }) {
     }
 
     async function handleAcceptRequest(username) {
-        alert(pendingRequests)
+        // alert(pendingRequests)
 
         const userId = pendingRequests.find(user => user.username === username).id;
         await acceptRequest(userId);
@@ -251,8 +253,8 @@ export default function Profile({ session }) {
                     </div> */}
                 </div>
                 <div className="col text-right">
-                            <button onClick={authorize} className="btn btn-info mb-2">Connect to Spotify</button>
-                        </div>
+                    <button onClick={authorize} className="btn btn-info mb-2">Connect to Spotify</button>
+                </div>
                 <div className="profile-section text-center">
                     {/* <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it)" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" /> */}
                     <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
