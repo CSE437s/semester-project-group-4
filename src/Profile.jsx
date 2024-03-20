@@ -314,21 +314,6 @@ export default function Profile({ session }) {
                             ))}
                         </ul>
                     </div>
-
-                    {/* <div className="pending-requests mt-5">
-                        <h3 className="text-center mt-4">Pending Requests</h3>
-                        <ul className="list-group mt-4">
-                            {pendingRequests.map(request => (
-                                <li key={request.id} className="list-group-item d-flex justify-content-between align-items-center my-2">
-                                    <span>Pending request from {request.username}</span>
-                                    <div>
-                                        <button onClick={() => handleAcceptRequest(request.id)} className="btn btn-info btn-sm mx-2">Accept</button>
-                                        <button onClick={() => handleRejectRequest(request.id)} className="btn btn-danger btn-sm">Reject</button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div> */}
                 </div>
             </div>
         </div>
