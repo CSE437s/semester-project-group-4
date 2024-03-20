@@ -76,14 +76,55 @@ export default function Profile({ session }) {
         }
     }
 
+    // async function handleRemoveFriend(friendUsername) {
+    //     alert(friendUsername);
+    //     const { error } = await supabase
+    //         .from('friends')
+    //         .delete()
+    //         .eq('id', session.user.id)
+    //         .eq('is_friends_with', friendUsername);
+
+    //     if (error) {
+    //         console.error('Error removing friend:', error);
+    //     } else {
+    //         console.log('Friend removed successfully');
+    //         // Remove the inverse relationship
+    //         await supabase
+    //             .from('friends')
+    //             .delete()
+    //             .eq('id', friendUsername)
+    //             .eq('is_friends_with', session.user.id);
+    //         getFriends();
+    //     }
+    // }
+
+
     async function handleRemoveFriend(friendUsername) {
-        alert(friendUsername);
+        // Fetch friend's UUID from the friends table
+        const { data: friendsData, error: friendError } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('username', friendUsername)
+            .single();
+    
+        if (friendError) {
+            console.error('Error fetching friend UUID:', friendError);
+            return;
+        }
+    
+        if (!friendsData) {
+            console.error('Friend not found.');
+            return;
+        }
+    
+        const friendId = friendsData.id;
+    
         const { error } = await supabase
             .from('friends')
             .delete()
             .eq('id', session.user.id)
-            .eq('is_friends_with', friendUsername);
-
+            .eq('is_friends_with', friendId);
+    
         if (error) {
             console.error('Error removing friend:', error);
         } else {
@@ -92,12 +133,12 @@ export default function Profile({ session }) {
             await supabase
                 .from('friends')
                 .delete()
-                .eq('id', friendUsername)
+                .eq('id', friendId)
                 .eq('is_friends_with', session.user.id);
             getFriends();
         }
     }
-
+    
     async function handleAddFriend() {
         // Find the user by username
         const { data: friendData, error } = await supabase
