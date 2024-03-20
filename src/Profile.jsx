@@ -16,6 +16,24 @@ export default function Profile({ session }) {
         getPendingRequests();
     }, [session]);
 
+    // async function getPendingRequests() {
+    //     const { data: pendingData, error } = await supabase
+    //         .from('friend_requests')
+    //         .select('from_user')
+    //         .eq('to_user', session.user.id);
+
+    //     if (error) {
+    //         console.error('Error fetching pending requests:', error);
+    //         return;
+    //     }
+
+    //     if (pendingData) {
+    //         const pendingUserIds = pendingData.map(request => request.from_user);
+    //         setPendingRequests(pendingUserIds);
+    //         console.log("pendingRequests: " + pendingUserIds);
+    //     }
+    // }
+
     async function getPendingRequests() {
         const { data: pendingData, error } = await supabase
             .from('friend_requests')
@@ -29,9 +47,23 @@ export default function Profile({ session }) {
 
         if (pendingData) {
             const pendingUserIds = pendingData.map(request => request.from_user);
-            setPendingRequests(pendingUserIds);
+            const pendingUsernames = await Promise.all(pendingUserIds.map(async id => {
+                const { data: userData, error: userError } = await supabase
+                    .from('profiles')
+                    .select('username')
+                    .eq('id', id)
+                    .single();
+                if (userError) {
+                    console.error(`Error fetching username for user id ${id}:`, userError);
+                    return null;
+                }
+                return userData ? userData.username : null;
+            }));
+            setPendingRequests(pendingUsernames.filter(username => username !== null));
+            console.log("pendingRequests: " + pendingUsernames.filter(username => username !== null));
         }
     }
+
 
     async function handleAcceptRequest(fromUserId) {
         // Add the friendship
@@ -76,29 +108,6 @@ export default function Profile({ session }) {
         }
     }
 
-    // async function handleRemoveFriend(friendUsername) {
-    //     alert(friendUsername);
-    //     const { error } = await supabase
-    //         .from('friends')
-    //         .delete()
-    //         .eq('id', session.user.id)
-    //         .eq('is_friends_with', friendUsername);
-
-    //     if (error) {
-    //         console.error('Error removing friend:', error);
-    //     } else {
-    //         console.log('Friend removed successfully');
-    //         // Remove the inverse relationship
-    //         await supabase
-    //             .from('friends')
-    //             .delete()
-    //             .eq('id', friendUsername)
-    //             .eq('is_friends_with', session.user.id);
-    //         getFriends();
-    //     }
-    // }
-
-
     async function handleRemoveFriend(friendUsername) {
         // Fetch friend's UUID from the friends table
         const { data: friendsData, error: friendError } = await supabase
@@ -106,25 +115,25 @@ export default function Profile({ session }) {
             .select('id')
             .eq('username', friendUsername)
             .single();
-    
+
         if (friendError) {
             console.error('Error fetching friend UUID:', friendError);
             return;
         }
-    
+
         if (!friendsData) {
             console.error('Friend not found.');
             return;
         }
-    
+
         const friendId = friendsData.id;
-    
+
         const { error } = await supabase
             .from('friends')
             .delete()
             .eq('id', session.user.id)
             .eq('is_friends_with', friendId);
-    
+
         if (error) {
             console.error('Error removing friend:', error);
         } else {
@@ -138,7 +147,7 @@ export default function Profile({ session }) {
             getFriends();
         }
     }
-    
+
     async function handleAddFriend() {
         // Find the user by username
         const { data: friendData, error } = await supabase
