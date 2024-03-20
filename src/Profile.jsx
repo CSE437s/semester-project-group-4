@@ -77,7 +77,28 @@ export default function Profile({ session }) {
         await removeRequest(fromUserId);
     }
 
-    async function removeRequest(fromUserId) {
+    async function removeRequest(fromUsername) {
+        // Fetch fromUserId from the profiles table using fromUsername
+        const { data: profilesData, error: profilesError } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('username', fromUsername)
+            .single();
+
+        if (profilesError) {
+            console.error('Error fetching fromUserId:', profilesError);
+            return;
+        }
+
+        // If fromUserId is not found, handle the error
+        if (!profilesData) {
+            console.error('User not found with the given username:', fromUsername);
+            return;
+        }
+
+        const fromUserId = profilesData.id;
+
+        // Delete the request from the friend_requests table
         const { error } = await supabase
             .from('friend_requests')
             .delete()
@@ -91,22 +112,6 @@ export default function Profile({ session }) {
             getPendingRequests();
         }
     }
-
-    // async function addFriend(friendId) {
-    //     const { data, error } = await supabase
-    //         .from('friends')
-    //         .insert([
-    //             { id: session.user.id, is_friends_with: friendId },
-    //             { id: friendId, is_friends_with: session.user.id }
-    //         ]);
-
-    //     if (error) {
-    //         console.error('Error adding friend:', error);
-    //     } else {
-    //         console.log('Friend added successfully:', data);
-    //         getFriends();
-    //     }
-    // }
 
     async function addFriend(friendUsername) {
         // Fetch friendID from the profiles table using friendUsername
@@ -186,7 +191,7 @@ export default function Profile({ session }) {
         }
     }
 
-    async function handleAddFriend() {
+    async function handleSendFriendRequest() {
         // Find the user by username
         const { data: friendData, error } = await supabase
             .from('profiles')
@@ -274,7 +279,7 @@ export default function Profile({ session }) {
                 <div className="profile-section text-center">
                     <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it)" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" />
                     <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
-                    <button onClick={handleAddFriend} className="btn btn-success mb-4">Add Friend</button>
+                    <button onClick={handleSendFriendRequest} className="btn btn-success mb-4">Add Friend</button>
 
                     <div className="friendsList mt-5">
                         <h3 className="text-center mt-4">🎵 My Friends 🎵</h3>
