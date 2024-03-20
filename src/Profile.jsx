@@ -76,12 +76,13 @@ export default function Profile({ session }) {
         }
     }
 
-    async function handleRemoveFriend(friendId) {
+    async function handleRemoveFriend(friendUsername) {
+        alert(friendUsername);
         const { error } = await supabase
             .from('friends')
             .delete()
             .eq('id', session.user.id)
-            .eq('is_friends_with', friendId);
+            .eq('is_friends_with', friendUsername);
 
         if (error) {
             console.error('Error removing friend:', error);
@@ -91,30 +92,11 @@ export default function Profile({ session }) {
             await supabase
                 .from('friends')
                 .delete()
-                .eq('id', friendId)
+                .eq('id', friendUsername)
                 .eq('is_friends_with', session.user.id);
             getFriends();
         }
     }
-    // async function handleRemoveFriend(friendId) {
-    //     const { error } = await supabase
-    //         .from('friends')
-    //         .delete()
-    //         .eq('id', session.user.id)
-    //         .eq('is_friends_with', friendId);
-
-    //     if (error) {
-    //         console.error('Error removing friend:', error);
-    //     } else {
-    //         console.log(`Friend ${friendId} removed successfully`);
-
-    //         // Remove inverse relationship (if exists)
-    //         await supabase.from("friends").delete().where("is_friends_with", "=", session.user.id).andWhere("id", "=", friendId);
-
-    //         getFriends();
-    //     }
-    // }
-
 
     async function handleAddFriend() {
         // Find the user by username
