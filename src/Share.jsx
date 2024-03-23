@@ -10,6 +10,8 @@ import Sidebar from './components/Sidebar';
 
 const Share = () => {
   const [topSongs, setTopSongs] = useState([]);
+  const [accessToken, setAccessToken] = useState('');
+  const [refreshToken, setRefreshToken] = useState('');
 
   //const axios = require('axios');
  //const qs = require('qs');
@@ -27,7 +29,10 @@ const Share = () => {
   const AUTHORIZE = "https://accounts.spotify.com/authorize";
   const TOKEN = "https://accounts.spotify.com/api/token";
   //const TRACKS = "/api/v1/me/top/tracks?offset=0&limit=5&time_range=short_term"; //getting top 5 tracks from last 4 weeks
-  const TRACKS = "https://accounts.spotify.com/api/v1/me/top/tracks?offset=0&limit=5&time_range=short_term";
+  const TRACKS = "https://api.spotify.com/api/v1/me/top/tracks?time_range=short_term&limit=5&offset=0";
+
+  let aToken = '';
+  let rToken = '';
 
   // Data structure that manages the current active token, caching it in localStorage
   // const currentToken = {
@@ -80,42 +85,19 @@ const Share = () => {
     // fetchTopSongs();
 
     //getProfile();
-    getToken(code);
+
     
-    
+    getToken();
     //getUserTopSongs();
   }, []);
 
   const args = new URLSearchParams(window.location.search);
   const code = args.get('code');
 
-  const getToken = async code => {
-
+  const getToken = async () => {
     // stored in the previous step
     let codeVerifier = localStorage.getItem('code_verifier');
-    // console.log("code inside token: " + code);
-    // console.log("Verifier, " + codeVerifier);
-    // console.log("redirect uri: " + redirectUri);
-    // console.log("clientid: " + clientId);
-    // const payload = {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/x-www-form-urlencoded'
-    //   },
-    //   body: new URLSearchParams({
-    //     client_id: clientId,
-    //     grant_type: 'authorization_code',
-    //     code,
-    //     redirect_uri: redirectUri,
-    //     code_verifier: codeVerifier,
-    //   }),
-    // }
-  
-    // //const body = await fetch(url, payload);
-    // const body = await fetch("https://accounts.spotify.com/api/token", payload);
-    // console.log(body);
-    
-    // const response = await body.json();
+
 
     const response = await fetch(tokenEndpoint, {
       method: 'POST',
@@ -129,6 +111,9 @@ const Share = () => {
         redirect_uri: redirectUri,
         code_verifier: codeVerifier,
       }),
+      form: {
+        grant_type: 'client_credentials'
+      },
     });
 
     // if(response.status === 400) {
@@ -136,30 +121,38 @@ const Share = () => {
     // }
     console.log("response: ");
     console.log(response);
-    const r = await response.json();
-    
-    console.log("r: ");
-    console.log(r);
-  
-    localStorage.setItem('access_token', r.access_token);
-    localStorage.setItem('refresh_token', r.refresh_token);
-    console.log("access token store: " + localStorage.getItem('access_token'));
-    console.log("refresh token store: " + localStorage.getItem('refresh_token'));
+    const data = await response.json();
 
-    if(localStorage.getItem('access_token') !== undefined){
+    console.log("data: ");
+    console.log(data);
+
+    // Store tokens in localStorage
+    localStorage.setItem('access_token', data.access_token);
+    localStorage.setItem('refresh_token', data.refresh_token);
+
+    console.log("Access token stored:", localStorage.getItem('access_token'));
+    console.log("Refresh token stored:", localStorage.getItem('refresh_token'));
+
+    // Ensure data has the necessary tokens
+    if (localStorage.getItem('access_token') !== undefined) {
+      // Now you can perform actions with the tokens
       getUserTopSongs();
+
+      //return data.access_token; // Return the access token for further use if needed
     }
   }
 
-  const getRefreshToken = async () => {
+  const getRefreshToken = async (refreshToken) => {
     // refresh token that has been previously stored
-    const refreshToken = localStorage.getItem('refresh_token');
+    //const refreshToken = localStorage.getItem('refresh_token');
     const url = "https://accounts.spotify.com/api/token";
+    console.log(refreshToken);
  
      const payload = {
        method: 'POST',
        headers: {
-         'Content-Type': 'application/x-www-form-urlencoded'
+         'Content-Type': 'application/x-www-form-urlencoded',
+         'Authorization': 'Basic ' + btoa(clientId + ':' + client_secret)
        },
        body: new URLSearchParams({
          grant_type: 'refresh_token',
@@ -169,6 +162,8 @@ const Share = () => {
      }
      const body = await fetch(url, payload);
      const response = await body.json();
+     console.log("response: ");
+    console.log(response);
  
      localStorage.setItem('access_token', response.accessToken);
      localStorage.setItem('refresh_token', response.refreshToken);
@@ -179,7 +174,7 @@ const Share = () => {
   
     const response = await fetch('https://api.spotify.com/v1/me', {
       headers: {
-        Authorization: 'Bearer ' + accessToken
+        'Authorization': 'Bearer ' + accessToken
       }
     });
   
@@ -189,23 +184,43 @@ const Share = () => {
   async function getUserTopSongs() {
     let accessToken = localStorage.getItem('access_token');
     console.log("accesss token: " + accessToken);
+
+    // Check if access token is available
+    // if (!accessToken) {
+    //   console.error('Access token not found.');
+    //   return;
+    // }
   
     const response = await fetch(TRACKS, {
+      method: 'GET',
       headers: {
-        Authorization: 'Bearer ' + accessToken
-      },
-      mode: "no-cors",
+        'Authorization': 'Bearer ' + accessToken
+      }
     });
+
+    // if (!response.ok) {
+    //   if (response.status === 401) {
+    //     console.log('Access token is invalid. Attempting to refresh...');
+    //     // Call a function to refresh the access token if you have a refresh token
+    //     const refreshToken = localStorage.getItem('refresh_token');
+    //     getRefreshToken(refreshToken);
+    //     // Otherwise, prompt the user to log in again
+    //   } else {
+    //     throw new Error(`HTTP error! status: ${response.status}`);
+    //   }
+    // }
 
     console.log("top songs repsonse: " );
     console.log(response);
   
     const data = await response.json();
-    console.log("Data: " + data);
+    console.log("Data: ");
+    console.log(data);
   }
   
-  
-
+  // let token = await getToken(code);
+  // console.log("after await token: " + token);
+  // getUserTopSongs(token);
 
   // function onPageLoad() {
   //   console.log("Pagelaod");
