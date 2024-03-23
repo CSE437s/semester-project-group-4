@@ -30,23 +30,40 @@ const Share = () => {
   const TRACKS = "https://accounts.spotify.com/api/v1/me/top/tracks?offset=0&limit=5&time_range=short_term";
 
   // Data structure that manages the current active token, caching it in localStorage
-  const currentToken = {
-    get access_token() { return localStorage.getItem('access_token') || null; },
-    get refresh_token() { return localStorage.getItem('refresh_token') || null; },
-    get expires_in() { return localStorage.getItem('refresh_in') || null },
-    get expires() { return localStorage.getItem('expires') || null },
+  // const currentToken = {
+  //   get access_token() { return localStorage.getItem('access_token') || null; },
+  //   get refresh_token() { return localStorage.getItem('refresh_token') || null; },
+  //   get expires_in() { return localStorage.getItem('refresh_in') || null },
+  //   get expires() { return localStorage.getItem('expires') || null },
 
-    save: function (response) {
-      const { access_token, refresh_token, expires_in } = response;
-      localStorage.setItem('access_token', access_token);
-      localStorage.setItem('refresh_token', refresh_token);
-      localStorage.setItem('expires_in', expires_in);
+  //   save: function (response) {
+  //     const { access_token, refresh_token, expires_in } = response;
+  //     localStorage.setItem('access_token', access_token);
+  //     localStorage.setItem('refresh_token', refresh_token);
+  //     localStorage.setItem('expires_in', expires_in);
 
-      const now = new Date();
-      const expiry = new Date(now.getTime() + (expires_in * 1000));
-      localStorage.setItem('expires', expiry);
-    }
-  };
+  //     const now = new Date();
+  //     const expiry = new Date(now.getTime() + (expires_in * 1000));
+  //     localStorage.setItem('expires', expiry);
+  //   }
+  // };
+
+  // // On page load, try to fetch auth code from current browser search URL
+  // const args = new URLSearchParams(window.location.search);
+  // const code = args.get('code');
+
+  // // If we find a code, we're in a callback, do a token exchange
+  // if (code) {
+  //   const token = await getToken(code);
+  //   currentToken.save(token);
+
+  //   // Remove code from URL so we can refresh correctly.
+  //   const url = new URL(window.location.href);
+  //   url.searchParams.delete("code");
+
+  //   const updatedUrl = url.search ? url.href : url.href.replace('?', '');
+  //   window.history.replaceState({}, document.title, updatedUrl);
+  // }
 
   useEffect(() => {
     //onPageLoad();
@@ -64,11 +81,13 @@ const Share = () => {
 
     //getProfile();
     getToken(code);
+    
+    
     //getUserTopSongs();
   }, []);
 
-  const urlParams = new URLSearchParams(window.location.search);
-  let code = urlParams.get('code');
+  const args = new URLSearchParams(window.location.search);
+  const code = args.get('code');
 
   const getToken = async code => {
 
@@ -111,16 +130,28 @@ const Share = () => {
         code_verifier: codeVerifier,
       }),
     });
-    console.log("response: " + response);
+
+    // if(response.status === 400) {
+    //   getRefreshToken();
+    // }
+    console.log("response: ");
+    console.log(response);
     const r = await response.json();
     
-    console.log("r: " + r);
+    console.log("r: ");
+    console.log(r);
   
     localStorage.setItem('access_token', r.access_token);
+    localStorage.setItem('refresh_token', r.refresh_token);
+    console.log("access token store: " + localStorage.getItem('access_token'));
+    console.log("refresh token store: " + localStorage.getItem('refresh_token'));
+
+    if(localStorage.getItem('access_token') !== undefined){
+      getUserTopSongs();
+    }
   }
 
   const getRefreshToken = async () => {
-
     // refresh token that has been previously stored
     const refreshToken = localStorage.getItem('refresh_token');
     const url = "https://accounts.spotify.com/api/token";
@@ -157,13 +188,17 @@ const Share = () => {
 
   async function getUserTopSongs() {
     let accessToken = localStorage.getItem('access_token');
-    console.log("accesss toekn: " + accessToken);
+    console.log("accesss token: " + accessToken);
   
     const response = await fetch(TRACKS, {
       headers: {
         Authorization: 'Bearer ' + accessToken
-      }
+      },
+      mode: "no-cors",
     });
+
+    console.log("top songs repsonse: " );
+    console.log(response);
   
     const data = await response.json();
     console.log("Data: " + data);
