@@ -37,7 +37,7 @@ export default function Auth() {
         // const { data, error } = await supabase
         //   .from('profiles')
         //   .insert([{ id: user.id, username }]);
-        alert('Signed up successfully! Verify your email before loggin in.')
+        alert('Signed up successfully! Verify your email before logging in.')
         // navigate('/Share');
       }
     }
@@ -94,16 +94,6 @@ export default function Auth() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              {/* <div>
-                <input
-                  className="inputField"
-                  type="text"
-                  placeholder="Username"
-                  value={username}
-                  required={true}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </div> */}
               <div>
                 <input
                   className="inputField"

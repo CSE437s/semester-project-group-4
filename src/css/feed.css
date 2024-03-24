@@ -118,6 +118,8 @@ h2 {
   font-size: 0.875rem;
 }
 
-/* ... rest of your CSS ... */
+.friendsList li {
+  list-style-type: none;
+}
 
   
