@@ -31,7 +31,7 @@ const Share = () => {
   const AUTHORIZE = "https://accounts.spotify.com/authorize";
   const TOKEN = "https://accounts.spotify.com/api/token";
   //const TRACKS = "/api/v1/me/top/tracks?offset=0&limit=5&time_range=short_term"; //getting top 5 tracks from last 4 weeks
-  const TRACKS = 'https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=4&offset=0';
+  const TRACKS = 'https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=4&offset=0';
 
   useEffect(() => {
     Promise.all([getToken()])
@@ -137,6 +137,9 @@ const Share = () => {
     const data = await response.json();
     console.log("Data: ");
     console.log(data);
+    if(data.items != undefined) {
+      setTopSongs(data.items);
+    }
   }
 
   async function getAuth() {
@@ -188,7 +191,7 @@ const Share = () => {
   }
 
   //calling API to get general song data and storing it to variable
-  storeTracks();
+  //storeTracks();
 
   return (
     <div className="app-container">

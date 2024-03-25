@@ -7,16 +7,6 @@ const SongLayout = (props) => { //props.songs
     
     //console.log(props.songs);
 
-    //programatically generate the embed tracks based on props.songs data -- still a work in progress
-    window.onSpotifyIframeApiReady = (IFrameAPI) => {
-        const element1 = document.getElementById('embed-iframe1');
-        const options1 = {
-            uri: props.songs.length > 0 ? props.songs[0].uri : ""
-          };
-        const callback1 = (EmbedController) => {};
-        IFrameAPI.createController(element1, options1, callback1);
-      };
-
     //for these methods, also store the song data in database
     function shareSong1() {
         console.log("share");
@@ -53,7 +43,7 @@ const SongLayout = (props) => { //props.songs
                 <div className="col">
                     <div className="card" id="card1" style={{width: "18rem"}}>
                         {/* <div id="embed-iframe1"></div> */}
-                        <iframe style={{borderRadius: "12px"}} src="https://open.spotify.com/embed/track/2VjXGuPVVxyhMgER3Uz2Fe?utm_source=generator" width="100%" height="152" frameBorder="0" allowFullScreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                        <iframe style={{borderRadius: "12px"}} src={"https://open.spotify.com/embed/track/"+ props.songs[0].id +"?utm_source=generator"} width="100%" height="152" frameBorder="0" allowFullScreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                         <div className="card-body">
                             <h5 className="card-title">{props.songs.length > 0 ? props.songs[0].name : ""}</h5>
                             <p className="card-text">{props.songs.length > 0 ? props.songs[0].artists[0].name : ""}</p>
@@ -63,7 +53,7 @@ const SongLayout = (props) => { //props.songs
                 </div>
                 <div className="col">
                     <div className="card" id="card2" style={{width: "18rem"}}>
-                        <iframe style={{borderRadius: "12px"}} src="https://open.spotify.com/embed/track/7eqoqGkKwgOaWNNHx90uEZ?utm_source=generator" width="100%" height="152" frameBorder="0" allowFullScreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                        <iframe style={{borderRadius: "12px"}} src={"https://open.spotify.com/embed/track/"+ props.songs[1].id +"?utm_source=generator"} width="100%" height="152" frameBorder="0" allowFullScreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                         <div className="card-body">
                             <h5 className="card-title">{props.songs.length > 0 ? props.songs[1].name : ""}</h5>
                             <p className="card-text">{props.songs.length > 0 ? props.songs[1].artists[0].name : ""}</p>
@@ -74,7 +64,7 @@ const SongLayout = (props) => { //props.songs
                 <div className="w-100"></div>
                 <div className="col">
                     <div className="card" id="card3" style={{width: "18rem"}}>
-                        <iframe style={{borderRadius: "12px"}} src="https://open.spotify.com/embed/track/2LlOeW5rVcvl3QcPNPcDus?utm_source=generator" width="100%" height="152" frameBorder="0" allowFullScreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                        <iframe style={{borderRadius: "12px"}} src={"https://open.spotify.com/embed/track/"+ props.songs[2].id +"?utm_source=generator"} width="100%" height="152" frameBorder="0" allowFullScreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                         <div className="card-body">
                             <h5 className="card-title">{props.songs.length > 0 ? props.songs[2].name : ""}</h5>
                             <p className="card-text">{props.songs.length > 0 ? props.songs[2].artists[0].name : ""}</p>
@@ -84,7 +74,7 @@ const SongLayout = (props) => { //props.songs
                 </div>
                 <div className="col">
                     <div className="card" id="card4" style={{width: "18rem"}}>
-                        <iframe style={{borderRadius: "12px"}} src="https://open.spotify.com/embed/track/68ZngF8g3iLiUhOqwutNgW?utm_source=generator" width="100%" height="152" frameBorder="0" allowFullScreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                        <iframe style={{borderRadius: "12px"}} src={"https://open.spotify.com/embed/track/"+ props.songs[3].id +"?utm_source=generator"} width="100%" height="152" frameBorder="0" allowFullScreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                         <div className="card-body">
                             <h5 className="card-title">{props.songs.length > 0 ? props.songs[3].name : ""}</h5>
                             <p className="card-text">{props.songs.length > 0 ? props.songs[3].artists[0].name : ""}</p>
