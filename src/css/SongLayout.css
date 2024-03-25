@@ -1,0 +1,23 @@
+.col{
+    padding: 3%;
+}
+
+/* .btn {
+    font-family: 'FigTree', sans-serif;
+    background-color: #5C63FF;
+    border-radius: 30%;
+} */
+
+.shareButton {
+    font-family: 'FigTree', sans-serif;
+    background-color: #5C63FF;
+}
+
+.card-title {
+    font-family: 'FigTree', sans-serif;
+    font-weight: 700;
+}
+
+.card-text{
+    font-family: 'FigTree', sans-serif;
+}

@@ -2,6 +2,8 @@ import './css/share.css'
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
+import SongLayout from './components/SongLayout';
+import 'bootstrap/dist/css/bootstrap.min.css';
 // import { Link } from 'react-router-dom';
  import axios from 'axios'; // for API requests
  import qs from 'qs';
@@ -34,42 +36,6 @@ const Share = () => {
   let aToken = '';
   let rToken = '';
 
-  // Data structure that manages the current active token, caching it in localStorage
-  // const currentToken = {
-  //   get access_token() { return localStorage.getItem('access_token') || null; },
-  //   get refresh_token() { return localStorage.getItem('refresh_token') || null; },
-  //   get expires_in() { return localStorage.getItem('refresh_in') || null },
-  //   get expires() { return localStorage.getItem('expires') || null },
-
-  //   save: function (response) {
-  //     const { access_token, refresh_token, expires_in } = response;
-  //     localStorage.setItem('access_token', access_token);
-  //     localStorage.setItem('refresh_token', refresh_token);
-  //     localStorage.setItem('expires_in', expires_in);
-
-  //     const now = new Date();
-  //     const expiry = new Date(now.getTime() + (expires_in * 1000));
-  //     localStorage.setItem('expires', expiry);
-  //   }
-  // };
-
-  // // On page load, try to fetch auth code from current browser search URL
-  // const args = new URLSearchParams(window.location.search);
-  // const code = args.get('code');
-
-  // // If we find a code, we're in a callback, do a token exchange
-  // if (code) {
-  //   const token = await getToken(code);
-  //   currentToken.save(token);
-
-  //   // Remove code from URL so we can refresh correctly.
-  //   const url = new URL(window.location.href);
-  //   url.searchParams.delete("code");
-
-  //   const updatedUrl = url.search ? url.href : url.href.replace('?', '');
-  //   window.history.replaceState({}, document.title, updatedUrl);
-  // }
-
   useEffect(() => {
     //onPageLoad();
     // Fetch user's top 3 songs from Spotify API
@@ -87,7 +53,7 @@ const Share = () => {
     //getProfile();
 
     
-    getToken();
+    //getToken();
     //getUserTopSongs();
   }, []);
 
@@ -134,12 +100,13 @@ const Share = () => {
     console.log("Refresh token stored:", localStorage.getItem('refresh_token'));
 
     // Ensure data has the necessary tokens
-    if (localStorage.getItem('access_token') !== undefined) {
-      // Now you can perform actions with the tokens
-      getUserTopSongs();
+    // if (localStorage.getItem('access_token') !== undefined) {
+    //   // Now you can perform actions with the tokens
+    //   getUserTopSongs();
 
-      //return data.access_token; // Return the access token for further use if needed
-    }
+    //   //return data.access_token; // Return the access token for further use if needed
+    // }
+    return data.access_token; // Return the access token for further use if needed
   }
 
   const getRefreshToken = async (refreshToken) => {
@@ -169,17 +136,17 @@ const Share = () => {
      localStorage.setItem('refresh_token', response.refreshToken);
    }
 
-  async function getProfile(access_Token) {
-    let accessToken = localStorage.getItem('access_token');
+  // async function getProfile() {
+  //   let accessToken = localStorage.getItem('access_token');
   
-    const response = await fetch('https://api.spotify.com/v1/me', {
-      headers: {
-        'Authorization': 'Bearer ' + accessToken
-      }
-    });
+  //   const response = await fetch('https://api.spotify.com/v1/me', {
+  //     headers: {
+  //       'Authorization': 'Bearer ' + accessToken
+  //     }
+  //   });
   
-    const data = await response.json();
-  }
+  //   const data = await response.json();
+  // }
 
   async function getUserTopSongs() {
     let accessToken = localStorage.getItem('access_token');
@@ -254,12 +221,13 @@ const Share = () => {
     }
   }
 
-  const getAudioFeatures_Track = async (track_id) => {
+  const getTracks = async () => {
     //request token using getAuth() function
     const access_token = await getAuth();
     //console.log(access_token);
   
-    const api_url = `https://api.spotify.com/v1/audio-features/${track_id}`;
+    const api_url = 'https://api.spotify.com/v1/tracks?ids=2VjXGuPVVxyhMgER3Uz2Fe%2C7eqoqGkKwgOaWNNHx90uEZ%2C2LlOeW5rVcvl3QcPNPcDus%2C68ZngF8g3iLiUhOqwutNgW';
+
     //console.log(api_url);
     try{
       const response = await axios.get(api_url, {
@@ -274,10 +242,20 @@ const Share = () => {
     }  
   };
 
+  const storeTracks = async () => {
+    const trackResponse = await getTracks();
+    setTopSongs(trackResponse.tracks);
+    //console.log(topSongs);
+  }
+
+  //calling API to get general song data and storing it to variable
+  storeTracks();
+
   const getTopSongs = async () => {
     //request token using getAuth() function
-    const access_token = await getAuth();
-    //console.log(access_token);
+    //const access_token = await getAuth();
+    const access_token = await getToken(); //using my function
+
 
     const api_url = TRACKS;
     //console.log(api_url);
@@ -294,10 +272,6 @@ const Share = () => {
     }  
   }
   
-  // console.log(getAudioFeatures_Track('07A0whlnYwfWfLQy4qh3Tq'));
-  // console.log(getTopSongs());
-  
-
   function handleRedirect() {
     let code = getCode();
     fetchAccessToken(code);
@@ -460,20 +434,13 @@ const Share = () => {
         </div>
         {/* Share Page */}
         <div className="share-page">
-          <h2>Your Top 3 Songs</h2>
+          <h2>Your Top 4 Songs</h2>
           {/* <ImageCarousel songs={topSongs} /> */}
 
           {/* list below is just current placeholder for top songs (will move to ImageCarousel later) */}
-          <div className="list">
-            <ol id="list" className="results">
-
-            </ol>
-          </div>
+          <SongLayout songs={topSongs} />
         </div>
       </div>
-      {/* <div className="spotify-login">
-        <button className="spotify-login-button" onClick={authorize}>Login to Spotify</button>
-      </div> */}
     </div>
   );
 };
