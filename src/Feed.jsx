@@ -1,31 +1,29 @@
 import './css/feed.css';
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
-import Post from './components/Post'; // A new component for music posts
 
 const Feed = () => {
     const [friends, setFriends] = useState([]);
-    const [sharedSongs, setSharedSongs] = useState([]); // New state for shared songs
+    const [sharedSongs, setSharedSongs] = useState([]);
     const [session, setSession] = useState(null);
-    const [loading, setLoading] = useState(true); // Add loading state
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
-            setLoading(false); // Set loading to false once session is set
+            setLoading(false);
         }).catch(error => {
             console.error('Error fetching session:', error);
-            setLoading(false); // Set loading to false if there's an error fetching session
+            setLoading(false);
         });
     }, []);
 
     useEffect(() => {
-        if (!session) return; // Don't fetch data if session is null
+        if (!session) return;
 
         async function fetchData() {
-            await getFriends(session); // Pass session to getFriends
+            await getFriends(session);
         }
 
         fetchData();
@@ -33,7 +31,7 @@ const Feed = () => {
 
     useEffect(() => {
         if (friends.length > 0) {
-            fetchSharedSongs(friends); // Call fetchSharedSongs when friends are fetched
+            fetchSharedSongs(friends);
         }
     }, [friends]);
 
@@ -48,7 +46,7 @@ const Feed = () => {
 
             if (error) {
                 console.error('Error fetching shared songs for friend:', id, error);
-                return []; // Return an empty array if there's an error
+                return [];
             }
 
             return songs;
@@ -56,7 +54,7 @@ const Feed = () => {
 
         try {
             const friendSharedSongs = await Promise.all(sharedSongPromises);
-            setSharedSongs(friendSharedSongs);
+            setSharedSongs(friendSharedSongs.flat()); // Flatten the array
         } catch (error) {
             console.error('Error fetching shared songs:', error);
         }
@@ -82,7 +80,6 @@ const Feed = () => {
             try {
                 const friendProfilesArray = await Promise.all(friendProfilesPromises);
                 friendProfilesArray.sort((a, b) => a.id - b.id);
-                console.log('friendProfilesArray:', friendProfilesArray);
                 setFriends(friendProfilesArray);
             } catch (error) {
                 console.error('Error fetching profiles for friends:', error);
@@ -91,8 +88,9 @@ const Feed = () => {
     }
 
     if (loading) {
-        return <p>Loading...</p>; // Display loading message while waiting for session to be fetched
+        return <p>Loading...</p>;
     }
+
     return (
         <div className="app-container">
             <Sidebar />
@@ -102,8 +100,17 @@ const Feed = () => {
                     <p className="headerText">View what your friends have been listening to</p>
                 </div>
                 <div className="song_list">
-                    {sharedSongs.map((songs, index) => (
-                        <Post key={index} post={songs} />
+                    {sharedSongs.map(song => (
+                        <div key={song.id} className="song-item">
+                            <iframe
+                                src={`https://open.spotify.com/embed/track/${song.id}`}
+                                width="300"
+                                height="80"
+                                frameBorder="0"
+                                allowtransparency="true"
+                                allow="encrypted-media"
+                            ></iframe>
+                        </div>
                     ))}
                 </div>
             </div>
