@@ -8,6 +8,8 @@ const Feed = () => {
     const [sharedSongs, setSharedSongs] = useState([]);
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
+    // New state variable to hold player instances
+    const [players, setPlayers] = useState([]);
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -39,6 +41,50 @@ const Feed = () => {
         if (!sharedSongs.length) return;
     }, [sharedSongs]);
 
+    useEffect(() => {
+        if (!sharedSongs.length) return;
+
+        const playerPromises = sharedSongs.map(async song => {
+            const { uri } = song;
+
+            // Create a new iframe element
+            const iframe = document.createElement('iframe');
+            iframe.id = `player-${uri}`; // Set unique id for each player
+
+            // Load the Spotify iframe API script asynchronously
+            const script = document.createElement('script');
+            script.src = "https://open.spotify.com/embed/iframe-api"; // Update with Spotify iframe API URL
+            document.body.appendChild(script);
+
+            // Function to be called after the API loads (window.onSpotifyIframeAPIReady)
+            window.onSpotifyIframeAPIReady = () => {
+                const player = new Spotify.Player({
+                    container: iframe, // Set container for the player
+                    getOAuthToken: callback => {
+                        // Handle OAuth token retrieval (optional, see documentation)
+                        callback(null); // Assuming no OAuth needed in this example
+                    },
+                    styles: {
+                        height: '80px', // Set player height
+                        width: '100%', // Set player width
+                    },
+                    uris: [uri], // Set the Spotify track uri
+                });
+
+                player.on('ready', () => {
+                    setPlayers(prevPlayers => [...prevPlayers, player]);
+                });
+            };
+
+            return iframe;
+        });
+
+        Promise.all(playerPromises).then(iframes => {
+            // Append iframes to the song_list element
+            iframes.forEach(iframe => document.querySelector('.song_list').appendChild(iframe));
+        });
+    }, [sharedSongs]);
+
     async function fetchSharedSongs(friends) {
         const friendIds = friends.map(friend => friend.data.id);
 
@@ -52,8 +98,9 @@ const Feed = () => {
                 console.error('Error fetching shared songs for friend:', id, error);
                 return [];
             }
-
+            console.log(songs);
             return songs;
+
         });
 
         try {
@@ -95,34 +142,35 @@ const Feed = () => {
         return <p>Loading...</p>;
     }
 
+    const renderSongs = () => {
+        return songs.map(song => (
+            <div key={song.id} className="song-item">
+                {/* Embed Spotify track using formatted URL */}
+                <iframe
+                    src={`https://open.spotify.com/embed/track/${song.id}?utm_source=generator`}
+                    width="100%"
+                    height="80"
+                    frameBorder="0"
+                    allowtransparency="true"
+                    allow="encrypted-media"
+                ></iframe>
+            </div>
+        ));
+    };
+
     return (
         <div className="app-container">
             <Sidebar />
-            <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
             <div className="main-content">
                 <div className="header">
                     <h2>Feed</h2>
                     <p className="headerText">View what your friends have been listening to</p>
                 </div>
                 <div className="song_list">
-                    {/* Conditionally render loading message or song elements */}
-                    {loading ? (
-                        <p>Loading...</p>
+                    {sharedSongs.length ? (
+                        <SongsList songs={sharedSongs} /> // Pass sharedSongs as a prop
                     ) : (
-                        <div>
-                            {sharedSongs.map((song, index) => (
-                                <div key={index} className="song-item">
-                                    <iframe
-                                        src={`https://open.spotify.com/embed?uri=${song.uri}`}
-                                        width="100%"
-                                        height="80"
-                                        frameBorder="0"
-                                        allowtransparency="true"
-                                        allow="encrypted-media"
-                                    ></iframe>
-                                </div>
-                            ))}
-                        </div>
+                        <p>No songs to display</p>
                     )}
                 </div>
             </div>
