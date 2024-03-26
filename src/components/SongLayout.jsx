@@ -11,7 +11,7 @@ const SongLayout = (props) => { //props.songs
         const { data, error } = await supabase
             .from('shared_songs')
             .insert([
-                { some_column: sessionStorage.user.id, other_column: json },
+                { some_column: session.user.id, other_column: json },
             ])
             .select()
     }
