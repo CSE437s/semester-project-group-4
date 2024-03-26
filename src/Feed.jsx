@@ -1,4 +1,4 @@
-import './css/feed.css';
+// import './css/feed.css';
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
@@ -54,7 +54,7 @@ const Feed = () => {
 
         try {
             const friendSharedSongs = await Promise.all(sharedSongPromises);
-            setSharedSongs(friendSharedSongs.flat()); // Flatten the array
+            setSharedSongs(friendSharedSongs.flat());
         } catch (error) {
             console.error('Error fetching shared songs:', error);
         }
@@ -93,6 +93,7 @@ const Feed = () => {
 
     return (
         <div className="app-container">
+            <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
             <Sidebar />
             <div className="main-content">
                 <div className="header">
