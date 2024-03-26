@@ -11,12 +11,6 @@ const Feed = () => {
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true); // Add loading state
 
-    // useEffect(() => {
-    //     supabase.auth.getSession().then(({ data: { session } }) => {
-    //         setSession(session)
-    //     })
-    // }, []);
-
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
@@ -31,15 +25,20 @@ const Feed = () => {
         if (!session) return; // Don't fetch data if session is null
 
         async function fetchData() {
-            await getFriends();
-            fetchSharedSongs();
+            await getFriends(session); // Pass session to getFriends
         }
 
         fetchData();
-    }, [session])
+    }, [session]);
 
-    async function fetchSharedSongs() {
-        const friendIds = friendProfilesArray.map(profile => profile.data.id);
+    useEffect(() => {
+        if (friends.length > 0) {
+            fetchSharedSongs(friends); // Call fetchSharedSongs when friends are fetched
+        }
+    }, [friends]);
+
+    async function fetchSharedSongs(friendUsernames) {
+        const friendIds = friendUsernames.map(username => username.id); // Assuming 'id' is the correct property
 
         const sharedSongPromises = friendIds.map(async id => {
             const { data: songs, error } = await supabase
@@ -63,7 +62,7 @@ const Feed = () => {
         }
     }
 
-    async function getFriends() {
+    async function getFriends(session) {
         const { data: friendDataList, error } = await supabase
             .from('friends')
             .select('is_friends_with')
@@ -83,10 +82,8 @@ const Feed = () => {
             try {
                 const friendProfilesArray = await Promise.all(friendProfilesPromises);
                 friendProfilesArray.sort((a, b) => a.id - b.id);
-                const friendUsernames = friendProfilesArray.map(profile => profile.data.username);
                 console.log('friendProfilesArray:', friendProfilesArray);
-                console.log(friendUsernames);
-                setFriends(friendUsernames);
+                setFriends(friendProfilesArray);
             } catch (error) {
                 console.error('Error fetching profiles for friends:', error);
             }
@@ -106,7 +103,7 @@ const Feed = () => {
                 </div>
                 <div className="song_list">
                     {sharedSongs.map((songs, index) => (
-                        <Post key={index} songs={songs} friendName={friends[index]} />
+                        <Post key={index} songs={songs} friendName={friends[index].data.username} />
                     ))}
                 </div>
             </div>
