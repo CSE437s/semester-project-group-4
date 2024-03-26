@@ -97,22 +97,28 @@ const Feed = () => {
     console.log(sharedSongs)
     return (
         <div className="app-container">
-            <Sidebar />
-            <div className="main-content">
-                <div className="header">
-                    <h2>Feed</h2>
-                    <p className="headerText">View what your friends have been listening to</p>
-                </div>
-                <div className="song_list">
-                    {sharedSongs.map(song => (
-                        <div key={song.song.id} className="song-item">
-                            <h3>{song.song.name}</h3>
-                        </div>
-                    ))}
-                </div>
-
+        <Sidebar />
+        <div className="main-content">
+            <div className="header">
+                <h2>Feed</h2>
+                <p className="headerText">View what your friends have been listening to</p>
+            </div>
+            <div className="song_list">
+                {sharedSongs.map(song => (
+                    <div key={song.song.id} className="song-item">
+                        <iframe
+                            src={`https://open.spotify.com/embed/track/${song.song.id}`}
+                            width="300"
+                            height="80"
+                            frameBorder="0"
+                            allowtransparency="true"
+                            allow="encrypted-media"
+                        ></iframe>
+                    </div>
+                ))}
             </div>
         </div>
+    </div>
     );
 };
 
