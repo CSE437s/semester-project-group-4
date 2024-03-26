@@ -130,25 +130,32 @@ const Feed = () => {
 
     async function addComment(songId, comment) {
         try {
-            // Retrieve the songUUID corresponding to the songId
-            const { data: [{ songUUID }], error } = await supabase
+            // Retrieve the songUUID using songId
+            const { data: songData, error: songError } = await supabase
                 .from('shared_songs')
                 .select('songUUID')
                 .eq('id', songId)
                 .single();
 
-            if (error) {
-                console.error('Error retrieving songUUID:', error);
+            if (songError) {
+                console.error('Error fetching songUUID for song:', songId, songError);
                 return;
             }
-            alert(songUUID);
 
-            const { data, error: insertError } = await supabase
+            if (!songData || !songData.songUUID) {
+                console.error('SongUUID not found for song:', songId);
+                return;
+            }
+
+            const songUUID = songData.songUUID;
+
+            // Insert the comment with songUUID
+            const { data, error } = await supabase
                 .from('feedComments')
                 .insert([{ songUUID: songUUID, comment: comment, userID: session.user.id }]);
 
-            if (insertError) {
-                console.error('Error adding comment:', insertError);
+            if (error) {
+                console.error('Error adding comment:', error);
             } else {
                 // Update the comments state only for the specific song that the comment is for
                 setComments(prevComments => ({
