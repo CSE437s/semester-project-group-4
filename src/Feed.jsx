@@ -131,19 +131,18 @@ const Feed = () => {
     }
 
     async function addComment(songId, comment) {
+        // alert(songId)
         try {
-            // Retrieve the songUUID corresponding to the songId
-            // const { data: [{ songUUID }], error } = await supabase
-            //     .from('shared_songs')
-            //     .select('songUUID')
-            //     .eq('id', songId)
-            //     .single();
-
-            // if (error) {
-            //     console.error('Error retrieving songUUID:', error);
-            //     return;
-            // }
-            // alert(songUUID);
+            const { data: [{ songUUID }], error } = await supabase
+                .from('shared_songs')
+                .select('songUUID')
+                .eq('id', songId)
+                .single();
+            if (error) {
+                console.error('Error retrieving songUUID:', error);
+                return;
+            }
+            alert(songUUID);
 
             const { data, error: insertError } = await supabase
                 .from('feedComments')
@@ -209,7 +208,7 @@ const Feed = () => {
                                     value={commentInput}
                                     onChange={e => setCommentInput(e.target.value)}
                                 />
-                                <button onClick={() => addComment(song.id, commentInput)}>Add Comment</button>
+                                <button onClick={() => addComment(song.song.id, commentInput)}>Add Comment</button>
                             </div>
                         </div>
                     ))}
