@@ -15,21 +15,48 @@ export default function Profile({ session }) {
 
     //SPOTIFY
 
-    let client_id = "1892c29e22e44ec686fa22a8e891b0f9";
-    let redirect = "https://semester-project-group-4.vercel.app/Share"; //takes us back here after agreeing to Spotify
+    const clientId = "1892c29e22e44ec686fa22a8e891b0f9";
+    //const clientId = process.env.REACT_APP_SPOTIFY_API_ID; // Your client id
 
-    const AUTHORIZE = "https://accounts.spotify.com/authorize";
+    const redirectUri = "http://localhost:5173/Share"; //takes us back here after agreeing to Spotify
+    // let redirectUri = "https://semester-project-group-4.vercel.app/Share" //use for vercel host
 
-    function authorize() {
-        let url = AUTHORIZE;
-        url += "?client_id=" + client_id;
-        url += "&response_type=code";
-        url += "&redirect_uri=" + encodeURI(redirect);
-        url += "&show_dialog=true";
-        url += "&scope=user-read-private user-read-email user-read-playback-state user-top-read";
-        window.location.href = url;
+    const scope = 'user-read-private user-read-email user-top-read';
+
+    async function redirectToSpotifyAuthorize() {
+        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const randomValues = crypto.getRandomValues(new Uint8Array(64));
+        const randomString = randomValues.reduce((acc, x) => acc + possible[x % possible.length], "");
+
+        const code_verifier = randomString;
+        const data = new TextEncoder().encode(code_verifier);
+        const hashed = await crypto.subtle.digest('SHA-256', data);
+
+        const code_challenge_base64 = btoa(String.fromCharCode(...new Uint8Array(hashed)))
+            .replace(/=/g, '')
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_');
+
+        window.localStorage.setItem('code_verifier', code_verifier);
+        console.log(code_verifier);
+
+        const authUrl = new URL("https://accounts.spotify.com/authorize");
+        const params = {
+            response_type: 'code',
+            client_id: clientId,
+            scope: scope,
+            code_challenge_method: 'S256',
+            code_challenge: code_challenge_base64,
+            redirect_uri: redirectUri,
+        };
+
+        authUrl.search = new URLSearchParams(params).toString();
+        window.location.href = authUrl.toString(); // Redirect the user to the authorization server for login
     }
 
+    async function loginWithSpotifyClick() {
+        await redirectToSpotifyAuthorize();
+    }
 
     //END SPOTIFY
 
@@ -267,50 +294,51 @@ export default function Profile({ session }) {
     }
 
     return (
-        <div className="app-container bg-light">
+        <div className="app-container bg-gradient-to-r from-indigo-500 to-blue-400">
             <Sidebar />
-            <div className="container main-content py-5">
-                <div className="header text-center mb-5">
-                    <h2 className="display-3 text-primary">Profile</h2>
-                    {/* <div className="row">
-                        <div className="col">
-                            <Link to="/Account" className="btn btn-link text-decoration-none">
-                                <FontAwesomeIcon icon={faCog} className="mr-1 text-secondary" /> Account Settings
-                            </Link>
-                        </div>
-                    </div> */}
+            <div className="container mx-auto px-4 py-8 main-content">
+                <div className="header text-center mb-8">
+                    <h2 className="text-3xl font-bold text-white">Profile</h2>
                 </div>
-                <div className="col text-center">
-                    <button onClick={authorize} className="btn btn-info mb-2">Connect to Spotify</button>
+                <div className="flex justify-center">
+                    <button type="button" className="btn bg-green-500 text-white hover:bg-green-700 focus:outline-none font-bold py-2 px-4 rounded-full">
+                        Connect to Spotify
+                        <i className="fas fa-spotify ml-2"></i>
+                    </button>
                 </div>
-                <div className="profile-section text-center">
-                    {/* <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it)" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" /> */}
-                    <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
-                    <button onClick={handleSendFriendRequest} className="btn btn-info mb-4">Add Friend</button>
+                <div className="profile-section text-center mt-8">
+                    <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control px-4 py-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500 w-full mx-auto mb-4" />
+                    <button type="button" className="btn bg-indigo-500 text-white hover:bg-indigo-700 focus:outline-none font-bold py-2 px-4 rounded-full">
+                        Add Friend
+                        <i className="fas fa-user-plus ml-2"></i>
+                    </button>
 
-                    <div className="friendsList mt-5">
-                        <h3 className="text-center mt-4">🎵 My Friends 🎵</h3>
-                        <ul className="list-group mt-4">
+                    <div className="friendsList mt-10">
+                        <h3 className="text-center mt-4 text-xl font-bold text-white"> My Friends </h3>
+                        <ul className="list-none mt-4">
                             {friends.map(friend => (
-                                <li key={friend} className="list-group-item d-flex justify-content-between align-items-center my-2">
+                                <li key={friend} className="flex items-center justify-between border shadow-sm rounded-md p-4 my-2 bg-gray-100">
                                     {friend}
-                                    <button onClick={() => handleRemoveFriend(friend)} className="btn btn-danger btn-sm">
-                                        <FontAwesomeIcon icon={faTrash} />
+                                    <button type="button" className="btn bg-red-500 text-white hover:bg-red-700 focus:outline-none px-3 py-1 rounded-full">
+                                        <i className="fas fa-trash"></i>
                                     </button>
                                 </li>
                             ))}
                         </ul>
                     </div>
-
-                    <div className="pending-requests mt-5">
-                        <h3 className="text-center mt-4">Pending Requests</h3>
-                        <ul className="list-group mt-4">
+                    <div className="pending-requests mt-10">
+                        <h3 className="text-center mt-4 text-xl font-bold text-white">Pending Requests</h3>
+                        <ul className="list-none mt-4">
                             {pendingRequests.map(requestUserId => (
-                                <li key={requestUserId} className="list-group-item d-flex justify-content-between align-items-center my-2">
+                                <li key={requestUserId} className="flex items-center justify-between border shadow-sm rounded-md p-4 my-2 bg-gray-100">
                                     <span>Pending request from {requestUserId}</span>
-                                    <div>
-                                        <button onClick={() => handleAcceptRequest(requestUserId)} className="btn btn-success btn-sm mx-2">Accept</button>
-                                        <button onClick={() => handleRejectRequest(requestUserId)} className="btn btn-danger btn-sm">Reject</button>
+                                    <div className="flex space-x-2">
+                                        <button type="button" className="btn bg-green-500 text-white hover:bg-green-700 focus:outline-none px-3 py-1 rounded-full">
+                                            <i className="fas fa-check"></i>
+                                        </button>
+                                        <button type="button" className="btn bg-red-500 text-white hover:bg-red-700 focus:outline-none px-3 py-1 rounded-full">
+                                            <i className="fas fa-times"></i>
+                                        </button>
                                     </div>
                                 </li>
                             ))}
@@ -319,5 +347,6 @@ export default function Profile({ session }) {
                 </div>
             </div>
         </div>
+
     );
 }
