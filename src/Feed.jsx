@@ -91,23 +91,24 @@ const Feed = () => {
         return <p>Loading...</p>;
     }
 
-    console.log(sharedSongs)
-    console.log(sharedSongs[0])
+    console.log("sharedSongs: " + sharedSongs)
+    // console.log(sharedSongs[0])
+    // console.log(sharedSongs[0].id);
 
     return (
-        <div>
-            <h2>Friends' Songs</h2>
-            <ul>
-                {sharedSongs.map((song) => (
-                    <li key={song.id}>
+        <div className="app-container">
+            <Sidebar />
+            <div className="main-content">
+                {sharedSongs.map(song => (
+                    <div key={song.id} className="song-item">
                         <img src={song.album.images[0].url} alt={song.name} />
                         <div>
                             <h3>{song.name}</h3>
                             <p>Artist: {song.artists[0].name}</p>
                         </div>
-                    </li>
+                    </div>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 };
