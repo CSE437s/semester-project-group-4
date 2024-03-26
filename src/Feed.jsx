@@ -129,38 +129,46 @@ const Feed = () => {
     }
 
     async function addComment(songId, comment) {
-        // songUUID 
         try {
-            const { data, error } = await supabase
+            // Retrieve the songUUID using songId
+            const { data: songData, error: songError } = await supabase
                 .from('shared_songs')
                 .select('songUUID')
-                .eq('spotifySongId', songId);
+                .eq('id', songId)
+                .single();
 
-            if (error) {
-                console.log(error);
-            } else {
-                setSongUUID(data);
+            if (songError) {
+                console.error('Error fetching songUUID for song:', songId, songError);
+                return;
             }
-        } catch (error) {
-            console.log(error);
-        }
-        try {
+
+            if (!songData || !songData.songUUID) {
+                console.error('SongUUID not found for song:', songId);
+                return;
+            }
+
+            const songUUID = songData.songUUID;
+
+            // Insert the comment with songUUID
             const { data, error } = await supabase
-                .from('feedComments')//changed songId to songUUID
+                .from('feedComments')
                 .insert([{ songUUID: songUUID, comment: comment, userID: session.user.id }]);
 
             if (error) {
                 console.error('Error adding comment:', error);
             } else {
+                // Update the comments state only for the specific song that the comment is for
                 setComments(prevComments => ({
                     ...prevComments,
-                    [songId]: [...(prevComments[songId] || []), { comment, user_id: session.user.id }]
+                    [songId]: [...(prevComments[songId] || []), { comment, userID: session.user.id }]
                 }));
             }
         } catch (error) {
             console.error('Error adding comment:', error);
         }
     }
+
+
 
     if (loading || !renderPage) {
         return (<div className="app-container"> <Sidebar /><div className="main-content"><p>Loading...</p></div>
