@@ -106,7 +106,6 @@ const Feed = () => {
                 </div>
                 <div className="song_list">
                     {sharedSongs.map((songs, index) => (
-                        // Render Post components for each friend's shared songs
                         <Post key={index} songs={songs} friendName={friends[index]} />
                     ))}
                 </div>
