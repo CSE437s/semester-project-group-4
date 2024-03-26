@@ -9,6 +9,7 @@ const Feed = () => {
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
     const [renderPage, setRenderPage] = useState(false);
+    const [commentInput, setCommentInput] = useState(""); // Define commentInput state
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -130,7 +131,7 @@ const Feed = () => {
         try {
             const { data, error } = await supabase
                 .from('feedComments')
-                .insert([{ id: songId, comment, userID: session.user.id }]);
+                .insert([{ songUUID: song.song.id, comment: comment, userID: session.user.id }]);
             if (error) {
                 console.error('Error adding comment:', error);
             } else {
@@ -145,9 +146,7 @@ const Feed = () => {
     }
 
     if (loading || !renderPage) {
-        return (<div className="app-container"> <Sidebar /><div className="main-content"><p>Loading...</p></div>
-        </div>
-        );
+        return <p>Loading...</p>;
     }
 
     return (
@@ -179,7 +178,8 @@ const Feed = () => {
                                 <input
                                     type="text"
                                     placeholder="Add a comment..."
-                                    onChange={e => setCommentInput(e.target.value)}
+                                    value={commentInput} // bind value to commentInput state
+                                    onChange={e => setCommentInput(e.target.value)} // Define setCommentInput function
                                 />
                                 <button onClick={() => addComment(song.song.id, commentInput)}>Add Comment</button>
                             </div>

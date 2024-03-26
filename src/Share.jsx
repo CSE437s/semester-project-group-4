@@ -106,18 +106,6 @@ const Share = () => {
       }
     });
 
-    // if (!response.ok) {
-    //   if (response.status === 401) {
-    //     console.log('Access token is invalid. Attempting to refresh...');
-    //     // Call a function to refresh the access token if you have a refresh token
-    //     const refreshToken = localStorage.getItem('refresh_token');
-    //     getRefreshToken(refreshToken);
-    //     // Otherwise, prompt the user to log in again
-    //   } else {
-    //     throw new Error(`HTTP error! status: ${response.status}`);
-    //   }
-    // }
-
     console.log("top songs repsonse: " );
     console.log(response);
   
