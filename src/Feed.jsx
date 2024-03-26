@@ -100,7 +100,7 @@ const Feed = () => {
     }
 
     async function fetchCommentsForSongs() {
-        const songIds = sharedSongs.map(song => song.id);
+        const songIds = sharedSongs.map(song => song.song.id);
 
         const commentsPromises = songIds.map(async id => {
             const { data: comments, error } = await supabase
@@ -197,7 +197,7 @@ const Feed = () => {
                             <div>
                                 <h3>Comments:</h3>
                                 <ul>
-                                    {comments[song.id] && comments[song.id].map((comment, index) => (
+                                    {comments[song.song.id] && comments[song.song.id].map((comment, index) => (
                                         <li key={index}>
                                             <strong>From </strong>
                                             {friends.find(friend => friend.data.id === comment.userID)?.data.username || "Anonymous"} -
