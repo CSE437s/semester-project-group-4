@@ -42,49 +42,6 @@ const Feed = () => {
         if (!sharedSongs.length) return;
     }, [sharedSongs]);
 
-    // useEffect(() => {
-    //     if (!sharedSongs.length) return;
-
-    //     const playerPromises = sharedSongs.map(async song => {
-    //         const { uri } = song;
-
-    //         // Create a new iframe element
-    //         const iframe = document.createElement('iframe');
-    //         iframe.id = `player-${uri}`; // Set unique id for each player
-
-    //         // Load the Spotify iframe API script asynchronously
-    //         const script = document.createElement('script');
-    //         script.src = "https://open.spotify.com/embed/iframe-api"; // Update with Spotify iframe API URL
-    //         document.body.appendChild(script);
-
-    //         // Function to be called after the API loads (window.onSpotifyIframeAPIReady)
-    //         window.onSpotifyIframeAPIReady = () => {
-    //             const player = new Spotify.Player({
-    //                 container: iframe, // Set container for the player
-    //                 getOAuthToken: callback => {
-    //                     // Handle OAuth token retrieval (optional, see documentation)
-    //                     callback(null); // Assuming no OAuth needed in this example
-    //                 },
-    //                 styles: {
-    //                     height: '80px', // Set player height
-    //                     width: '100%', // Set player width
-    //                 },
-    //                 uris: [uri], // Set the Spotify track uri
-    //             });
-
-    //             player.on('ready', () => {
-    //                 setPlayers(prevPlayers => [...prevPlayers, player]);
-    //             });
-    //         };
-
-    //         return iframe;
-    //     });
-
-    //     Promise.all(playerPromises).then(iframes => {
-    //         // Append iframes to the song_list element
-    //         iframes.forEach(iframe => document.querySelector('.song_list').appendChild(iframe));
-    //     });
-    // }, [sharedSongs]);
 
     async function fetchSharedSongs(friends) {
         const friendIds = friends.map(friend => friend.data.id);
@@ -144,7 +101,7 @@ const Feed = () => {
     }
 
     const renderSongs = () => {
-        return songs.map(song => (
+        return sharedSongs.map((song, index) => (
             <div key={song.id} className="song-item">
                 {/* Embed Spotify track using formatted URL */}
                 <iframe
@@ -154,10 +111,39 @@ const Feed = () => {
                     frameBorder="0"
                     allowtransparency="true"
                     allow="encrypted-media"
-                ></iframe>
+                    // New attribute: id set dynamically using index
+                    id={`player-${index}`}
+                />
             </div>
         ));
     };
+
+    // New useEffect to initialize Spotify players after sharedSongs update
+    useEffect(() => {
+        if (!sharedSongs.length) return;
+
+        // Create a new player instance for each song in sharedSongs
+        const newPlayers = sharedSongs.map((song, index) => {
+            const player = new window.Spotify.Player({
+                name: song.name, // Optional: Set player name
+                // ... other player options
+            });
+
+            // Handle player events (optional)
+            player.on('ready', data => {
+                console.log('Player is ready:', data);
+            });
+
+            player.on('error', error => {
+                console.error('Player error:', error);
+            });
+
+            return player;
+        });
+
+        // Update the players state with the new player instances
+        setPlayers(newPlayers);
+    }, [sharedSongs]);
 
     return (
         <div className="app-container">
