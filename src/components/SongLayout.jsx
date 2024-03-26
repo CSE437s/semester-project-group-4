@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient'; // Ensure this path is correct for your project
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/SongLayout.css';
@@ -6,15 +6,35 @@ import '../css/SongLayout.css';
 const SongLayout = (props) => { //props.songs
 
     //console.log(props.songs);
+    const [session, setSession] = useState(null);
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session)
+        })
+    }, [])
+
 
     async function shareWithFriends(json) {
+        // const { data, error } = await supabase
+        //     .from('shared_songs')
+        //     .insert([
+        //         { some_column: session.user.id, other_column: json },
+        //     ])
+        //     .select()
         const { data, error } = await supabase
             .from('shared_songs')
             .insert([
-                { some_column: session.user.id, other_column: json },
-            ])
-            .select()
+                { id: session.user.id, song: json }
+            ]);
+
+        if (error) {
+            console.error('Error: ', error);
+        } else {
+            console.log('Song added successfully:', data);
+        }
     }
+
 
     //for these methods, also store the song data in database
     function shareSong1() {
