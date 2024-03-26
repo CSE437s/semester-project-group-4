@@ -8,6 +8,7 @@ const Feed = () => {
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
     const [renderPage, setRenderPage] = useState(false);
+    const [comments, setComments] = useState({});
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -37,6 +38,39 @@ const Feed = () => {
             fetchSharedSongs(friends);
         }
     }, [friends]);
+
+    useEffect(() => {
+        async function fetchComments() {
+            const songIds = sharedSongs.map(song => song.song.id);
+
+            const commentPromises = songIds.map(async id => {
+                const { data: comments, error } = await supabase
+                    .from('feedComments')
+                    .select('comment')
+                    .eq('id', id);
+
+                if (error) {
+                    console.error('Error fetching comments for song:', id, error);
+                    return [];
+                }
+
+                return { id, comments };
+            });
+
+            try {
+                const commentsData = await Promise.all(commentPromises);
+                const commentsObj = {};
+                commentsData.forEach(item => {
+                    commentsObj[item.id] = item.comments;
+                });
+                setComments(commentsObj);
+            } catch (error) {
+                console.error('Error fetching comments:', error);
+            }
+        }
+
+        fetchComments();
+    }, [sharedSongs]);
 
     async function fetchSharedSongs(friends) {
         const friendIds = friends.map(friend => friend.data.id);
@@ -94,31 +128,40 @@ const Feed = () => {
         return <p>Loading...</p>;
     }
 
-    console.log(sharedSongs)
     return (
         <div className="app-container">
-        <Sidebar />
-        <div className="main-content">
-            <div className="header">
-                <h2>Feed</h2>
-                <p className="headerText">View what your friends have been listening to</p>
-            </div>
-            <div className="song_list">
-                {sharedSongs.map(song => (
-                    <div key={song.song.id} className="song-item">
-                        <iframe
-                            src={`https://open.spotify.com/embed/track/${song.song.id}`}
-                            width="300"
-                            height="80"
-                            frameBorder="0"
-                            allowtransparency="true"
-                            allow="encrypted-media"
-                        ></iframe>
-                    </div>
-                ))}
+            <Sidebar />
+            <div className="main-content">
+                <div className="header">
+                    <h2>Feed</h2>
+                    <p className="headerText">View what your friends have been listening to</p>
+                </div>
+                <div className="song_list">
+                    {sharedSongs.map(song => (
+                        <div key={song.song.id} className="song-item">
+                            <div className="spotify-song">
+                                <iframe
+                                    src={`https://open.spotify.com/embed/track/${song.song.id}`}
+                                    width="300"
+                                    height="80"
+                                    frameBorder="0"
+                                    allowtransparency="true"
+                                    allow="encrypted-media"
+                                ></iframe>
+                                <div className="comments">
+                                    {comments[song.song.id] &&
+                                        comments[song.song.id].map((comment, index) => (
+                                            <div key={index} className="comment">
+                                                {comment.comment}
+                                            </div>
+                                        ))}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
-    </div>
     );
 };
 
