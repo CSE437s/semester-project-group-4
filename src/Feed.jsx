@@ -8,7 +8,7 @@ const Feed = () => {
     const [sharedSongs, setSharedSongs] = useState([]);
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [songElements, setSongElements] = useState([]);
+
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
@@ -37,25 +37,6 @@ const Feed = () => {
 
     useEffect(() => {
         if (!sharedSongs.length) return;
-
-        const songElements = sharedSongs.map(song => {
-            const { uri } = song; // Extract the song uri
-            return (
-                <div key={uri} className="song-item">
-                    {/* Embed Spotify web player using the uri */}
-                    <iframe
-                        src={`https://open.spotify.com/embed?uri=${uri}`}
-                        width="100%"
-                        height="80"
-                        frameBorder="0"
-                        allowtransparency="true"
-                        allow="encrypted-media"
-                    ></iframe>
-                </div>
-            );
-        });
-
-        setSongElements(songElements); // Update state with song elements
     }, [sharedSongs]);
 
     async function fetchSharedSongs(friends) {
@@ -117,6 +98,7 @@ const Feed = () => {
     return (
         <div className="app-container">
             <Sidebar />
+            <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
             <div className="main-content">
                 <div className="header">
                     <h2>Feed</h2>
@@ -127,7 +109,20 @@ const Feed = () => {
                     {loading ? (
                         <p>Loading...</p>
                     ) : (
-                        songElements
+                        <div>
+                            {sharedSongs.map((song, index) => (
+                                <div key={index} className="song-item">
+                                    <iframe
+                                        src={`https://open.spotify.com/embed?uri=${song.uri}`}
+                                        width="100%"
+                                        height="80"
+                                        frameBorder="0"
+                                        allowtransparency="true"
+                                        allow="encrypted-media"
+                                    ></iframe>
+                                </div>
+                            ))}
+                        </div>
                     )}
                 </div>
             </div>
