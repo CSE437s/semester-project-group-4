@@ -134,7 +134,7 @@ const Feed = () => {
             const { data: songData, error: songError } = await supabase
                 .from('shared_songs')
                 .select('songUUID')
-                .eq('id', songId)
+                .eq('spotifySongId', songId)
                 .single();
 
             if (songError) {
@@ -169,7 +169,6 @@ const Feed = () => {
     }
 
 
-
     if (loading || !renderPage) {
         return (<div className="app-container"> <Sidebar /><div className="main-content"><p>Loading...</p></div>
         </div>
@@ -200,11 +199,13 @@ const Feed = () => {
                                 <ul>
                                     {comments[song.id] && comments[song.id].map((comment, index) => (
                                         <li key={index}>
-                                            <strong>User: </strong>
-                                            {friends.find(friend => friend.data.id === comment.userID)?.data.username || "Unknown"} -
+                                            <strong>From </strong>
+                                            {friends.find(friend => friend.data.id === comment.userID)?.data.username || "Anonymous"} -
                                             <span>{new Date(comment.created_at).toLocaleString()}</span>
                                             <br />
                                             {comment.comment}
+                                            {console.log(song.song.id)
+                                            }
                                         </li>
                                     ))}
                                 </ul>
@@ -214,7 +215,7 @@ const Feed = () => {
                                     value={commentInput}
                                     onChange={e => setCommentInput(e.target.value)}
                                 />
-                                <button onClick={() => addComment(song.id, commentInput)}>Add Comment</button>
+                                <button onClick={() => addComment(song.song.id, commentInput)}>Add Comment</button>
                             </div>
                         </div>
                     ))}
