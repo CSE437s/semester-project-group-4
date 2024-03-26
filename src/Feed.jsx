@@ -37,8 +37,8 @@ const Feed = () => {
         }
     }, [friends]);
 
-    async function fetchSharedSongs(friendUsernames) {
-        const friendIds = friendUsernames.map(username => username.id); // Assuming 'id' is the correct property
+    async function fetchSharedSongs(friends) {
+        const friendIds = friends.map(friend => friend.data.id);
 
         const sharedSongPromises = friendIds.map(async id => {
             const { data: songs, error } = await supabase
@@ -103,7 +103,7 @@ const Feed = () => {
                 </div>
                 <div className="song_list">
                     {sharedSongs.map((songs, index) => (
-                        <Post key={index} songs={songs} friendName={friends[index].data.username} />
+                        <Post key={index} post={songs} />
                     ))}
                 </div>
             </div>
