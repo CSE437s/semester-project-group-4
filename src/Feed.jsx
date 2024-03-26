@@ -1,4 +1,4 @@
-// import './css/feed.css';
+import './css/feed.css';
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
@@ -8,7 +8,7 @@ const Feed = () => {
     const [sharedSongs, setSharedSongs] = useState([]);
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
-
+    const [songElements, setSongElements] = useState([]);
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
@@ -34,6 +34,29 @@ const Feed = () => {
             fetchSharedSongs(friends);
         }
     }, [friends]);
+
+    useEffect(() => {
+        if (!sharedSongs.length) return;
+
+        const songElements = sharedSongs.map(song => {
+            const { uri } = song; // Extract the song uri
+            return (
+                <div key={uri} className="song-item">
+                    {/* Embed Spotify web player using the uri */}
+                    <iframe
+                        src={`https://open.spotify.com/embed?uri=${uri}`}
+                        width="100%"
+                        height="80"
+                        frameBorder="0"
+                        allowtransparency="true"
+                        allow="encrypted-media"
+                    ></iframe>
+                </div>
+            );
+        });
+
+        setSongElements(songElements); // Update state with song elements
+    }, [sharedSongs]);
 
     async function fetchSharedSongs(friends) {
         const friendIds = friends.map(friend => friend.data.id);
@@ -93,7 +116,6 @@ const Feed = () => {
 
     return (
         <div className="app-container">
-            <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
             <Sidebar />
             <div className="main-content">
                 <div className="header">
@@ -101,18 +123,12 @@ const Feed = () => {
                     <p className="headerText">View what your friends have been listening to</p>
                 </div>
                 <div className="song_list">
-                    {sharedSongs.map(song => (
-                        <div key={song.id} className="song-item">
-                            <iframe
-                                src={`https://open.spotify.com/embed/track/${song.id}`}
-                                width="300"
-                                height="80"
-                                frameBorder="0"
-                                allowtransparency="true"
-                                allow="encrypted-media"
-                            ></iframe>
-                        </div>
-                    ))}
+                    {/* Conditionally render loading message or song elements */}
+                    {loading ? (
+                        <p>Loading...</p>
+                    ) : (
+                        songElements
+                    )}
                 </div>
             </div>
         </div>
