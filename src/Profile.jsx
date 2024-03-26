@@ -296,9 +296,9 @@ export default function Profile({ session }) {
     return (
         <div className="app-container bg-light">
             <Sidebar />
-            <div className="container main-content py-5">
-                <div className="header text-center mb-5">
-                    <h2 className="display-3 text-primary">Profile</h2>
+            <div className="main-content">
+                <div className="header">
+                    <h2>Profile</h2>
                     {/* <div className="row">
                         <div className="col">
                             <Link to="/Account" className="btn btn-link text-decoration-none">
@@ -307,16 +307,19 @@ export default function Profile({ session }) {
                         </div>
                     </div> */}
                 </div>
-                <div className="col text-center">
-                    <button onClick={loginWithSpotifyClick} className="btn btn-info mb-2">Connect to Spotify</button>
-                </div>
-                <div className="profile-section text-center">
+                
+                <div className="profile-section">
+                    <div className="col text-center">
+                        <button onClick={loginWithSpotifyClick} className="profileButton btn btn-info">Connect to Spotify</button>
+                    </div>
                     {/* <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it)" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" /> */}
-                    <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
-                    <button onClick={handleSendFriendRequest} className="btn btn-info mb-4">Add Friend</button>
-
+                    <div className="add-friends">
+                        <h3 className="profileText">Add Friend</h3>
+                        <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
+                        <button onClick={handleSendFriendRequest} className="profileButton btn btn-info mb-4">Add Friend</button>
+                    </div>  
                     <div className="friendsList mt-5">
-                        <h3 className="text-center mt-4">🎵 My Friends 🎵</h3>
+                        <h3 className="profileText">My Friends</h3>
                         <ul className="list-group mt-4">
                             {friends.map(friend => (
                                 <li key={friend} className="list-group-item d-flex justify-content-between align-items-center my-2">
@@ -329,7 +332,7 @@ export default function Profile({ session }) {
                         </ul>
                     </div>
                     <div className="pending-requests mt-5">
-                        <h3 className="text-center mt-4">Pending Requests</h3>
+                        <h3 className="profileText">Pending Requests</h3>
                         <ul className="list-group mt-4">
                             {pendingRequests.map(requestUserId => (
                                 <li key={requestUserId} className="list-group-item d-flex justify-content-between align-items-center my-2">
