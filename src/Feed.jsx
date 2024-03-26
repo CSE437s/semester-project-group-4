@@ -60,7 +60,7 @@ const Feed = () => {
                 console.error('Error fetching shared songs for friend:', id, error);
                 return [];
             }
-
+            console.log(songs)
             return songs;
         });
 
@@ -131,7 +131,7 @@ const Feed = () => {
     }
 
     async function addComment(songId, comment) {
-        // alert(songId)
+        console.log("songId: " + songId)
         try {
             const { data: [{ songUUID }], error } = await supabase
                 .from('shared_songs')
@@ -194,10 +194,6 @@ const Feed = () => {
                                 <ul>
                                     {comments[song.id] && comments[song.id].map((comment, index) => (
                                         <li key={index}>
-                                            <strong>User: </strong>
-                                            {friends.find(friend => friend.data.id === comment.userID)?.data.username || "Unknown"} -
-                                            <span>{new Date(comment.created_at).toLocaleString()}</span>
-                                            <br />
                                             {comment.comment}
                                         </li>
                                     ))}
