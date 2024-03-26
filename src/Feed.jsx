@@ -130,24 +130,27 @@ const Feed = () => {
 
     async function addComment(songId, comment) {
         // songUUID 
-        try {
-            const { data, error } = await supabase
-                .from('shared_songs')
-                .select('songUUID')
-                .eq('spotifySongId', songId);
+        // try {
+        //     const { data, error } = await supabase
+        //         .from('shared_songs')
+        //         .select('songUUID')
+        //         .eq('spotifySongId', songId);
+        //     if (error) {
+        //         console.log(error);
+        //     } else {
+        //         console.log("data: " + data)
 
-            if (error) {
-                console.log(error);
-            } else {
-                setSongUUID(data);
-            }
-        } catch (error) {
-            console.log(error);
-        }
+        //         setSongUUID(data);
+        //         console.log("uuid: " + songUUID);
+        //         console.log("songId: " + songId);
+        //     }
+        // } catch (error) {
+        //     console.log(error);
+        // }
         try {
             const { data, error } = await supabase
                 .from('feedComments')//changed songId to songUUID
-                .insert([{ songUUID: songUUID, comment: comment, userID: session.user.id }]);
+                .insert([{ songUUID: songId, comment: comment, userID: session.user.id }]);
 
             if (error) {
                 console.error('Error adding comment:', error);
