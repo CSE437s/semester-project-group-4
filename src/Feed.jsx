@@ -19,8 +19,16 @@ const Feed = () => {
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session)
-        })
+            setSession(session);
+            setLoading(false); // Set loading to false once session is set
+        }).catch(error => {
+            console.error('Error fetching session:', error);
+            setLoading(false); // Set loading to false if there's an error fetching session
+        });
+    }, []);
+
+    useEffect(() => {
+        if (!session) return; // Don't fetch data if session is null
 
         async function fetchData() {
             await getFriends();
@@ -28,7 +36,7 @@ const Feed = () => {
         }
 
         fetchData();
-    }, []);
+    }, [session])
 
     async function fetchSharedSongs() {
         const friendIds = friendProfilesArray.map(profile => profile.data.id);
