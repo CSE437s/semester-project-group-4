@@ -129,41 +129,39 @@ const Feed = () => {
     }
 
     async function addComment(songId, comment) {
-        // songUUID 
-        // try {
-        //     const { data, error } = await supabase
-        //         .from('shared_songs')
-        //         .select('songUUID')
-        //         .eq('spotifySongId', songId);
-        //     if (error) {
-        //         console.log(error);
-        //     } else {
-        //         console.log("data: " + data)
-
-        //         setSongUUID(data);
-        //         console.log("uuid: " + songUUID);
-        //         console.log("songId: " + songId);
-        //     }
-        // } catch (error) {
-        //     console.log(error);
-        // }
         try {
-            const { data, error } = await supabase
-                .from('feedComments')//changed songId to songUUID
-                .insert([{ songUUID: songId, comment: comment, userID: session.user.id }]);
+            // Retrieve the songUUID corresponding to the songId
+            const { data: [{ songUUID }], error } = await supabase
+                .from('shared_songs')
+                .select('songUUID')
+                .eq('id', songId)
+                .single();
 
             if (error) {
-                console.error('Error adding comment:', error);
+                console.error('Error retrieving songUUID:', error);
+                return;
+            }
+            alert(songUUID);
+
+            const { data, error: insertError } = await supabase
+                .from('feedComments')
+                .insert([{ songUUID: songUUID, comment: comment, userID: session.user.id }]);
+
+            if (insertError) {
+                console.error('Error adding comment:', insertError);
             } else {
+                // Update the comments state only for the specific song that the comment is for
                 setComments(prevComments => ({
                     ...prevComments,
-                    [songId]: [...(prevComments[songId] || []), { comment, user_id: session.user.id }]
+                    [songId]: [...(prevComments[songId] || []), { comment, userID: session.user.id }]
                 }));
             }
         } catch (error) {
             console.error('Error adding comment:', error);
         }
     }
+
+
 
     if (loading || !renderPage) {
         return (<div className="app-container"> <Sidebar /><div className="main-content"><p>Loading...</p></div>
