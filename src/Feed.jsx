@@ -1,4 +1,3 @@
-import './css/feed.css';
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
@@ -8,11 +7,15 @@ const Feed = () => {
     const [sharedSongs, setSharedSongs] = useState([]);
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [renderPage, setRenderPage] = useState(false);
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
             setLoading(false);
+            setTimeout(() => {
+                setRenderPage(true); // Set renderPage to true after 1 second
+            }, 1000); // 1000 milliseconds = 1 second
         }).catch(error => {
             console.error('Error fetching session:', error);
             setLoading(false);
@@ -87,11 +90,11 @@ const Feed = () => {
         }
     }
 
-    if (loading) {
+    if (loading || !renderPage) {
         return <p>Loading...</p>;
     }
 
-    console.log(sharedSongs);
+    console.log(sharedSongs)
     return (
         <div className="app-container">
             <Sidebar />
@@ -101,9 +104,9 @@ const Feed = () => {
                     <p className="headerText">View what your friends have been listening to</p>
                 </div>
                 <div className="song_list">
-                    {sharedSongs.map((song, index) => (
-                        <div key={song.id || index} className="song-item">
-                            <h3>{song.name}</h3>
+                    {sharedSongs.map(song => (
+                        <div key={song.song.id} className="song-item">
+                            <h3>{song.song.name}</h3>
                         </div>
                     ))}
                 </div>
