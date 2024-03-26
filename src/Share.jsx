@@ -8,29 +8,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
  import axios from 'axios'; // for API requests
  import qs from 'qs';
  import {Buffer} from 'buffer';
-// import ImageCarousel from './ImageCarousel'; //must make this component !!!! or add it to this page
 
 const Share = () => {
   const [topSongs, setTopSongs] = useState([]);
-  const [accessToken, setAccessToken] = useState('');
-  const [refreshToken, setRefreshToken] = useState('');
 
-  //const axios = require('axios');
- //const qs = require('qs');
-
-  //const client_id = process.env.REACT_APP_SPOTIFY_API_ID; // Your client id
-  //const client_secret = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET; // Your secret
-  let client_id= "1892c29e22e44ec686fa22a8e891b0f9";
-  let client_secret = "011fa442dd504a46b6bd4d89aeab4036";
+  //const clientId = process.env.REACT_APP_SPOTIFY_API_ID; // Your client id
   const clientId = "1892c29e22e44ec686fa22a8e891b0f9";
-  const redirectUri = "http://localhost:5173/Share";
+  const redirectUri = "http://localhost:5173/Share"; //will need to change this when hosting on vercel
   let tokenEndpoint = "https://accounts.spotify.com/api/token";
-  const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toString('base64');
-  let redirect = "http://localhost:5173/Share"; //takes us back here after agreeing to Spotify
-
-  const AUTHORIZE = "https://accounts.spotify.com/authorize";
-  const TOKEN = "https://accounts.spotify.com/api/token";
-  //const TRACKS = "/api/v1/me/top/tracks?offset=0&limit=5&time_range=short_term"; //getting top 5 tracks from last 4 weeks
   const TRACKS = 'https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=4&offset=0';
 
   useEffect(() => {
@@ -41,6 +26,8 @@ const Share = () => {
       getUserTopSongs();
     });
   }, []);
+
+  //GET USER'S TOP SONGS FROM SPOTIFY
 
   const args = new URLSearchParams(window.location.search);
   const code = args.get('code');
@@ -142,6 +129,8 @@ const Share = () => {
     }
   }
 
+  //BELOW ARE FUNCTIONS FOR MANUALLY ADDING TRACKS FROM SPOTIFY
+
   async function getAuth() {
     try{
       //make post request to SPOTIFY API for access token, sending relavent info
@@ -204,9 +193,6 @@ const Share = () => {
         {/* Share Page */}
         <div className="share-page">
           <h2>Your Top 4 Songs</h2>
-          {/* <ImageCarousel songs={topSongs} /> */}
-
-          {/* list below is just current placeholder for top songs (will move to ImageCarousel later) */}
           <SongLayout songs={topSongs} />
         </div>
       </div>
