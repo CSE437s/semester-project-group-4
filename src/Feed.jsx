@@ -174,6 +174,7 @@ const Feed = () => {
                             <div>
                                 <h3>Comments:</h3>
                                 <ul>
+                                    {/* {comments[song.id] && comments[song.id].map((comment, index) => ( */}
                                     {comments[song.id] && comments[song.id].map((comment, index) => (
                                         <li key={index}>{comment.comment}</li>
                                     ))}
