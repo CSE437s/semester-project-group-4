@@ -5,10 +5,10 @@ import Sidebar from './components/Sidebar';
 const Feed = () => {
     const [friends, setFriends] = useState([]);
     const [sharedSongs, setSharedSongs] = useState([]);
+    const [comments, setComments] = useState({});
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
     const [renderPage, setRenderPage] = useState(false);
-    const [comments, setComments] = useState({});
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -40,36 +40,9 @@ const Feed = () => {
     }, [friends]);
 
     useEffect(() => {
-        async function fetchComments() {
-            const songIds = sharedSongs.map(song => song.song.id);
-
-            const commentPromises = songIds.map(async id => {
-                const { data: comments, error } = await supabase
-                    .from('feedComments')
-                    .select('comment')
-                    .eq('id', id);
-
-                if (error) {
-                    console.error('Error fetching comments for song:', id, error);
-                    return [];
-                }
-
-                return { id, comments };
-            });
-
-            try {
-                const commentsData = await Promise.all(commentPromises);
-                const commentsObj = {};
-                commentsData.forEach(item => {
-                    commentsObj[item.id] = item.comments;
-                });
-                setComments(commentsObj);
-            } catch (error) {
-                console.error('Error fetching comments:', error);
-            }
+        if (sharedSongs.length > 0) {
+            fetchCommentsForSongs();
         }
-
-        fetchComments();
     }, [sharedSongs]);
 
     async function fetchSharedSongs(friends) {
@@ -124,6 +97,53 @@ const Feed = () => {
         }
     }
 
+    async function fetchCommentsForSongs() {
+        const songIds = sharedSongs.map(song => song.song.id);
+
+        const commentsPromises = songIds.map(async id => {
+            const { data: comments, error } = await supabase
+                .from('feedComments')
+                .select('comment')
+                .eq('id', id);
+
+            if (error) {
+                console.error('Error fetching comments for song:', id, error);
+                return [];
+            }
+
+            return comments;
+        });
+
+        try {
+            const songComments = await Promise.all(commentsPromises);
+            const commentsObject = {};
+            songIds.forEach((id, index) => {
+                commentsObject[id] = songComments[index];
+            });
+            setComments(commentsObject);
+        } catch (error) {
+            console.error('Error fetching comments for songs:', error);
+        }
+    }
+
+    async function addComment(songId, comment) {
+        try {
+            const { data, error } = await supabase
+                .from('feedComments')
+                .insert([{ id: songId, comment, userID: session.user.id }]);
+            if (error) {
+                console.error('Error adding comment:', error);
+            } else {
+                setComments(prevComments => ({
+                    ...prevComments,
+                    [songId]: [...(prevComments[songId] || []), { comment, userID: session.user.id }]
+                }));
+            }
+        } catch (error) {
+            console.error('Error adding comment:', error);
+        }
+    }
+
     if (loading || !renderPage) {
         return <p>Loading...</p>;
     }
@@ -139,23 +159,27 @@ const Feed = () => {
                 <div className="song_list">
                     {sharedSongs.map(song => (
                         <div key={song.song.id} className="song-item">
-                            <div className="spotify-song">
-                                <iframe
-                                    src={`https://open.spotify.com/embed/track/${song.song.id}`}
-                                    width="300"
-                                    height="80"
-                                    frameBorder="0"
-                                    allowtransparency="true"
-                                    allow="encrypted-media"
-                                ></iframe>
-                                <div className="comments">
-                                    {comments[song.song.id] &&
-                                        comments[song.song.id].map((comment, index) => (
-                                            <div key={index} className="comment">
-                                                {comment.comment}
-                                            </div>
-                                        ))}
-                                </div>
+                            <iframe
+                                src={`https://open.spotify.com/embed/track/${song.song.id}`}
+                                width="300"
+                                height="80"
+                                frameBorder="0"
+                                allowtransparency="true"
+                                allow="encrypted-media"
+                            ></iframe>
+                            <div>
+                                <h3>Comments:</h3>
+                                <ul>
+                                    {comments[song.song.id] && comments[song.song.id].map((comment, index) => (
+                                        <li key={index}>{comment.comment}</li>
+                                    ))}
+                                </ul>
+                                <input
+                                    type="text"
+                                    placeholder="Add a comment..."
+                                    onChange={e => setCommentInput(e.target.value)}
+                                />
+                                <button onClick={() => addComment(song.song.id, commentInput)}>Add Comment</button>
                             </div>
                         </div>
                     ))}
