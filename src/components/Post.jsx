@@ -26,13 +26,31 @@ const Post = ({ post }) => {
         }
     };
 
+    const renderSpotifyPlayer = () => {
+        if (post && post.album && post.album.external_urls && post.album.external_urls.spotify) {
+            return (
+                <iframe
+                    title="Spotify Player"
+                    src={post.album.external_urls.spotify}
+                    width="300"
+                    height="80"
+                    frameBorder="0"
+                    allowtransparency="true"
+                    allow="encrypted-media"
+                ></iframe>
+            );
+        } else {
+            return <p>Unable to load Spotify player for this song</p>;
+        }
+    };
+
     return (
         <div className="post">
             <div className="avatar-placeholder"></div>
             <div className="post-content">
                 <div className="profile-name">{post.user || 'Unknown User'}</div>
-                <div className="song-name">{post.songTitle || 'Unknown Song'}</div>
-                <div className="artist-name">{post.artist || 'Unknown Artist'}</div>
+                <div className="song-name">{post.name || 'Unknown Song'}</div>
+                <div className="artist-name">{post.artists[0].name || 'Unknown Artist'}</div>
                 <div className="post-interactions">
                     <button className="like-button" onClick={handleLike}>
                         ❤️ {likes} Likes
@@ -40,6 +58,9 @@ const Post = ({ post }) => {
                     <span className="comments">
                         💬 {(comments && comments.length) || 0} Comments
                     </span>
+                </div>
+                <div className="spotify-player">
+                    {renderSpotifyPlayer()}
                 </div>
                 <div className="comment-input-area">
                     <form onSubmit={submitComment}>
