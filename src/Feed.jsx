@@ -1,13 +1,60 @@
 import './css/feed.css';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
 import Post from './components/Post'; // A new component for music posts
 
 const Feed = () => {
     const [friends, setFriends] = useState([]);
+    const [sharedSongs, setSharedSongs] = useState([]); // New state for shared songs
+    const [session, setSession] = useState(null);
+    const [loading, setLoading] = useState(true); // Add loading state
 
-    //added monday
+    // useEffect(() => {
+    //     supabase.auth.getSession().then(({ data: { session } }) => {
+    //         setSession(session)
+    //     })
+    // }, []);
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session)
+        })
+
+        async function fetchData() {
+            await getFriends();
+            fetchSharedSongs();
+        }
+
+        fetchData();
+    }, []);
+
+    async function fetchSharedSongs() {
+        const friendIds = friendProfilesArray.map(profile => profile.data.id);
+
+        const sharedSongPromises = friendIds.map(async id => {
+            const { data: songs, error } = await supabase
+                .from('shared_songs')
+                .select('song')
+                .eq('id', id);
+
+            if (error) {
+                console.error('Error fetching shared songs for friend:', id, error);
+                return []; // Return an empty array if there's an error
+            }
+
+            return songs;
+        });
+
+        try {
+            const friendSharedSongs = await Promise.all(sharedSongPromises);
+            setSharedSongs(friendSharedSongs);
+        } catch (error) {
+            console.error('Error fetching shared songs:', error);
+        }
+    }
+
     async function getFriends() {
         const { data: friendDataList, error } = await supabase
             .from('friends')
@@ -38,8 +85,9 @@ const Feed = () => {
         }
     }
 
-    //end added monday
-
+    if (loading) {
+        return <p>Loading...</p>; // Display loading message while waiting for session to be fetched
+    }
     return (
         <div className="app-container">
             <Sidebar />
@@ -49,7 +97,10 @@ const Feed = () => {
                     <p className="headerText">View what your friends have been listening to</p>
                 </div>
                 <div className="song_list">
-
+                    {sharedSongs.map((songs, index) => (
+                        // Render Post components for each friend's shared songs
+                        <Post key={index} songs={songs} friendName={friends[index]} />
+                    ))}
                 </div>
             </div>
         </div>
