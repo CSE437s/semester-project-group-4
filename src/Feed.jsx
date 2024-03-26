@@ -105,7 +105,7 @@ const Feed = () => {
             const { data: comments, error } = await supabase
                 .from('feedComments')
                 .select('comment')
-                .eq('song_id', id);
+                .eq('songUUID', id);
 
             if (error) {
                 console.error('Error fetching comments for song:', id, error);
