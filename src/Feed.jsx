@@ -10,6 +10,7 @@ const Feed = () => {
     const [loading, setLoading] = useState(true);
     const [renderPage, setRenderPage] = useState(false);
     const [commentInput, setCommentInput] = useState("");
+    const [songUUID, setSongUUID] = useState(null);
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -128,10 +129,25 @@ const Feed = () => {
     }
 
     async function addComment(songId, comment) {
+        // songUUID 
         try {
             const { data, error } = await supabase
-                .from('feedComments')
-                .insert([{ songUUID: songId, comment: comment, userID: session.user.id }]);
+                .from('shared_songs')
+                .select('songUUID')
+                .eq('spotifySongId', songId);
+
+            if (error) {
+                console.log(error);
+            } else {
+                setSongUUID(data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        try {
+            const { data, error } = await supabase
+                .from('feedComments')//changed songId to songUUID
+                .insert([{ songUUID: songUUID, comment: comment, userID: session.user.id }]);
 
             if (error) {
                 console.error('Error adding comment:', error);
@@ -174,9 +190,14 @@ const Feed = () => {
                             <div>
                                 <h3>Comments:</h3>
                                 <ul>
-                                    {/* {comments[song.id] && comments[song.id].map((comment, index) => ( */}
                                     {comments[song.id] && comments[song.id].map((comment, index) => (
-                                        <li key={index}>{comment.comment}</li>
+                                        <li key={index}>
+                                            <strong>User: </strong>
+                                            {friends.find(friend => friend.data.id === comment.userID)?.data.username || "Unknown"} -
+                                            <span>{new Date(comment.created_at).toLocaleString()}</span>
+                                            <br />
+                                            {comment.comment}
+                                        </li>
                                     ))}
                                 </ul>
                                 <input

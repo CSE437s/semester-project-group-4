@@ -19,7 +19,7 @@ const SongLayout = (props) => { //props.songs
         const { data, error } = await supabase
             .from('shared_songs')
             .insert([
-                { id: session.user.id, song: json }
+                { id: session.user.id, song: json, spotifySongId: song.song.id }
             ]);
 
         if (error) {
