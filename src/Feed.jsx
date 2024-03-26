@@ -4,37 +4,41 @@ import { Link } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Post from './components/Post'; // A new component for music posts
 
-// Mock data for demonstration
-const mockPosts = [
-    {
-        id: 1,
-        user: 'Friend 1',
-        songTitle: 'Song Title 1',
-        artist: 'Artist 1',
-        likes: 10,
-        comments: [
-            { user: 'User A', comment: 'Great song!' },
-            { user: 'User B', comment: 'Love this!' },
-        ],
-    },
-    {
-        id: 2,
-        user: 'Friend 2',
-        songTitle: 'Song Title 2',
-        artist: 'Artist 2',
-        likes: 20,
-        comments: [
-            { user: 'User C', comment: 'My favorite.' },
-        ],
-    },
-];
-
 const Feed = () => {
-    const [posts, setPosts] = useState(mockPosts);
+    const [friends, setFriends] = useState([]);
 
-    useEffect(() => {
-        setPosts(mockPosts); // In a real app, you would fetch this data
-    }, []);
+    //added monday
+    async function getFriends() {
+        const { data: friendDataList, error } = await supabase
+            .from('friends')
+            .select('is_friends_with')
+            .eq('id', session.user.id);
+
+        if (error) {
+            console.error('Error fetching friends:', error);
+        }
+
+        if (friendDataList) {
+            const friendIdsSet = new Set(friendDataList.map(friend => friend.is_friends_with));
+
+            const friendProfilesPromises = Array.from(friendIdsSet).map(async id => {
+                return await supabase.from('profiles').select('*').eq('id', id).single();
+            });
+
+            try {
+                const friendProfilesArray = await Promise.all(friendProfilesPromises);
+                friendProfilesArray.sort((a, b) => a.id - b.id);
+                const friendUsernames = friendProfilesArray.map(profile => profile.data.username);
+                console.log('friendProfilesArray:', friendProfilesArray);
+                console.log(friendUsernames);
+                setFriends(friendUsernames);
+            } catch (error) {
+                console.error('Error fetching profiles for friends:', error);
+            }
+        }
+    }
+
+    //end added monday
 
     return (
         <div className="app-container">
@@ -44,9 +48,9 @@ const Feed = () => {
                     <h2>Feed</h2>
                     <p className="headerText">View what your friends have been listening to</p>
                 </div>
-                {posts.map(post => (
-                    <Post key={post.id} post={post} />
-                ))}
+                <div className="song_list">
+
+                </div>
             </div>
         </div>
     );

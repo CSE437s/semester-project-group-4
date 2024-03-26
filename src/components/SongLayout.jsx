@@ -16,12 +16,6 @@ const SongLayout = (props) => { //props.songs
 
 
     async function shareWithFriends(json) {
-        // const { data, error } = await supabase
-        //     .from('shared_songs')
-        //     .insert([
-        //         { some_column: session.user.id, other_column: json },
-        //     ])
-        //     .select()
         const { data, error } = await supabase
             .from('shared_songs')
             .insert([
