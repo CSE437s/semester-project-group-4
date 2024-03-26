@@ -145,7 +145,9 @@ const Feed = () => {
     }
 
     if (loading || !renderPage) {
-        return <p>Loading...</p>;
+        return (<div className="app-container"> <Sidebar /><div className="main-content"><p>Loading...</p></div>
+        </div>
+        );
     }
 
     return (
