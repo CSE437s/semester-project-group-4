@@ -9,15 +9,15 @@ const Feed = () => {
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
     const [renderPage, setRenderPage] = useState(false);
-    const [commentInput, setCommentInput] = useState(""); // Define commentInput state
+    const [commentInput, setCommentInput] = useState("");
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
             setLoading(false);
             setTimeout(() => {
-                setRenderPage(true); // Set renderPage to true after 1 second
-            }, 1000); // 1000 milliseconds = 1 second
+                setRenderPage(true);
+            }, 1000);
         }).catch(error => {
             console.error('Error fetching session:', error);
             setLoading(false);
@@ -52,7 +52,7 @@ const Feed = () => {
         const sharedSongPromises = friendIds.map(async id => {
             const { data: songs, error } = await supabase
                 .from('shared_songs')
-                .select('song')
+                .select('id, song')
                 .eq('id', id);
 
             if (error) {
@@ -65,7 +65,7 @@ const Feed = () => {
 
         try {
             const friendSharedSongs = await Promise.all(sharedSongPromises);
-            setSharedSongs(friendSharedSongs.flat()); // Flatten the array
+            setSharedSongs(friendSharedSongs.flat());
         } catch (error) {
             console.error('Error fetching shared songs:', error);
         }
@@ -99,13 +99,13 @@ const Feed = () => {
     }
 
     async function fetchCommentsForSongs() {
-        const songIds = sharedSongs.map(song => song.song.id);
+        const songIds = sharedSongs.map(song => song.id);
 
         const commentsPromises = songIds.map(async id => {
             const { data: comments, error } = await supabase
                 .from('feedComments')
                 .select('comment')
-                .eq('id', id);
+                .eq('song_id', id);
 
             if (error) {
                 console.error('Error fetching comments for song:', id, error);
@@ -131,13 +131,14 @@ const Feed = () => {
         try {
             const { data, error } = await supabase
                 .from('feedComments')
-                .insert([{ songUUID: song.song.id, comment: comment, userID: session.user.id }]);
+                .insert([{ songUUID: songId, comment: comment, userID: session.user.id }]);
+
             if (error) {
                 console.error('Error adding comment:', error);
             } else {
                 setComments(prevComments => ({
                     ...prevComments,
-                    [songId]: [...(prevComments[songId] || []), { comment, userID: session.user.id }]
+                    [songId]: [...(prevComments[songId] || []), { comment, user_id: session.user.id }]
                 }));
             }
         } catch (error) {
@@ -146,7 +147,9 @@ const Feed = () => {
     }
 
     if (loading || !renderPage) {
-        return <p>Loading...</p>;
+        return (<div className="app-container"> <Sidebar /><div className="main-content"><p>Loading...</p></div>
+        </div>
+        );
     }
 
     return (
@@ -171,17 +174,17 @@ const Feed = () => {
                             <div>
                                 <h3>Comments:</h3>
                                 <ul>
-                                    {comments[song.song.id] && comments[song.song.id].map((comment, index) => (
+                                    {comments[song.id] && comments[song.id].map((comment, index) => (
                                         <li key={index}>{comment.comment}</li>
                                     ))}
                                 </ul>
                                 <input
                                     type="text"
                                     placeholder="Add a comment..."
-                                    value={commentInput} // bind value to commentInput state
-                                    onChange={e => setCommentInput(e.target.value)} // Define setCommentInput function
+                                    value={commentInput}
+                                    onChange={e => setCommentInput(e.target.value)}
                                 />
-                                <button onClick={() => addComment(song.song.id, commentInput)}>Add Comment</button>
+                                <button onClick={() => addComment(song.id, commentInput)}>Add Comment</button>
                             </div>
                         </div>
                     ))}
