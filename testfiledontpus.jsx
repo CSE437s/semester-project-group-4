@@ -41,13 +41,19 @@ const Feed = () => {
         }
     }, [friends]);
 
+    useEffect(() => {
+        if (sharedSongs.length > 0) {
+            fetchCommentsForSongs();
+        }
+    }, [sharedSongs]);
+
     async function fetchSharedSongs(friends) {
         const friendIds = friends.map(friend => friend.data.id);
 
         const sharedSongPromises = friendIds.map(async id => {
             const { data: songs, error } = await supabase
                 .from('shared_songs')
-                .select('songUUID', 'song')
+                .select('id, song')
                 .eq('id', id);
 
             if (error) {
