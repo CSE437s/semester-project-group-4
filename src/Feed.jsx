@@ -2,6 +2,7 @@ import './css/feed.css';
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
+import SongsList from './components/SongsList'; // New import for SongsList component
 
 const Feed = () => {
     const [friends, setFriends] = useState([]);
@@ -41,49 +42,49 @@ const Feed = () => {
         if (!sharedSongs.length) return;
     }, [sharedSongs]);
 
-    useEffect(() => {
-        if (!sharedSongs.length) return;
+    // useEffect(() => {
+    //     if (!sharedSongs.length) return;
 
-        const playerPromises = sharedSongs.map(async song => {
-            const { uri } = song;
+    //     const playerPromises = sharedSongs.map(async song => {
+    //         const { uri } = song;
 
-            // Create a new iframe element
-            const iframe = document.createElement('iframe');
-            iframe.id = `player-${uri}`; // Set unique id for each player
+    //         // Create a new iframe element
+    //         const iframe = document.createElement('iframe');
+    //         iframe.id = `player-${uri}`; // Set unique id for each player
 
-            // Load the Spotify iframe API script asynchronously
-            const script = document.createElement('script');
-            script.src = "https://open.spotify.com/embed/iframe-api"; // Update with Spotify iframe API URL
-            document.body.appendChild(script);
+    //         // Load the Spotify iframe API script asynchronously
+    //         const script = document.createElement('script');
+    //         script.src = "https://open.spotify.com/embed/iframe-api"; // Update with Spotify iframe API URL
+    //         document.body.appendChild(script);
 
-            // Function to be called after the API loads (window.onSpotifyIframeAPIReady)
-            window.onSpotifyIframeAPIReady = () => {
-                const player = new Spotify.Player({
-                    container: iframe, // Set container for the player
-                    getOAuthToken: callback => {
-                        // Handle OAuth token retrieval (optional, see documentation)
-                        callback(null); // Assuming no OAuth needed in this example
-                    },
-                    styles: {
-                        height: '80px', // Set player height
-                        width: '100%', // Set player width
-                    },
-                    uris: [uri], // Set the Spotify track uri
-                });
+    //         // Function to be called after the API loads (window.onSpotifyIframeAPIReady)
+    //         window.onSpotifyIframeAPIReady = () => {
+    //             const player = new Spotify.Player({
+    //                 container: iframe, // Set container for the player
+    //                 getOAuthToken: callback => {
+    //                     // Handle OAuth token retrieval (optional, see documentation)
+    //                     callback(null); // Assuming no OAuth needed in this example
+    //                 },
+    //                 styles: {
+    //                     height: '80px', // Set player height
+    //                     width: '100%', // Set player width
+    //                 },
+    //                 uris: [uri], // Set the Spotify track uri
+    //             });
 
-                player.on('ready', () => {
-                    setPlayers(prevPlayers => [...prevPlayers, player]);
-                });
-            };
+    //             player.on('ready', () => {
+    //                 setPlayers(prevPlayers => [...prevPlayers, player]);
+    //             });
+    //         };
 
-            return iframe;
-        });
+    //         return iframe;
+    //     });
 
-        Promise.all(playerPromises).then(iframes => {
-            // Append iframes to the song_list element
-            iframes.forEach(iframe => document.querySelector('.song_list').appendChild(iframe));
-        });
-    }, [sharedSongs]);
+    //     Promise.all(playerPromises).then(iframes => {
+    //         // Append iframes to the song_list element
+    //         iframes.forEach(iframe => document.querySelector('.song_list').appendChild(iframe));
+    //     });
+    // }, [sharedSongs]);
 
     async function fetchSharedSongs(friends) {
         const friendIds = friends.map(friend => friend.data.id);
