@@ -27,6 +27,7 @@ export default function Auth() {
     setLoading(false);
   };
 
+  //used a component from https://readymadeui.com/tailwind/block/tailwind-css-login-page-design
   return (
     <div className="font-[sans-serif] text-[#333] max-w-7xl mx-auto h-screen">
       <div className="grid md:grid-cols-2 items-center gap-8 h-full">
