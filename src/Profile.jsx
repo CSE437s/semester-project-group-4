@@ -4,7 +4,7 @@ import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faTrash } from '@fortawesome/free-solid-svg-icons';
-import './css/Profile3.css';
+// import './css/Profile3.css';
 
 
 export default function Profile({ session }) {
@@ -314,7 +314,7 @@ export default function Profile({ session }) {
                     </div>
                     {/* <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it)" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" /> */}
                     <div className="add-friends">
-                        <h3 className="profileText">Add Friend</h3>
+                        <h3 className="font-sans">Add Friend</h3>
                         <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
                         <button onClick={handleSendFriendRequest} className="profileButton btn btn-info mb-4">Add Friend</button>
                     </div>  

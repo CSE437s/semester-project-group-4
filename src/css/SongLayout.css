@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .col{
     padding: 3%;
 }
@@ -10,8 +14,20 @@
 
 .shareButton {
     font-family: 'FigTree', sans-serif;
-    background-color: #5C63FF;
+    background-color: #5E26FF;
+    border-radius:20px;
+    height: 40px; 
 }
+
+.shareButton:hover { 
+    background-color: #4316C3;
+}
+
+.shareButton:disabled {
+    opacity: 0.6;
+    background-color: #5E26FF;
+    cursor: not-allowed;
+  }
 
 .card-title {
     font-family: 'FigTree', sans-serif;

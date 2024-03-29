@@ -16,7 +16,7 @@ const Share = () => {
   const clientId = "1892c29e22e44ec686fa22a8e891b0f9";
   const redirectUri = "http://localhost:5173/Share"; //will need to change this when hosting on vercel
   let tokenEndpoint = "https://accounts.spotify.com/api/token";
-  const TRACKS = 'https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=4&offset=0';
+  const TRACKS = 'https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=10&offset=0';
 
   useEffect(() => {
     Promise.all([getToken()])
@@ -180,7 +180,7 @@ const Share = () => {
         </div>
         {/* Share Page */}
         <div className="share-page">
-          <h2>Your Top 4 Songs</h2>
+          <h2>Your Top 10 Songs</h2>
           <SongLayout songs={topSongs} />
         </div>
       </div>
