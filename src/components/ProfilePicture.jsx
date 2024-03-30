@@ -83,8 +83,8 @@ const ProfilePicture = () => {
                 const img = new Image();
                 img.src = event.target.result;
                 img.onload = () => {
-                    const MAX_WIDTH = 60;
-                    const MAX_HEIGHT = 60;
+                    const MAX_WIDTH = 100;
+                    const MAX_HEIGHT = 100;
                     let width = img.width;
                     let height = img.height;
 
