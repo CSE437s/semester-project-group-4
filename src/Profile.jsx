@@ -152,17 +152,23 @@ export default function Profile({ session }) {
     }
 
     async function uploadProfilePicture(file) {
-        const { data, error } = await supabase.storage
-            .from('profile_pictures')
-            .upload(`profile_${session.user.id}`, file);
+        try {
+            // Upload the new profile picture
+            const fileName = `profile_${session.user.id}`;
+            const { data, error } = await supabase.storage
+                .from('profile_pictures')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: true, // Overwrite existing file if it exists
+                });
 
-        if (error) {
-            console.error('Error uploading profile picture:', error);
-        } else {
-            console.log("picture is uploaded to supabase storage, now attempting to upload to profiles table")
-            const pictureUrl = data.Location;
-            console.log(pictureUrl)
-            console.log(data.url);
+            if (error) {
+                console.error('Error uploading profile picture:', error.message);
+                return;
+            }
+
+            const pictureUrl = `${supabase.storageUrl}/profile_pictures/${fileName}`;
+
             // Update profile picture URL in the database
             const { error: updateError } = await supabase
                 .from('profiles')
@@ -170,13 +176,19 @@ export default function Profile({ session }) {
                 .eq('id', session.user.id);
 
             if (updateError) {
-                console.error('Error updating profile picture URL:', updateError);
-            } else {
-                console.log("picture has been uploaded into profiles table")
-                setProfilePicture(pictureUrl);
+                console.error('Error updating profile picture URL:', updateError.message);
+                return;
             }
+
+            setProfilePicture(pictureUrl);
+        } catch (error) {
+            console.error('Error uploading profile picture:', error.message);
         }
     }
+
+
+
+
 
 
     // //END PROFILE PIC
