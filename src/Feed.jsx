@@ -53,7 +53,7 @@ const Feed = () => {
         const sharedSongPromises = friendIds.map(async id => {
             const { data: songs, error } = await supabase
                 .from('shared_songs')
-                .select('songUUID, song')
+                .select('songUUID, spotifySongId')
                 .eq('id', id);
 
             if (error) {
@@ -67,6 +67,7 @@ const Feed = () => {
         try {
             const friendSharedSongs = await Promise.all(sharedSongPromises);
             setSharedSongs(friendSharedSongs.flat());
+            console.log("sharedsongs",sharedSongs)
         } catch (error) {
             console.error('Error fetching shared songs:', error);
         }
@@ -180,9 +181,9 @@ const Feed = () => {
                 </div>
                 <div className="song_list">
                     {sharedSongs.map(song => (
-                        <div key={song.song.id} className="song-item">
+                        <div key={song.spotifySongId} className="song-item">
                             <iframe
-                                src={`https://open.spotify.com/embed/track/${song.song.id}`}
+                                src={`https://open.spotify.com/embed/track/${song.spotifySongId}`}
                                 width="300"
                                 height="80"
                                 frameBorder="0"
@@ -192,7 +193,7 @@ const Feed = () => {
                             <div>
                                 <h3>Comments:</h3>
                                 <ul>
-                                    {comments[song.song.id] && comments[song.song.id].map((comment, index) => (
+                                    {comments[song.songUUID] && comments[song.songUUID].map((comment, index) => (
                                         <li key={index}>
                                             {comment.comment}
                                         </li>
@@ -204,7 +205,7 @@ const Feed = () => {
                                     value={commentInput}
                                     onChange={e => setCommentInput(e.target.value)}
                                 />
-                                <button onClick={() => addComment(song.song.id, commentInput)}>Add Comment</button>
+                                <button onClick={() => addComment(song.songUUID, commentInput)}>Add Comment</button>
                             </div>
                         </div>
                     ))}
