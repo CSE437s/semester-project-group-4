@@ -1,0 +1,22 @@
+.profile-section {
+    font-family: 'FigTree', sans-serif;
+}
+
+.profileButton {
+    font-family: 'FigTree', sans-serif;
+    background-color: #5E26FF;
+    border-radius:20px;
+    height: 40px; 
+  }
+
+.profileButton:hover { 
+    background-color: #4316C3;
+}
+
+.profileText {
+    font-weight: 700;
+    color: black;
+    letter-spacing: 2px;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
