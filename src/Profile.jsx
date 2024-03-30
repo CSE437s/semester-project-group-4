@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // import { Link } from 'react-router-dom';
 import { supabase } from './supabaseClient';
+import { createClient } from '@supabase/supabase-js';
 import Sidebar from './components/Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -12,6 +13,7 @@ export default function Profile({ session }) {
     const [username, setUsername] = useState('');
     const [friends, setFriends] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
+    const [profilePicture, setProfilePicture] = useState(null);
 
     //SPOTIFY
 
@@ -27,29 +29,29 @@ export default function Profile({ session }) {
         const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         const randomValues = crypto.getRandomValues(new Uint8Array(64));
         const randomString = randomValues.reduce((acc, x) => acc + possible[x % possible.length], "");
-      
+
         const code_verifier = randomString;
         const data = new TextEncoder().encode(code_verifier);
         const hashed = await crypto.subtle.digest('SHA-256', data);
-      
+
         const code_challenge_base64 = btoa(String.fromCharCode(...new Uint8Array(hashed)))
-          .replace(/=/g, '')
-          .replace(/\+/g, '-')
-          .replace(/\//g, '_');
-      
+            .replace(/=/g, '')
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_');
+
         window.localStorage.setItem('code_verifier', code_verifier);
         console.log(code_verifier);
-      
+
         const authUrl = new URL("https://accounts.spotify.com/authorize");
         const params = {
-          response_type: 'code',
-          client_id: clientId,
-          scope: scope,
-          code_challenge_method: 'S256',
-          code_challenge: code_challenge_base64,
-          redirect_uri: redirectUri,
+            response_type: 'code',
+            client_id: clientId,
+            scope: scope,
+            code_challenge_method: 'S256',
+            code_challenge: code_challenge_base64,
+            redirect_uri: redirectUri,
         };
-      
+
         authUrl.search = new URLSearchParams(params).toString();
         window.location.href = authUrl.toString(); // Redirect the user to the authorization server for login
     }
@@ -64,6 +66,60 @@ export default function Profile({ session }) {
         getFriends();
         getPendingRequests();
     }, [session]);
+
+    //PROFILE PICTURE
+    useEffect(() => {
+        const fetchProfilePicture = async () => {
+            const { data: user, error } = await supabase
+                .from('profiles')
+                .select('picture')
+                .eq('id', session.user.id)
+                .single();
+
+            if (error) {
+                console.error('Error fetching profile picture:', error);
+            } else if (user && user.picture) {
+                setProfilePicture(user.picture);
+            } else {
+                setProfilePicture(null); // Set to null if no picture exists
+            }
+        };
+
+        fetchProfilePicture();
+    }, [session]);
+
+    const handleProfilePictureUpload = async () => {
+        try {
+            const file = document.getElementById('profile-picture-input').files[0];
+            const { data, error } = await supabase.storage
+                .from('profile_pictures')
+                .upload('profile.jpg', file, {
+                    cacheControl: '3600', // Optional for caching
+                    upsert: true, // Create a new file if it doesn't exist
+                });
+
+            if (error) {
+                console.error('Error uploading profile picture:', error);
+            } else {
+                // Update the profile picture link in the database
+                const { data: updateData, error: updateError } = await supabase
+                    .from('profiles')
+                    .update({ picture: data.Key })
+                    .eq('id', session.user.id);
+
+                if (updateError) {
+                    console.error('Error updating profile picture link:', updateError);
+                } else {
+                    console.log('Profile picture updated successfully:', updateData);
+                    setProfilePicture(data.Key);
+                }
+            }
+        } catch (error) {
+            console.error('Error handling profile picture upload:', error);
+        }
+    };
+
+    //END PROFILE PIC
 
     async function getPendingRequests() {
         const { data: pendingData, error } = await supabase
@@ -299,23 +355,25 @@ export default function Profile({ session }) {
             <div className="main-content">
                 <div className="header">
                     <h2>Profile</h2>
-                    {/* <div className="row">
-                        <div className="col">
-                            <Link to="/Account" className="btn btn-link text-decoration-none">
-                                <FontAwesomeIcon icon={faCog} className="mr-1 text-secondary" /> Account Settings
-                            </Link>
-                        </div>
-                    </div> */}
                 </div>
-                
+
                 <div className="profile-section">
                     <button onClick={loginWithSpotifyClick} className="profileButton text-white py-2 px-4">Connect to Spotify</button>
-                    {/* <img src="profile.jpg" alt="Profile Image Alt Text (Either you don't have a PFP or there was an error loading it)" className="profile-picture rounded-circle mx-auto d-block img-fluid mb-4" /> */}
+                    <div className='profile-picture'>
+                        {profilePicture ? (
+                            <img src={profilePicture} alt="Profile Picture" />
+                        ) : (
+                            <> {/* Wrap in a fragment to avoid unnecessary DOM node */}
+                                <input type="file" id="profile-picture-input" accept="image/*" style={{ display: 'none' }} />
+                                <button onClick={handleProfilePictureUpload}>Upload Image</button>
+                            </>
+                        )}
+                    </div>
                     <div className="add-friends mt-10">
                         <h3 className="profileText">Add Friend</h3>
                         <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
                         <button onClick={handleSendFriendRequest} className="profileButton text-white py-2 px-4">Add Friend</button>
-                    </div>  
+                    </div>
                     <div className="friendsList mt-10">
                         <h3 className="profileText">My Friends</h3>
                         <ul className="list-group mt-4">
