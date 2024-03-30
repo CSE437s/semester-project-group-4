@@ -1,53 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 
-
 const ProfilePicture = () => {
     const [profilePic, setProfilePic] = useState(null);
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [renderPage, setRenderPage] = useState(false);
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
             setLoading(false);
-            setTimeout(() => {
-                setRenderPage(true);
-            }, 1000);
         }).catch(error => {
             console.error('Error fetching session:', error);
             setLoading(false);
         });
-        // console.log("myid"+session.user.id)
     }, []);
 
     useEffect(() => {
         const fetchProfilePic = async () => {
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('picture')
-                .eq('id', session.user.id)
-                .single();
+            if (session) {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('picture')
+                    .eq('id', session.user.id)
+                    .single();
 
-            if (error) {
-                console.error('Error fetching profile picture:', error);
-            } else {
-                setProfilePic(data.picture);
+                if (error) {
+                    console.error('Error fetching profile picture:', error);
+                } else {
+                    setProfilePic(data.picture);
+                }
             }
         };
 
-        const timer = setTimeout(() => {
-            fetchProfilePic();
-        }, 5000); // 0.5 seconds
-
-        return () => clearTimeout(timer); // Cleanup function to clear the timer if the component unmounts or the dependency array changes
-    }, []);
-
+        fetchProfilePic();
+    }, [session]); // Add session as a dependency
 
     const handleFileUpload = async (event) => {
         const file = event.target.files[0];
-        const filePath = `profile_pictures/${file.name}`;
+        const filePath = `${file.name}`;
 
         let { error: uploadError } = await supabase.storage
             .from('profile_pictures')
@@ -58,19 +49,30 @@ const ProfilePicture = () => {
             return;
         }
 
+        let { publicURL, error: urlError } = supabase.storage
+            .from('profile_pictures')
+            .getPublicUrl(filePath);
+
+        if (urlError) {
+            console.error('Error getting public URL:', urlError);
+            return;
+        }
+        
         let { error: updateError } = await supabase
             .from('profiles')
-            .update({ picture: filePath })
+            .update({ picture: publicURL })
             .eq('id', session.user.id);
 
         if (updateError) {
             console.error('Error updating profile picture:', updateError);
         } else {
-            setProfilePic(filePath);
+            setProfilePic(publicURL);
+            // alert(publicURL)
         }
     };
 
-    if (loading || !renderPage) {
+
+    if (loading) {
         return (<div className="app-container"><div className="main-content"><p>Loading...</p></div>
         </div>
         );
