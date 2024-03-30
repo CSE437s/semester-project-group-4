@@ -9,7 +9,7 @@ const Feed = () => {
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
     const [renderPage, setRenderPage] = useState(false);
-    const [commentInput, setCommentInput] = useState("");
+    const [commentInputs, setCommentInputs] = useState({}); // Track inputs for each song
     const [songUUID, setSongUUID] = useState(null);
 
     useEffect(() => {
@@ -60,14 +60,12 @@ const Feed = () => {
                 console.error('Error fetching shared songs for friend:', id, error);
                 return [];
             }
-            console.log(songs)
             return songs;
         });
 
         try {
             const friendSharedSongs = await Promise.all(sharedSongPromises);
             setSharedSongs(friendSharedSongs.flat());
-            console.log("sharedsongs",sharedSongs)
         } catch (error) {
             console.error('Error fetching shared songs:', error);
         }
@@ -101,11 +99,9 @@ const Feed = () => {
     }
 
     async function fetchCommentsForSongs() {
-        console.log(sharedSongs);
         const songIds = sharedSongs.map(song => song.songUUID);
-        console.log("songIds:+" + songIds);
+
         const commentsPromises = songIds.map(async id => {
-            console.log("THIS ID: +" + id);
             const { data: comments, error } = await supabase
                 .from('feedComments')
                 .select('comment')
@@ -132,18 +128,6 @@ const Feed = () => {
     }
 
     async function addComment(songId, comment) {
-        console.log("songId: " + songId)
-        // try {
-        //     const { data: [{ songUUID }], error } = await supabase
-        //         .from('shared_songs')
-        //         .select('songUUID')
-        //         .eq('spotifySongId', songId)
-        //         .single();
-        //     if (error) {
-        //         console.error('Error retrieving songUUID:', error);
-        //         return;
-        //     }
-        //     alert(songUUID);
         try {
             const { data, error: insertError } = await supabase
                 .from('feedComments')
@@ -163,11 +147,22 @@ const Feed = () => {
         }
     }
 
-
+    const handleInputChange = (e, songId) => {
+        const { value } = e.target;
+        setCommentInputs(prevInputs => ({
+            ...prevInputs,
+            [songId]: value
+        }));
+    };
 
     if (loading || !renderPage) {
-        return (<div className="app-container"> <Sidebar /><div className="main-content"><p>Loading...</p></div>
-        </div>
+        return (
+            <div className="app-container">
+                <Sidebar />
+                <div className="main-content">
+                    <p>Loading...</p>
+                </div>
+            </div>
         );
     }
 
@@ -181,7 +176,7 @@ const Feed = () => {
                 </div>
                 <div className="song_list">
                     {sharedSongs.map(song => (
-                        <div key={song.spotifySongId} className="song-item">
+                        <div key={song.songUUID} className="song-item">
                             <iframe
                                 src={`https://open.spotify.com/embed/track/${song.spotifySongId}`}
                                 width="300"
@@ -202,10 +197,10 @@ const Feed = () => {
                                 <input
                                     type="text"
                                     placeholder="Add a comment..."
-                                    value={commentInput}
-                                    onChange={e => setCommentInput(e.target.value)}
+                                    value={commentInputs[song.songUUID] || ''}
+                                    onChange={e => handleInputChange(e, song.songUUID)}
                                 />
-                                <button onClick={() => addComment(song.songUUID, commentInput)}>Add Comment</button>
+                                <button onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])}>Add Comment</button>
                             </div>
                         </div>
                     ))}
