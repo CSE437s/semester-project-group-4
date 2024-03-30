@@ -28,6 +28,9 @@ const ProfilePicture = () => {
                 if (error) {
                     console.error('Error fetching profile picture:', error);
                 } else {
+                    console.log(data.picture)
+                    // let publicURL = "https://ykpzemmokoonptpzqths.supabase.co/storage/v1/object/public/profile_pictures/" + data.picture
+                    // publicURL = publicURL.replace(/\s/g, "%20");
                     setProfilePic(data.picture);
                 }
             }
@@ -49,15 +52,8 @@ const ProfilePicture = () => {
             return;
         }
 
-        let { publicURL, error: urlError } = supabase.storage
-            .from('profile_pictures')
-            .getPublicUrl(filePath);
-
-        if (urlError) {
-            console.error('Error getting public URL:', urlError);
-            return;
-        }
-        
+        let publicURL = "https://ykpzemmokoonptpzqths.supabase.co/storage/v1/object/public/profile_pictures/" + filePath
+        publicURL = publicURL.replace(/\s/g, "%20");
         let { error: updateError } = await supabase
             .from('profiles')
             .update({ picture: publicURL })
@@ -67,7 +63,6 @@ const ProfilePicture = () => {
             console.error('Error updating profile picture:', updateError);
         } else {
             setProfilePic(publicURL);
-            // alert(publicURL)
         }
     };
 
