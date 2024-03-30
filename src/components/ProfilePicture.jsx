@@ -45,7 +45,9 @@ const ProfilePicture = () => {
         // Resize image if necessary
         const resizedFile = await resizeImage(file);
 
-        const filePath = `${resizedFile.name}`;
+        // Generate a random string for filename
+        const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 5);
+        const filePath = `${randomString}.${resizedFile.name.split('.').pop()}`; // Add original extension
 
         let { error: uploadError } = await supabase.storage
             .from('profile_pictures')
@@ -57,7 +59,7 @@ const ProfilePicture = () => {
             return;
         }
 
-        let publicURL = "https://ykpzemmokoonptpzqths.supabase.co/storage/v1/object/public/profile_pictures/" + filePath
+        let publicURL = "https://ykpzemmokoonptpzqths.supabase.co/storage/v1/object/public/profile_pictures/" + filePath;
         publicURL = publicURL.replace(/\s/g, "%20");
         let { error: updateError } = await supabase
             .from('profiles')
@@ -71,6 +73,7 @@ const ProfilePicture = () => {
             setProfilePic(publicURL);
         }
     };
+
 
     const resizeImage = async (file) => {
         return new Promise((resolve) => {
