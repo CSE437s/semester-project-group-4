@@ -25,6 +25,7 @@ export default function Auth() {
       console.log(isLogin ? 'Logged in successfully!' : 'Signed up successfully! Verify your email before logging in.');
       if (!isLogin) {
         alert('Signed up successfully! Verify your email before logging in.');
+        setIsLogin(!isLogin)
       }
     }
     setLoading(false);
@@ -76,11 +77,11 @@ export default function Auth() {
           </div>
           {isLogin ? (
             <p className="text-sm mt-10 text-center">
-              Don't have an account? <a href="#register" className="text-blue-600 font-semibold hover:underline ml-1" onClick={() => setIsLogin(!isLogin)}>Register here</a>
+              Don't have an account? <a href="#login" className="text-blue-600 font-semibold hover:underline ml-1" onClick={() => setIsLogin(!isLogin)}>Register here</a>
             </p>
           ) : (
             <p className="text-sm mt-10 text-center">
-              Already have an account? <a href="#login" className="text-blue-600 font-semibold hover:underline ml-1" onClick={() => setIsLogin(!isLogin)}>Log in</a>
+              Already have an account? <a href="#register" className="text-blue-600 font-semibold hover:underline ml-1" onClick={() => setIsLogin(!isLogin)}>Log in</a>
             </p>
           )}
         </form>

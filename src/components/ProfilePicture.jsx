@@ -49,6 +49,7 @@ const ProfilePicture = () => {
 
         if (uploadError) {
             console.error('Error uploading file:', uploadError);
+            alert("Sorry, there was an error updating your image");
             return;
         }
 
@@ -61,6 +62,7 @@ const ProfilePicture = () => {
 
         if (updateError) {
             console.error('Error updating profile picture:', updateError);
+            alert("Sorry, there was an error updating your image");
         } else {
             setProfilePic(publicURL);
         }

@@ -132,18 +132,18 @@ const Feed = () => {
 
     async function addComment(songId, comment) {
         console.log("songId: " + songId)
+        // try {
+        //     const { data: [{ songUUID }], error } = await supabase
+        //         .from('shared_songs')
+        //         .select('songUUID')
+        //         .eq('spotifySongId', songId)
+        //         .single();
+        //     if (error) {
+        //         console.error('Error retrieving songUUID:', error);
+        //         return;
+        //     }
+        //     alert(songUUID);
         try {
-            const { data: [{ songUUID }], error } = await supabase
-                .from('shared_songs')
-                .select('songUUID')
-                .eq('id', songId)
-                .single();
-            if (error) {
-                console.error('Error retrieving songUUID:', error);
-                return;
-            }
-            alert(songUUID);
-
             const { data, error: insertError } = await supabase
                 .from('feedComments')
                 .insert([{ songUUID: songId, comment: comment, userID: session.user.id }]);
@@ -192,7 +192,7 @@ const Feed = () => {
                             <div>
                                 <h3>Comments:</h3>
                                 <ul>
-                                    {comments[song.id] && comments[song.id].map((comment, index) => (
+                                    {comments[song.song.id] && comments[song.song.id].map((comment, index) => (
                                         <li key={index}>
                                             {comment.comment}
                                         </li>
