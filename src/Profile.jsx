@@ -15,6 +15,7 @@ export default function Profile({ session }) {
     const [pendingRequests, setPendingRequests] = useState([]);
     const [profilePicture, setProfilePicture] = useState(null);
 
+
     //SPOTIFY
 
     const clientId = "1892c29e22e44ec686fa22a8e891b0f9";
@@ -65,61 +66,120 @@ export default function Profile({ session }) {
     useEffect(() => {
         getFriends();
         getPendingRequests();
-    }, [session]);
-
-    //PROFILE PICTURE
-    useEffect(() => {
-        const fetchProfilePicture = async () => {
-            const { data: user, error } = await supabase
-                .from('profiles')
-                .select('picture')
-                .eq('id', session.user.id)
-                .single();
-
-            if (error) {
-                console.error('Error fetching profile picture:', error);
-            } else if (user && user.picture) {
-                setProfilePicture(user.picture);
-            } else {
-                setProfilePicture(null); // Set to null if no picture exists
-            }
-        };
-
         fetchProfilePicture();
     }, [session]);
 
-    const handleProfilePictureUpload = async () => {
-        try {
-            const file = document.getElementById('profile-picture-input').files[0];
-            const { data, error } = await supabase.storage
-                .from('profile_pictures')
-                .upload('profile.jpg', file, {
-                    cacheControl: '3600', // Optional for caching
-                    upsert: true, // Create a new file if it doesn't exist
-                });
+    // //PROFILE PICTURE
+    // useEffect(() => {
+    //     const fetchProfilePicture = async () => {
+    //         const { data: user, error } = await supabase
+    //             .from('profiles')
+    //             .select('picture')
+    //             .eq('id', session.user.id)
+    //             .single();
 
-            if (error) {
-                console.error('Error uploading profile picture:', error);
-            } else {
-                // Update the profile picture link in the database
-                const { data: updateData, error: updateError } = await supabase
-                    .from('profiles')
-                    .update({ picture: data.Key })
-                    .eq('id', session.user.id);
+    //         if (error) {
+    //             console.error('Error fetching profile picture:', error);
+    //         } else if (user && user.picture) {
+    //             setProfilePicture(user.picture);
+    //         } else {
+    //             setProfilePicture(null); // Set to null if no picture exists
+    //         }
+    //     };
 
-                if (updateError) {
-                    console.error('Error updating profile picture link:', updateError);
-                } else {
-                    console.log('Profile picture updated successfully:', updateData);
-                    setProfilePicture(data.Key);
-                }
+    //     fetchProfilePicture();
+    // }, [session]);
+
+    // const handleProfilePictureUpload = async () => {
+    //     try {
+    //         const file = document.getElementById('profile-picture-input').files[0];
+    //         const { data, error } = await supabase.storage
+    //             .from('profile_pictures')
+    //             .upload('profile.jpg', file, {
+    //                 cacheControl: '3600', // Optional for caching
+    //                 upsert: true, // Create a new file if it doesn't exist
+    //             });
+
+    //         if (error) {
+    //             console.error('Error uploading profile picture:', error);
+    //         } else {
+    //             // Update the profile picture link in the database
+    //             const { data: updateData, error: updateError } = await supabase
+    //                 .from('profiles')
+    //                 .update({ picture: data.Key })
+    //                 .eq('id', session.user.id);
+
+    //             if (updateError) {
+    //                 console.error('Error updating profile picture link:', updateError);
+    //             } else {
+    //                 console.log('Profile picture updated successfully:', updateData);
+    //                 setProfilePicture(data.Key);
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error('Error handling profile picture upload:', error);
+    //     }
+    // };
+
+    async function fetchProfilePicture() {
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('picture')
+            .eq('id', session.user.id)
+            .single();
+
+        if (error) {
+            console.error('Error fetching profile picture:', error);
+        } else {
+            if (data && data.picture) {
+                setProfilePicture(data.picture);
             }
-        } catch (error) {
-            console.error('Error handling profile picture upload:', error);
         }
-    };
+    }
 
-    //END PROFILE PIC
+    function handleProfilePictureClick() {
+        // Trigger popup to upload file
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = async (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                await uploadProfilePicture(file);
+            }
+        };
+        input.click();
+    }
+
+    async function uploadProfilePicture(file) {
+        const { data, error } = await supabase.storage
+            .from('profile_pictures')
+            .upload(`profile_${session.user.id}`, file);
+
+        if (error) {
+            console.error('Error uploading profile picture:', error);
+        } else {
+            console.log("picture is uploaded to supabase storage, now attempting to upload to profiles table")
+            const pictureUrl = data.Location;
+            console.log(pictureUrl)
+            console.log(data.url);
+            // Update profile picture URL in the database
+            const { error: updateError } = await supabase
+                .from('profiles')
+                .update({ picture: pictureUrl })
+                .eq('id', session.user.id);
+
+            if (updateError) {
+                console.error('Error updating profile picture URL:', updateError);
+            } else {
+                console.log("picture has been uploaded into profiles table")
+                setProfilePicture(pictureUrl);
+            }
+        }
+    }
+
+
+    // //END PROFILE PIC
 
     async function getPendingRequests() {
         const { data: pendingData, error } = await supabase
@@ -359,14 +419,12 @@ export default function Profile({ session }) {
 
                 <div className="profile-section">
                     <button onClick={loginWithSpotifyClick} className="profileButton text-white py-2 px-4">Connect to Spotify</button>
-                    <div className='profile-picture'>
+
+                    <div className='profile-picture' onClick={handleProfilePictureClick}>
                         {profilePicture ? (
-                            <img src={profilePicture} alt="Profile Picture" />
+                            <img src={profilePicture} alt="Profile" />
                         ) : (
-                            <> {/* Wrap in a fragment to avoid unnecessary DOM node */}
-                                <input type="file" id="profile-picture-input" accept="image/*" style={{ display: 'none' }} />
-                                <button onClick={handleProfilePictureUpload}>Upload Image</button>
-                            </>
+                            <button className="upload-button">Upload Image</button>
                         )}
                     </div>
                     <div className="add-friends mt-10">
