@@ -1,6 +1,8 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+
+@import "tailwindcss/components";
+
+@import "tailwindcss/utilities";
 
 .col{
     padding: 3%;
@@ -27,7 +29,12 @@
     opacity: 0.6;
     background-color: #5E26FF;
     cursor: not-allowed;
-  }
+}
+
+.card {
+    width: 60%;
+}
+
 
 .card-title {
     font-family: 'FigTree', sans-serif;

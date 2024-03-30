@@ -51,9 +51,9 @@ const SongLayout = (props) => { //props.songs
     return (
         <div className="container mx-auto text-center">
             <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-4">
                 {props.songs.length > 0 && props.songs.map((x, i) => {
-                    return <div className="card" id={"card"+i}>
+                    return <div className="card max-w-sm rounded overflow-hidden shadow-lg" id={"card"+i}>
                         {props.songs.length > 0 && (
                             <iframe
                                 className="rounded-lg"
