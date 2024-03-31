@@ -48,12 +48,12 @@ const Feed = () => {
     }, [sharedSongs]);
 
     async function fetchSharedSongs(friends) {
-        const friendIds = friends.map(friend => friend.data.id);
+        const friendIds = friends.map(friend => friend.data.id); // Modify to access friend id correctly
 
         const sharedSongPromises = friendIds.map(async id => {
             const { data: songs, error } = await supabase
                 .from('shared_songs')
-                .select('songUUID, spotifySongId')
+                .select('songUUID, spotifySongId, created_at') // Include created_at
                 .eq('id', id);
 
             if (error) {
@@ -186,6 +186,9 @@ const Feed = () => {
                                 allow="encrypted-media"
                             ></iframe>
                             <div>
+                                <p>Shared by: {session && friends.find(friend => friend.id === song.id)?.username}</p> {/* Display shared user's username */}
+                                <img src={session && friends.find(friend => friend.id === song.id)?.picture} alt="Profile" /> {/* Display shared user's profile picture */}
+                                <p>Shared at: {song.created_at}</p> {/* Display time shared */}
                                 <h3>Comments:</h3>
                                 <ul>
                                     {comments[song.songUUID] && comments[song.songUUID].map((comment, index) => (
