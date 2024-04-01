@@ -204,7 +204,7 @@ const Feed = () => {
                                     }}
                                 />
                                 <div>
-                                    <p style={{ fontWeight: 'bold', color: 'rgb(46, 46, 42)' }}>
+                                    <p style={{ fontWeight: 'bold', color: '#292926' }}>
                                         Shared by {song.profile.username}
                                     </p>
                                     <p>
@@ -216,14 +216,16 @@ const Feed = () => {
                                     </p>
                                 </div>
                             </div>
-                            <iframe
-                                src={`https://open.spotify.com/embed/track/${song.spotifySongId}`}
-                                width="300"
-                                height="80"
-                                frameBorder="0"
-                                allowtransparency="true"
-                                allow="encrypted-media"
-                            />
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '150px' }}> {/* Center content vertically and horizontally */}
+                                <iframe
+                                    src={`https://open.spotify.com/embed/track/${song.spotifySongId}`}
+                                    width="300"
+                                    height="80"
+                                    frameBorder="0"
+                                    allowtransparency="true"
+                                    allow="encrypted-media"
+                                />
+                            </div>
                             <div style={{ marginTop: 10 }}>
                                 <h3>Comments:</h3>
                                 <ul>
@@ -237,8 +239,9 @@ const Feed = () => {
                                     placeholder="Add a comment..."
                                     value={commentInputs[song.songUUID] || ''}
                                     onChange={e => handleInputChange(e, song.songUUID)}
+                                    style={{ borderRadius: '4px', padding: '5px' }}
                                 />
-                                <button onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])}>
+                                <button onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])} style={{ backgroundColor: '#d6d6ba', padding: '5px', borderRadius: '4px' }}>
                                     Add Comment
                                 </button>
                             </div>
@@ -247,6 +250,7 @@ const Feed = () => {
                 </div>
             </div>
         </div>
+
 
 
 
