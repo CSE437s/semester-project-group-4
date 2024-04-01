@@ -216,7 +216,7 @@ const Feed = () => {
                                     </p>
                                 </div>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '150px' }}> {/* Center content vertically and horizontally */}
+                            <div style={{ display: 'flex', justifyContent: 'left', alignItems: 'center', minHeight: '150px' }}> {/* Center content vertically and horizontally */}
                                 <iframe
                                     src={`https://open.spotify.com/embed/track/${song.spotifySongId}`}
                                     width="300"
@@ -250,11 +250,6 @@ const Feed = () => {
                 </div>
             </div>
         </div>
-
-
-
-
-
     );
 };
 
