@@ -83,9 +83,6 @@ const Feed = () => {
         } catch (error) {
             console.error('Error fetching shared songs:', error);
         }
-
-        console.log("sharedSongs", sharedSongs)
-
     }
 
     async function getFriends(session) {
@@ -183,8 +180,6 @@ const Feed = () => {
         );
     }
 
-    console.log(sharedSongs)
-
     return (
         <div className="app-container">
             <Sidebar />
@@ -195,7 +190,7 @@ const Feed = () => {
                 </div>
                 <div className="song_list">
                     {sharedSongs.map(song => (
-                        <div key={song.songUUID} className="song-item">
+                        <div key={song.songUUID} className="song-item" style={{ backgroundColor: '#f2f2f2', padding: '10px', marginBottom: '10px' }}>
                             <div style={{ display: 'flex' }}>
                                 <img
                                     src={song.profile.picture}
@@ -252,6 +247,9 @@ const Feed = () => {
                 </div>
             </div>
         </div>
+
+
+
 
     );
 };
