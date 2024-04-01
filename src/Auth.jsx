@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from './supabaseClient';
 import './index.css'
+import './css/auth.css'
 
 export default function Auth() {
   const [loading, setLoading] = useState(false);
@@ -85,7 +86,7 @@ export default function Auth() {
             </p>
           )}
         </form>
-        <div className="flex justify-center items-center md:py-6 h-full relative" style={{ maxWidth: '50vw' }}>
+        <div id="logo" className="flex justify-center items-center md:py-6 h-full relative" style={{ maxWidth: '50vw' }}>
           <div style={{ width: '50vw', height: '50vw', maxWidth: '500px', maxHeight: '500px' }}>
             <img src="/login-background.jpg" alt="Login Background" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
