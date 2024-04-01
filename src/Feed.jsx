@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
+// import { QueryResult, QueryData, QueryError } from '@supabase/supabase-js'
 
 const Feed = () => {
     const [friends, setFriends] = useState([]);
@@ -50,17 +51,32 @@ const Feed = () => {
     async function fetchSharedSongs(friends) {
         const friendIds = friends.map(friend => friend.data.id); // Modify to access friend id correctly
 
+
+
+
         const sharedSongPromises = friendIds.map(async id => {
-            const { data: songs, error } = await supabase
+            const { data: songs, error: songsError } = await supabase
                 .from('shared_songs')
-                .select('songUUID, spotifySongId, created_at') // Include created_at
+                .select('songUUID, spotifySongId, created_at')
                 .eq('id', id);
 
-            if (error) {
-                console.error('Error fetching shared songs for friend:', id, error);
+            const { data: profiles, error: profilesError } = await supabase
+                .from('profiles')
+                .select('id, picture, username')
+                .eq('id', id);
+
+            if (songsError || profilesError) {
+                console.error('Error fetching data for friend:', id, songsError || profilesError);
                 return [];
             }
-            return songs;
+
+            // Combine the data from shared songs and profiles
+            const combinedData = songs.map(song => ({
+                ...song,
+                profile: profiles.find(profile => profile.id === id)
+            }));
+
+            return combinedData;
         });
 
         try {
@@ -69,6 +85,13 @@ const Feed = () => {
         } catch (error) {
             console.error('Error fetching shared songs:', error);
         }
+
+
+
+
+
+
+
     }
 
     async function getFriends(session) {
@@ -166,6 +189,8 @@ const Feed = () => {
         );
     }
 
+    console.log(sharedSongs)
+
     return (
         <div className="app-container">
             <Sidebar />
@@ -186,8 +211,8 @@ const Feed = () => {
                                 allow="encrypted-media"
                             ></iframe>
                             <div>
-                                <p>Shared by: {session && friends.find(friend => friend.id === song.id)?.username}</p> {/* Display shared user's username */}
-                                <img src={session && friends.find(friend => friend.id === song.id)?.picture} alt="Profile" /> {/* Display shared user's profile picture */}
+                                <p>Shared by: {song.profile.username}</p> {/* Display shared user's username */}
+                                <img src={song.profile.picture} alt="Profile" /> {/* Display shared user's profile picture */}
                                 <p>Shared at: {song.created_at}</p> {/* Display time shared */}
                                 <h3>Comments:</h3>
                                 <ul>
