@@ -52,8 +52,6 @@ const Feed = () => {
         const friendIds = friends.map(friend => friend.data.id); // Modify to access friend id correctly
 
 
-
-
         const sharedSongPromises = friendIds.map(async id => {
             const { data: songs, error: songsError } = await supabase
                 .from('shared_songs')
@@ -86,11 +84,7 @@ const Feed = () => {
             console.error('Error fetching shared songs:', error);
         }
 
-
-
-
-
-
+        console.log("sharedSongs", sharedSongs)
 
     }
 
@@ -211,8 +205,8 @@ const Feed = () => {
                                 allow="encrypted-media"
                             ></iframe>
                             <div>
-                                <p>Shared by: {song.profile.username}</p> {/* Display shared user's username */}
-                                <img src={song.profile.picture} alt="Profile" /> {/* Display shared user's profile picture */}
+                                <p>Shared by {song.profile.username}</p> {/* Display shared user's username */}
+                                <img src={song.profile.picture} alt="" /> {/* Display shared user's profile picture */}
                                 <p>Shared at: {song.created_at}</p> {/* Display time shared */}
                                 <h3>Comments:</h3>
                                 <ul>
