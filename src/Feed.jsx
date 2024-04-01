@@ -206,8 +206,18 @@ const Feed = () => {
                             ></iframe>
                             <div>
                                 <p>Shared by {song.profile.username}</p> {/* Display shared user's username */}
-                                <img src={song.profile.picture} alt="" /> {/* Display shared user's profile picture */}
-                                <p>Shared at: {song.created_at}</p> {/* Display time shared */}
+                                <img
+                                    src={song.profile.picture}
+                                    alt=""
+                                    style={{
+                                        width: 50,
+                                        height: 50,
+                                        borderRadius: '50%',
+                                        border: '1px solid black',
+                                    }}
+                                />
+                                <p>{new Date(song.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} {new Date(song.created_at).toLocaleDateString()}</p>
+
                                 <h3>Comments:</h3>
                                 <ul>
                                     {comments[song.songUUID] && comments[song.songUUID].map((comment, index) => (
