@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
-// import { QueryResult, QueryData, QueryError } from '@supabase/supabase-js'
+import './index.css'
 
 const Feed = () => {
     const [friends, setFriends] = useState([]);
@@ -196,16 +196,7 @@ const Feed = () => {
                 <div className="song_list">
                     {sharedSongs.map(song => (
                         <div key={song.songUUID} className="song-item">
-                            <iframe
-                                src={`https://open.spotify.com/embed/track/${song.spotifySongId}`}
-                                width="300"
-                                height="80"
-                                frameBorder="0"
-                                allowtransparency="true"
-                                allow="encrypted-media"
-                            ></iframe>
-                            <div>
-                                <p>Shared by {song.profile.username}</p> {/* Display shared user's username */}
+                            <div style={{ display: 'flex' }}>
                                 <img
                                     src={song.profile.picture}
                                     alt=""
@@ -214,17 +205,37 @@ const Feed = () => {
                                         height: 50,
                                         borderRadius: '50%',
                                         border: '1px solid black',
+                                        marginRight: 10,
                                     }}
                                 />
-                                <p>{new Date(song.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} {new Date(song.created_at).toLocaleDateString()}</p>
-
+                                <div>
+                                    <p style={{ fontWeight: 'bold', color: 'darkgray' }}>
+                                        Shared by {song.profile.username}
+                                    </p>
+                                    <p>
+                                        {new Date(song.created_at).toLocaleTimeString([], {
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                        })} {''}
+                                        {new Date(song.created_at).toLocaleDateString()}
+                                    </p>
+                                </div>
+                            </div>
+                            <iframe
+                                src={`https://open.spotify.com/embed/track/${song.spotifySongId}`}
+                                width="300"
+                                height="80"
+                                frameBorder="0"
+                                allowtransparency="true"
+                                allow="encrypted-media"
+                            />
+                            <div style={{ marginTop: 10 }}>
                                 <h3>Comments:</h3>
                                 <ul>
-                                    {comments[song.songUUID] && comments[song.songUUID].map((comment, index) => (
-                                        <li key={index}>
-                                            {comment.comment}
-                                        </li>
-                                    ))}
+                                    {comments[song.songUUID] &&
+                                        comments[song.songUUID].map((comment, index) => (
+                                            <li key={index}>{comment.comment}</li>
+                                        ))}
                                 </ul>
                                 <input
                                     type="text"
@@ -232,13 +243,16 @@ const Feed = () => {
                                     value={commentInputs[song.songUUID] || ''}
                                     onChange={e => handleInputChange(e, song.songUUID)}
                                 />
-                                <button onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])}>Add Comment</button>
+                                <button onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])}>
+                                    Add Comment
+                                </button>
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
         </div>
+
     );
 };
 
