@@ -204,7 +204,7 @@ const Feed = () => {
                                     }}
                                 />
                                 <div>
-                                    <p style={{ fontWeight: 'bold', color: 'darkgray' }}>
+                                    <p style={{ fontWeight: 'bold', color: 'rgb(46, 46, 42)' }}>
                                         Shared by {song.profile.username}
                                     </p>
                                     <p>
