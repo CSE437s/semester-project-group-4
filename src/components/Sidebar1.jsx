@@ -8,6 +8,8 @@ import '../index.css';
 function Sidebar1() {
   const [session, setSession] = useState(null);
   document.documentElement.classList.add('dark');
+
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
   };
@@ -33,6 +35,8 @@ function Sidebar1() {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
+        // Wait for 1 second before making the fetch request
+        await new Promise(resolve => setTimeout(resolve, 3000));
 
         const { data, error } = await supabase
           .from('profiles')
@@ -51,8 +55,15 @@ function Sidebar1() {
       }
     };
 
-    fetchProfileData();
+    // Wrap the fetchProfileData call in another function with the delay
+    const fetchDataWithDelay = async () => {
+      await fetchProfileData();
+    }
+
+    fetchDataWithDelay();
   }, [session]);
+
+
 
 
 
@@ -79,7 +90,7 @@ function Sidebar1() {
                 <div>
                   <button type="button" className="flex text-sm bg-custom-purple rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
                     <span className="sr-only">Open user menu</span>
-                    <img className="w-8 h-8 rounded-full" src="{profileData.picture}" alt="user photo" />
+                    <img className="w-8 h-8 rounded-full" src={profileData.picture} alt="user photo" />
                   </button>
                 </div>
                 <div className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
