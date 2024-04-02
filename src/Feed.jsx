@@ -183,7 +183,7 @@ const Feed = () => {
     return (
         <div className="app-container">
             <Sidebar1 />
-            <div className="main-content">
+            <div id="page_content_id" className="main-content">
                 <div className="header">
                     <h2>Feed</h2>
                     <p className="headerText">View what your friends have been listening to</p>
