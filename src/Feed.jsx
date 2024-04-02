@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
 import './index.css'
+import './css/feed2.css'
 
 const Feed = () => {
     const [friends, setFriends] = useState([]);
@@ -183,73 +184,84 @@ const Feed = () => {
     return (
         <div className="app-container">
             <Sidebar />
-            <div className="main-content">
+            <div id="page_content_id" className="main-content">
                 <div className="header">
                     <h2>Feed</h2>
                     <p className="headerText">View what your friends have been listening to</p>
                 </div>
                 <div className="song_list">
                     {sharedSongs.map(song => (
-                        <div key={song.songUUID} className="song-item" style={{ backgroundColor: '#f2f2f2', padding: '10px', marginBottom: '10px' }}>
-                            <div style={{ display: 'flex' }}>
-                                <img
-                                    src={song.profile.picture}
-                                    alt=""
-                                    style={{
-                                        width: 50,
-                                        height: 50,
-                                        borderRadius: '50%',
-                                        border: '1px solid black',
-                                        marginRight: 10,
-                                    }}
-                                />
-                                <div>
-                                    <p style={{ fontWeight: 'bold', color: '#292926' }}>
-                                        Shared by {song.profile.username}
-                                    </p>
-                                    <p>
-                                        {new Date(song.created_at).toLocaleTimeString([], {
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                        })} {''}
-                                        {new Date(song.created_at).toLocaleDateString()}
-                                    </p>
+                        <div key={song.songUUID} className="song-item" style={{ backgroundColor: '#f4f4f4', borderRadius: '15px', padding: '10px', marginBottom: '10px' }}>
+                            <div className="shiftRight">
+
+                                <div className="shiftRight" style={{ display: 'flex' }}>
+                                    <img
+                                        src={song.profile.picture}
+                                        alt=""
+                                        style={{
+                                            width: 50,
+                                            height: 50,
+                                            borderRadius: '50%',
+                                            border: '1px solid black',
+                                            marginRight: 10,
+                                        }}
+                                    />
+                                    <div>
+                                        <p style={{ fontWeight: 'bold', color: '#292926' }}>
+                                            Shared by {song.profile.username}
+                                        </p>
+                                        <p>
+                                            {new Date(song.created_at).toLocaleTimeString([], {
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                            })} {''}
+                                            {new Date(song.created_at).toLocaleDateString()}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'left', alignItems: 'center', minHeight: '150px' }}> {/* Center content vertically and horizontally */}
-                                <iframe
-                                    src={`https://open.spotify.com/embed/track/${song.spotifySongId}`}
-                                    width="300"
-                                    height="80"
-                                    frameBorder="0"
-                                    allowtransparency="true"
-                                    allow="encrypted-media"
-                                />
-                            </div>
-                            <div style={{ marginTop: 10 }}>
-                                <h3>Comments:</h3>
-                                <ul>
-                                    {comments[song.songUUID] &&
-                                        comments[song.songUUID].map((comment, index) => (
-                                            <li key={index}>{comment.comment}</li>
-                                        ))}
-                                </ul>
-                                <input
-                                    type="text"
-                                    placeholder="Add a comment..."
-                                    value={commentInputs[song.songUUID] || ''}
-                                    onChange={e => handleInputChange(e, song.songUUID)}
-                                    style={{ borderRadius: '4px', padding: '5px' }}
-                                />
-                                <button onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])} style={{ backgroundColor: '#d6d6ba', padding: '5px', borderRadius: '4px' }}>
-                                    Add Comment
-                                </button>
-                            </div>
+                                <div className="shiftRight" style={{ display: 'flex', justifyContent: 'left', alignItems: 'center', minHeight: '150px' }}> {/* Center content vertically and horizontally */}
+                                    <iframe
+                                        src={`https://open.spotify.com/embed/track/${song.spotifySongId}`}
+                                        width="300"
+                                        height="80"
+                                        frameBorder="0"
+                                        allowtransparency="true"
+                                        allow="encrypted-media"
+                                    />
+                                </div>
+                                <div className="shiftRight" style={{ marginTop: 10 }}>
+                                    <h3>Comments:</h3>
+                                    <ul>
+                                        {comments[song.songUUID] &&
+                                            comments[song.songUUID].map((comment, index) => (
+                                                <li key={index}>{comment.comment}</li>
+                                            ))}
+                                    </ul>
+                                    <div style={{ display: 'flex' }}>
+                                        <input
+                                            type="text"
+                                            placeholder="Add a comment..."
+                                            value={commentInputs[song.songUUID] || ''}
+                                            onChange={e => handleInputChange(e, song.songUUID)}
+                                            style={{ borderRadius: '4px', padding: '5px', flexGrow: 1 }}
+                                        />
+                                        <button className="commentBtn"
+                                            onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])}
+                                            style={{ backgroundColor: '#d6d6ba', padding: '5px', borderRadius: '4px' }}
+                                        >
+                                            Add Comment
+                                        </button>
+                                    </div>
+                                </div>
+
+                         
+                        </div>
+
                         </div>
                     ))}
-                </div>
             </div>
         </div>
+        </div >
     );
 };
 

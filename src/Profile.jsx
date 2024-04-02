@@ -12,13 +12,18 @@ export default function Profile({ session }) {
     const [username, setUsername] = useState('');
     const [friends, setFriends] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
+
+    const [myusername, setmyUsername] = useState(null);
+    const [newUsername, setNewUsername] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
     //SPOTIFY
 
     const clientId = "1892c29e22e44ec686fa22a8e891b0f9";
     //const clientId = process.env.REACT_APP_SPOTIFY_API_ID; // Your client id
 
+    // const redirectUri = "https://semester-project-group-4.vercel.app/Share"; //takes us back here after agreeing to Spotify
+
     const redirectUri = "http://localhost:5173/Share"; //takes us back here after agreeing to Spotify
-    // let redirectUri = "https://semester-project-group-4.vercel.app/Share" //use for vercel host
 
     const scope = 'user-read-private user-read-email user-top-read';
 
@@ -62,6 +67,7 @@ export default function Profile({ session }) {
     useEffect(() => {
         getFriends();
         getPendingRequests();
+        fetchUsername();
     }, [session]);
 
     async function getPendingRequests() {
@@ -292,18 +298,79 @@ export default function Profile({ session }) {
         }
     }
 
+
+
+
+
+    async function fetchUsername() {
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('username')
+            .eq('id', session.user.id)
+            .single();
+        if (error) {
+            console.error('Error fetching username profile.jsx:', error);
+        }
+        setmyUsername(data.username);
+        console.log("data", data)
+        console.log("muuseraname", myusername);
+        console.log("data.user", data.username);
+        setIsEditing(false);
+    }
+
+
+    const updateUsername = async () => {
+        try {
+
+            const { error } = await supabase
+                .from('profiles')
+                .update({ username: newUsername })
+                .eq('id', session.user.id);
+
+            if (error) {
+                throw error;
+            }
+
+            setmyUsername(newUsername);
+            setIsEditing(false);
+
+        } catch (error) {
+            console.error('Error updating username:', error.message);
+        }
+    };
+
     return (
         <div className="app-container bg-light">
             <Sidebar />
-            <div className="main-content">
+            <div id="page_content_id" className="main-content">
                 <div className="header">
                     <h2>Profile</h2>
                 </div>
                 <div className="profile-section">
                     <div className="profile-info">
-                        <ProfilePicture/>
+                        <ProfilePicture />
                         <button onClick={loginWithSpotifyClick} className="profileButton spotifyButton text-white py-2 px-4">Connect to Spotify</button>
                     </div>
+
+                    <div>
+                        {isEditing ? (
+                            <div>
+                                <input
+                                    type="text"
+                                    value={newUsername}
+                                    onChange={(e) => setNewUsername(e.target.value)}
+                                />
+                                <button onClick={updateUsername}>Save</button>
+                            </div>
+                        ) : (
+                            <div>
+                                <p>Username: {myusername}</p>
+                                <button onClick={() => setIsEditing(true)}>Edit</button>
+                            </div>
+                        )}
+                    </div>
+
+
                     <div className="add-friends mt-10">
                         <h3 className="profileText">Add Friend</h3>
                         <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
