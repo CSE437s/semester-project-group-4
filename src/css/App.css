@@ -60,11 +60,11 @@ html, body, #app, #app>div {
 
 #page_content_id{
   margin-top: 30px !important;
-  margin-left: 200px;
+  margin-left: 250px !important;
 }
 
 @media only screen and (max-width: 640px) {
   #page_content_id {
-    margin-left: 0; /* Adjust margin-left as needed */
+    margin-left: 0 !important; /* Adjust margin-left as needed */
   }
 }

@@ -3,7 +3,9 @@ export default {
   content: ["./src/**/*.{js,ts,jsx,tsx}",
   "node_modules/flowbite-react/lib/esm/**/*.js"],
   theme: {
-    extend: {},
+    extend: {colors: {
+      'custom-purple': '#5C63FF',
+    },},
   },
   plugins: [require('flowbite/plugin')],
   

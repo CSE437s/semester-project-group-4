@@ -1319,10 +1319,6 @@ input[type="range"]::-ms-fill-lower{
   margin-top: 2.5rem;
 }
 
-.mt-14{
-  margin-top: 3.5rem;
-}
-
 .mt-2{
   margin-top: 0.5rem;
 }
@@ -1407,14 +1403,6 @@ input[type="range"]::-ms-fill-lower{
   height: 5rem;
 }
 
-.h-24{
-  height: 6rem;
-}
-
-.h-28{
-  height: 7rem;
-}
-
 .h-3{
   height: 0.75rem;
 }
@@ -1429,10 +1417,6 @@ input[type="range"]::-ms-fill-lower{
 
 .h-4{
   height: 1rem;
-}
-
-.h-48{
-  height: 12rem;
 }
 
 .h-5{
@@ -1755,14 +1739,6 @@ input[type="range"]::-ms-fill-lower{
   grid-auto-flow: column;
 }
 
-.grid-cols-2{
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.grid-cols-3{
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .grid-cols-4{
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -2075,10 +2051,6 @@ input[type="range"]::-ms-fill-lower{
   border-top-width: 4px;
 }
 
-.border-dashed{
-  border-style: dashed;
-}
-
 .border-blue-500{
   --tw-border-opacity: 1;
   border-color: rgb(63 131 248 / var(--tw-border-opacity));
@@ -2290,6 +2262,11 @@ input[type="range"]::-ms-fill-lower{
 .bg-blue-700{
   --tw-bg-opacity: 1;
   background-color: rgb(26 86 219 / var(--tw-bg-opacity));
+}
+
+.bg-custom-purple{
+  --tw-bg-opacity: 1;
+  background-color: rgb(92 99 255 / var(--tw-bg-opacity));
 }
 
 .bg-cyan-100{
@@ -2778,10 +2755,6 @@ input[type="range"]::-ms-fill-lower{
 
 .p-2\.5{
   padding: 0.625rem;
-}
-
-.p-3{
-  padding: 0.75rem;
 }
 
 .p-4{
@@ -3661,12 +3634,12 @@ html, body, #app, #app>div {
 
 #page_content_id{
   margin-top: 30px !important;
-  margin-left: 200px;
+  margin-left: 250px !important;
 }
 
 @media only screen and (max-width: 640px) {
   #page_content_id {
-    margin-left: 0;
+    margin-left: 0 !important;
     /* Adjust margin-left as needed */
   }
 }
@@ -4703,9 +4676,9 @@ html, body, #app, #app>div {
   background-color: rgb(28 100 242 / var(--tw-bg-opacity));
 }
 
-:is(.dark .dark\:bg-blue-900){
+:is(.dark .dark\:bg-custom-purple){
   --tw-bg-opacity: 1;
-  background-color: rgb(35 56 118 / var(--tw-bg-opacity));
+  background-color: rgb(92 99 255 / var(--tw-bg-opacity));
 }
 
 :is(.dark .dark\:bg-cyan-100){
@@ -4921,11 +4894,6 @@ html, body, #app, #app>div {
 
 :is(.dark .dark\:fill-gray-300){
   fill: #D1D5DB;
-}
-
-:is(.dark .dark\:text-blue-300){
-  --tw-text-opacity: 1;
-  color: rgb(164 202 254 / var(--tw-text-opacity));
 }
 
 :is(.dark .dark\:text-blue-600){
@@ -5822,10 +5790,6 @@ html, body, #app, #app>div {
 
   .sm\:mb-0{
     margin-bottom: 0px;
-  }
-
-  .sm\:ml-64{
-    margin-left: 16rem;
   }
 
   .sm\:flex{
