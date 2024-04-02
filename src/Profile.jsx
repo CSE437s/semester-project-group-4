@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from './supabaseClient';
-import Sidebar from './components/Sidebar';
+import Sidebar1 from './components/Sidebar1';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faTrash } from '@fortawesome/free-solid-svg-icons';
 import ProfilePicture from './components/ProfilePicture';
@@ -294,8 +294,8 @@ export default function Profile({ session }) {
 
     return (
         <div className="app-container bg-light">
-            <Sidebar />
-            <div className="main-content">
+            <Sidebar1 />
+            <div id="page_content_id" className="main-content">
                 <div className="header">
                     <h2>Profile</h2>
                 </div>

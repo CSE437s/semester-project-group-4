@@ -56,3 +56,15 @@ html, body, #app, #app>div {
 .read-the-docs {
   color: #888;
 }
+
+
+#page_content_id{
+  margin-top: 30px !important;
+  margin-left: 200px;
+}
+
+@media only screen and (max-width: 640px) {
+  #page_content_id {
+    margin-left: 0; /* Adjust margin-left as needed */
+  }
+}

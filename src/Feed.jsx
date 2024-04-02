@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
-import Sidebar from './components/Sidebar';
+import Sidebar1 from './components/Sidebar1';
 import './index.css'
 
 const Feed = () => {
@@ -172,7 +172,7 @@ const Feed = () => {
     if (loading || !renderPage) {
         return (
             <div className="app-container">
-                <Sidebar />
+                <Sidebar1 />
                 <div className="main-content">
                     <p>Loading...</p>
                 </div>
@@ -182,7 +182,7 @@ const Feed = () => {
 
     return (
         <div className="app-container">
-            <Sidebar />
+            <Sidebar1 />
             <div className="main-content">
                 <div className="header">
                     <h2>Feed</h2>

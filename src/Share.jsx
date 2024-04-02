@@ -1,7 +1,7 @@
 import './css/share.css'
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
+import Sidebar1 from './components/Sidebar1';
 import SongLayout from './components/SongLayout';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 // import { Link } from 'react-router-dom';
@@ -172,7 +172,7 @@ const Share = () => {
 
   return (
     <div className="app-container">
-      <Sidebar />
+      <Sidebar1 />
       <div className="main-content">
         <div className="header">
           <h2>Share</h2>
