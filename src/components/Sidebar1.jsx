@@ -6,31 +6,53 @@ import '../index.css';
 // import { DarkThemeToggle, Flowbite } from "flowbite-react";
 
 function Sidebar1() {
-  // const [darkMode, setDarkMode] = useState(false);
-
-  // const toggleDarkMode = () => {
-  //   setDarkMode(!darkMode);
-  // };
-  // if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-  //   document.documentElement.classList.add('dark');
-  // } else {
-  //   document.documentElement.classList.remove('dark')
-  // }
-  // const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  // const handleToggleSidebar = () => {
-  //   setIsSidebarOpen(!isSidebarOpen);
-  // };
-
-
+  const [session, setSession] = useState(null);
   document.documentElement.classList.add('dark');
-
-  //functions within the main function
-  const navigate = useNavigate();
-
   const handleLogout = async () => {
     await supabase.auth.signOut();
   };
+
+  const [profileData, setProfileData] = useState({
+    username: "",
+    email: "",
+    picture: ""
+  });
+
+
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      console.log(session.user.id)
+    }).catch(error => {
+      console.error('Error fetching session:', error);
+      setLoading(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('username, email, picture')
+          .eq('id', session.user.id)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        setProfileData(data);
+
+      } catch (error) {
+        console.error('Error fetching profile:', error.message);
+      }
+    };
+
+    fetchProfileData();
+  }, [session]);
 
 
 
@@ -57,16 +79,16 @@ function Sidebar1() {
                 <div>
                   <button type="button" className="flex text-sm bg-custom-purple rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
                     <span className="sr-only">Open user menu</span>
-                    <img className="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo" />
+                    <img className="w-8 h-8 rounded-full" src="{profileData.picture}" alt="user photo" />
                   </button>
                 </div>
                 <div className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
                   <div className="px-4 py-3" role="none">
                     <p className="text-sm text-gray-900 dark:text-white" role="none">
-                      Neil Sims
+                      {profileData.username}
                     </p>
                     <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                      neil.sims@flowbite.com
+                      {profileData.email}
                     </p>
                   </div>
                   <ul className="py-1" role="none">
