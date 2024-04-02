@@ -11,6 +11,27 @@
     left: 0;
 }
 
+@media (max-width: 600px) {
+    .sidebarMain {
+        flex-direction: row;
+        width: 100%;
+        height: 10%;
+        position: fixed;
+        margin-bottom: 10%;
+    }
+    .sidebarName {
+        padding-top: 10px;
+        padding-right: 15px;
+        font-size: 25px !important;
+    }
+    .sideBarPages {
+        flex-direction: row !important;
+    }
+    .sideBarPage { 
+        font-size: 20px !important;
+    }
+}
+
 .app-container {
     overflow: visible;
 }

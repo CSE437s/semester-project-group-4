@@ -59,3 +59,9 @@
 .list-group > li > button {
     margin-left: 1%;
 }
+
+@media (max-width: 600px) {
+    .main-content {
+        margin-top: 20%;
+    }
+}
