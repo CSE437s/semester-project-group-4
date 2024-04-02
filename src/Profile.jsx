@@ -349,10 +349,40 @@ export default function Profile({ session }) {
                 <div className="profile-section">
                     <div className="profile-info">
                         <ProfilePicture />
+
+                        <div id="nameChange" className="flex justify-center items-center">
+                            {isEditing ? (
+                                <div className="flex items-center space-x-2">
+                                    <input
+                                        type="text"
+                                        value={newUsername}
+                                        onChange={(e) => setNewUsername(e.target.value)}
+                                        className="border border-gray-300 px-2 py-1 rounded-md focus:outline-none focus:border-blue-500"
+                                    />
+                                    <button
+                                        onClick={updateUsername}
+                                        className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                                    >
+                                        Save
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex items-center space-x-2">
+                                    <p className="text-gray-700">Username: {myusername}</p>
+                                    <button
+                                        onClick={() => setIsEditing(true)}
+                                        className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:bg-gray-400"
+                                    >
+                                        Edit
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
                         <button onClick={loginWithSpotifyClick} className="profileButton spotifyButton text-white py-2 px-4">Connect to Spotify</button>
                     </div>
 
-                    <div>
+                    {/* <div>
                         {isEditing ? (
                             <div>
                                 <input
@@ -368,7 +398,10 @@ export default function Profile({ session }) {
                                 <button onClick={() => setIsEditing(true)}>Edit</button>
                             </div>
                         )}
-                    </div>
+                    </div> */}
+
+
+
 
 
                     <div className="add-friends mt-10">
