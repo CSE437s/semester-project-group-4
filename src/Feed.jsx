@@ -247,20 +247,21 @@ const Feed = () => {
                                         />
                                         <button className="commentBtn"
                                             onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])}
-                                            style={{ backgroundColor: '#d6d6ba', padding: '5px', borderRadius: '4px' }}
+                                            style={{ backgroundColor: '#5e26ff', color: 'white', borderRadius: '20px' }}
                                         >
                                             Add Comment
                                         </button>
+
                                     </div>
                                 </div>
 
-                         
-                        </div>
+
+                            </div>
 
                         </div>
                     ))}
+                </div>
             </div>
-        </div>
         </div >
     );
 };
