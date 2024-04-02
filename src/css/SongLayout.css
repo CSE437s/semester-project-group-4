@@ -1,0 +1,46 @@
+@import "tailwindcss/base";
+
+@import "tailwindcss/components";
+
+@import "tailwindcss/utilities";
+
+.col{
+    padding: 3%;
+}
+
+/* .btn {
+    font-family: 'FigTree', sans-serif;
+    background-color: #5C63FF;
+    border-radius: 30%;
+} */
+
+.shareButton {
+    font-family: 'FigTree', sans-serif;
+    background-color: #5E26FF;
+    border-radius:20px;
+    height: 40px; 
+}
+
+.shareButton:hover { 
+    background-color: #4316C3;
+}
+
+.shareButton:disabled {
+    opacity: 0.6;
+    background-color: #5E26FF;
+    cursor: not-allowed;
+}
+
+.card {
+    width: 100%;
+}
+
+
+.card-title {
+    font-family: 'FigTree', sans-serif;
+    font-weight: 700;
+}
+
+.card-text{
+    font-family: 'FigTree', sans-serif;
+}

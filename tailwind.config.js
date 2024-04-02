@@ -1,14 +1,17 @@
-module.exports = {
-  content: [
-    './src/**/*.js',
-    './src/**/*.jsx',
-    './src/**/*.ts',
-    './src/**/*.tsx',
-    './src/**/*.html',
-    './src/**/*.css', // Include your Profile3.css file
-  ],
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./src/**/*.{js,ts,jsx,tsx}",
+  "node_modules/flowbite-react/lib/esm/**/*.js"],
   theme: {
-    extend: {},
+    extend: {colors: {
+      'custom-purple': '#5C63FF',
+    },},
   },
-  plugins: [],
+  plugins: [require('flowbite/plugin')],
+  
 }
+
+// module.exports = {
+//   darkMode: 'className',
+//   // ...
+// }

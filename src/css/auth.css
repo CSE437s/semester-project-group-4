@@ -1,0 +1,6 @@
+@media (max-width: 768px) {
+    #logo {
+      display: none !important; /* Hide the image container on small screens */
+    }
+  }
+  

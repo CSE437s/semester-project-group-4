@@ -1,3 +1,71 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+.profile-section {
+    font-family: 'FigTree', sans-serif;
+}
+
+.profileButton {
+    font-family: 'FigTree', sans-serif;
+    background-color: #5E26FF;
+    border-radius:20px;
+    height: 40px; 
+  }
+
+.profileButton:hover { 
+    background-color: #4316C3;
+}
+
+.profileText {
+    font-weight: 700;
+    color: black;
+    letter-spacing: 2px;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.profile-picture {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-info {
+    text-align: center;
+}
+
+.profile-picture > img {
+    width: 10vw;
+    height: 10vw;
+    border-radius: 50%;
+}
+
+.spotifyButton {
+    margin-top: 2%;
+}
+
+.add-friends > input {
+    border-radius: 20px;
+    outline-style: solid;
+    outline-width: 2px;
+    width: 30vw;
+    height: 35px;
+    margin-right: 2%;
+}
+
+.list-group > li {
+    font-family: 'FigTree', sans-serif;
+    font-size: 20px;
+    margin-bottom: 1%;
+}
+
+.list-group > li > button {
+    margin-left: 1%;
+}
+
+@media (max-width: 600px) {
+    .main-content {
+        margin-top: 20%;
+    }
+    .profile-picture > img {
+        width: 25vw;
+        height: 25vw;
+    }
+}

@@ -9,7 +9,8 @@
 .main-content {
   flex: 1;
   /* padding: 20px; */
-  margin: 4%;
+  padding: 4%;
+  overflow: scroll;
 }
 
 /* header */
@@ -35,8 +36,8 @@ h2 {
   
   /* Share Page */
   .share-page {
-    background-color: #f0f0f0;
-    padding: 20px;
+    background-color: white;
+    /* padding: 20px; */
   }
   
   .share-page h2 {

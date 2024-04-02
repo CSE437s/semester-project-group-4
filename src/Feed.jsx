@@ -1,52 +1,253 @@
-import './css/feed.css';
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
-import Post from './components/Post'; // A new component for music posts
-
-// Mock data for demonstration
-const mockPosts = [
-    {
-        id: 1,
-        user: 'Friend 1',
-        songTitle: 'Song Title 1',
-        artist: 'Artist 1',
-        likes: 10,
-        comments: [
-            { user: 'User A', comment: 'Great song!' },
-            { user: 'User B', comment: 'Love this!' },
-        ],
-    },
-    {
-        id: 2,
-        user: 'Friend 2',
-        songTitle: 'Song Title 2',
-        artist: 'Artist 2',
-        likes: 20,
-        comments: [
-            { user: 'User C', comment: 'My favorite.' },
-        ],
-    },
-];
+import { supabase } from './supabaseClient';
+import Sidebar1 from './components/Sidebar1';
+import './index.css'
 
 const Feed = () => {
-    const [posts, setPosts] = useState(mockPosts);
+    const [friends, setFriends] = useState([]);
+    const [sharedSongs, setSharedSongs] = useState([]);
+    const [comments, setComments] = useState({});
+    const [session, setSession] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [renderPage, setRenderPage] = useState(false);
+    const [commentInputs, setCommentInputs] = useState({}); // Track inputs for each song
+    const [songUUID, setSongUUID] = useState(null);
 
     useEffect(() => {
-        setPosts(mockPosts); // In a real app, you would fetch this data
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session);
+            setLoading(false);
+            setTimeout(() => {
+                setRenderPage(true);
+            }, 1000);
+        }).catch(error => {
+            console.error('Error fetching session:', error);
+            setLoading(false);
+        });
     }, []);
+
+    useEffect(() => {
+        if (!session) return;
+
+        async function fetchData() {
+            await getFriends(session);
+        }
+
+        fetchData();
+    }, [session]);
+
+    useEffect(() => {
+        if (friends.length > 0) {
+            fetchSharedSongs(friends);
+        }
+    }, [friends]);
+
+    useEffect(() => {
+        if (sharedSongs.length > 0) {
+            fetchCommentsForSongs();
+        }
+    }, [sharedSongs]);
+
+    async function fetchSharedSongs(friends) {
+        const friendIds = friends.map(friend => friend.data.id); // Modify to access friend id correctly
+
+
+        const sharedSongPromises = friendIds.map(async id => {
+            const { data: songs, error: songsError } = await supabase
+                .from('shared_songs')
+                .select('songUUID, spotifySongId, created_at')
+                .eq('id', id);
+
+            const { data: profiles, error: profilesError } = await supabase
+                .from('profiles')
+                .select('id, picture, username')
+                .eq('id', id);
+
+            if (songsError || profilesError) {
+                console.error('Error fetching data for friend:', id, songsError || profilesError);
+                return [];
+            }
+
+            // Combine the data from shared songs and profiles
+            const combinedData = songs.map(song => ({
+                ...song,
+                profile: profiles.find(profile => profile.id === id)
+            }));
+
+            return combinedData;
+        });
+
+        try {
+            const friendSharedSongs = await Promise.all(sharedSongPromises);
+            setSharedSongs(friendSharedSongs.flat());
+        } catch (error) {
+            console.error('Error fetching shared songs:', error);
+        }
+    }
+
+    async function getFriends(session) {
+        const { data: friendDataList, error } = await supabase
+            .from('friends')
+            .select('is_friends_with')
+            .eq('id', session.user.id);
+
+        if (error) {
+            console.error('Error fetching friends:', error);
+        }
+
+        if (friendDataList) {
+            const friendIdsSet = new Set(friendDataList.map(friend => friend.is_friends_with));
+
+            const friendProfilesPromises = Array.from(friendIdsSet).map(async id => {
+                return await supabase.from('profiles').select('*').eq('id', id).single();
+            });
+
+            try {
+                const friendProfilesArray = await Promise.all(friendProfilesPromises);
+                friendProfilesArray.sort((a, b) => a.id - b.id);
+                setFriends(friendProfilesArray);
+            } catch (error) {
+                console.error('Error fetching profiles for friends:', error);
+            }
+        }
+    }
+
+    async function fetchCommentsForSongs() {
+        const songIds = sharedSongs.map(song => song.songUUID);
+
+        const commentsPromises = songIds.map(async id => {
+            const { data: comments, error } = await supabase
+                .from('feedComments')
+                .select('comment')
+                .eq('songUUID', id);
+
+            if (error) {
+                console.error('Error fetching comments for song:', id, error);
+                return [];
+            }
+
+            return comments;
+        });
+
+        try {
+            const songComments = await Promise.all(commentsPromises);
+            const commentsObject = {};
+            songIds.forEach((id, index) => {
+                commentsObject[id] = songComments[index];
+            });
+            setComments(commentsObject);
+        } catch (error) {
+            console.error('Error fetching comments for songs:', error);
+        }
+    }
+
+    async function addComment(songId, comment) {
+        try {
+            const { data, error: insertError } = await supabase
+                .from('feedComments')
+                .insert([{ songUUID: songId, comment: comment, userID: session.user.id }]);
+
+            if (insertError) {
+                console.error('Error adding comment:', insertError);
+            } else {
+                // Update the comments state only for the specific song that the comment is for
+                setComments(prevComments => ({
+                    ...prevComments,
+                    [songId]: [...(prevComments[songId] || []), { comment, userID: session.user.id }]
+                }));
+            }
+        } catch (error) {
+            console.error('Error adding comment:', error);
+        }
+    }
+
+    const handleInputChange = (e, songId) => {
+        const { value } = e.target;
+        setCommentInputs(prevInputs => ({
+            ...prevInputs,
+            [songId]: value
+        }));
+    };
+
+    if (loading || !renderPage) {
+        return (
+            <div className="app-container">
+                <Sidebar1 />
+                <div className="main-content">
+                    <p>Loading...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="app-container">
-            <Sidebar />
-            <div className="main-content">
+            <Sidebar1 />
+            <div id="page_content_id" className="main-content">
                 <div className="header">
                     <h2>Feed</h2>
                     <p className="headerText">View what your friends have been listening to</p>
                 </div>
-                {posts.map(post => (
-                    <Post key={post.id} post={post} />
-                ))}
+                <div className="song_list">
+                    {sharedSongs.map(song => (
+                        <div key={song.songUUID} className="song-item" style={{ backgroundColor: '#f2f2f2', padding: '10px', marginBottom: '10px' }}>
+                            <div style={{ display: 'flex' }}>
+                                <img
+                                    src={song.profile.picture}
+                                    alt=""
+                                    style={{
+                                        width: 50,
+                                        height: 50,
+                                        borderRadius: '50%',
+                                        border: '1px solid black',
+                                        marginRight: 10,
+                                    }}
+                                />
+                                <div>
+                                    <p style={{ fontWeight: 'bold', color: '#292926' }}>
+                                        Shared by {song.profile.username}
+                                    </p>
+                                    <p>
+                                        {new Date(song.created_at).toLocaleTimeString([], {
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                        })} {''}
+                                        {new Date(song.created_at).toLocaleDateString()}
+                                    </p>
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'left', alignItems: 'center', minHeight: '150px' }}> {/* Center content vertically and horizontally */}
+                                <iframe
+                                    src={`https://open.spotify.com/embed/track/${song.spotifySongId}`}
+                                    width="300"
+                                    height="80"
+                                    frameBorder="0"
+                                    allowtransparency="true"
+                                    allow="encrypted-media"
+                                />
+                            </div>
+                            <div style={{ marginTop: 10 }}>
+                                <h3>Comments:</h3>
+                                <ul>
+                                    {comments[song.songUUID] &&
+                                        comments[song.songUUID].map((comment, index) => (
+                                            <li key={index}>{comment.comment}</li>
+                                        ))}
+                                </ul>
+                                <input
+                                    type="text"
+                                    placeholder="Add a comment..."
+                                    value={commentInputs[song.songUUID] || ''}
+                                    onChange={e => handleInputChange(e, song.songUUID)}
+                                    style={{ borderRadius: '4px', padding: '5px' }}
+                                />
+                                <button onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])} style={{ backgroundColor: '#d6d6ba', padding: '5px', borderRadius: '4px' }}>
+                                    Add Comment
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

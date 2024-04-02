@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-// import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from './supabaseClient';
-import Sidebar from './components/Sidebar';
+import Sidebar1 from './components/Sidebar1';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faTrash } from '@fortawesome/free-solid-svg-icons';
+import ProfilePicture from './components/ProfilePicture';
 import './css/Profile3.css';
 
 
@@ -12,7 +12,6 @@ export default function Profile({ session }) {
     const [username, setUsername] = useState('');
     const [friends, setFriends] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
-
     //SPOTIFY
 
     const clientId = "1892c29e22e44ec686fa22a8e891b0f9";
@@ -294,51 +293,44 @@ export default function Profile({ session }) {
     }
 
     return (
-        <div className="app-container bg-gradient-to-r from-indigo-500 to-blue-400">
-            <Sidebar />
-            <div className="container mx-auto px-4 py-8 main-content">
-                <div className="header text-center mb-8">
-                    <h2 className="text-3xl font-bold text-white">Profile</h2>
+        <div className="app-container bg-light">
+            <Sidebar1 />
+            <div id="page_content_id" className="main-content">
+                <div className="header">
+                    <h2>Profile</h2>
                 </div>
-                <div className="flex justify-center">
-                    <button type="button" className="btn bg-green-500 text-white hover:bg-green-700 focus:outline-none font-bold py-2 px-4 rounded-full">
-                        Connect to Spotify
-                        <i className="fas fa-spotify ml-2"></i>
-                    </button>
-                </div>
-                <div className="profile-section text-center mt-8">
-                    <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control px-4 py-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500 w-full mx-auto mb-4" />
-                    <button type="button" className="btn bg-indigo-500 text-white hover:bg-indigo-700 focus:outline-none font-bold py-2 px-4 rounded-full">
-                        Add Friend
-                        <i className="fas fa-user-plus ml-2"></i>
-                    </button>
-
+                <div className="profile-section">
+                    <div className="profile-info">
+                        <ProfilePicture/>
+                        <button onClick={loginWithSpotifyClick} className="profileButton spotifyButton text-white py-2 px-4">Connect to Spotify</button>
+                    </div>
+                    <div className="add-friends mt-10">
+                        <h3 className="profileText">Add Friend</h3>
+                        <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
+                        <button onClick={handleSendFriendRequest} className="profileButton text-white py-2 px-4">Add Friend</button>
+                    </div>
                     <div className="friendsList mt-10">
-                        <h3 className="text-center mt-4 text-xl font-bold text-white"> My Friends </h3>
-                        <ul className="list-none mt-4">
+                        <h3 className="profileText">My Friends</h3>
+                        <ul className="list-group mt-4">
                             {friends.map(friend => (
-                                <li key={friend} className="flex items-center justify-between border shadow-sm rounded-md p-4 my-2 bg-gray-100">
+                                <li key={friend} className="list-group-item d-flex justify-content-between align-items-center my-2">
                                     {friend}
-                                    <button type="button" className="btn bg-red-500 text-white hover:bg-red-700 focus:outline-none px-3 py-1 rounded-full">
-                                        <i className="fas fa-trash"></i>
+                                    <button onClick={() => handleRemoveFriend(friend)} className="btn btn-danger btn-sm">
+                                        <FontAwesomeIcon icon={faTrash} />
                                     </button>
                                 </li>
                             ))}
                         </ul>
                     </div>
                     <div className="pending-requests mt-10">
-                        <h3 className="text-center mt-4 text-xl font-bold text-white">Pending Requests</h3>
-                        <ul className="list-none mt-4">
+                        <h3 className="profileText">Pending Requests</h3>
+                        <ul className="list-group mt-4">
                             {pendingRequests.map(requestUserId => (
-                                <li key={requestUserId} className="flex items-center justify-between border shadow-sm rounded-md p-4 my-2 bg-gray-100">
+                                <li key={requestUserId} className="list-group-item d-flex justify-content-between align-items-center my-2">
                                     <span>Pending request from {requestUserId}</span>
-                                    <div className="flex space-x-2">
-                                        <button type="button" className="btn bg-green-500 text-white hover:bg-green-700 focus:outline-none px-3 py-1 rounded-full">
-                                            <i className="fas fa-check"></i>
-                                        </button>
-                                        <button type="button" className="btn bg-red-500 text-white hover:bg-red-700 focus:outline-none px-3 py-1 rounded-full">
-                                            <i className="fas fa-times"></i>
-                                        </button>
+                                    <div>
+                                        <button onClick={() => handleAcceptRequest(requestUserId)} className="btn btn-success btn-sm mx-2">Accept</button>
+                                        <button onClick={() => handleRejectRequest(requestUserId)} className="btn btn-danger btn-sm">Reject</button>
                                     </div>
                                 </li>
                             ))}
@@ -347,6 +339,5 @@ export default function Profile({ session }) {
                 </div>
             </div>
         </div>
-
     );
 }

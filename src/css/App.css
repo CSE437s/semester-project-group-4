@@ -1,8 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
 
 #root {
-  /* max-width: 1280px; */
-  /* margin: 0 auto;
+  /* max-width: 1280px;
+  margin: 0 auto;
   padding: 2rem;
   text-align: center; */
   width: 100%;
@@ -51,4 +55,16 @@ html, body, #app, #app>div {
 
 .read-the-docs {
   color: #888;
+}
+
+
+#page_content_id{
+  margin-top: 30px !important;
+  margin-left: 250px !important;
+}
+
+@media only screen and (max-width: 640px) {
+  #page_content_id {
+    margin-left: 0 !important; /* Adjust margin-left as needed */
+  }
 }
