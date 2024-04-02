@@ -36,7 +36,7 @@ function Sidebar1() {
     const fetchProfileData = async () => {
       try {
         // Wait for 1 second before making the fetch request
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise(resolve => setTimeout(resolve, 3000));
 
         const { data, error } = await supabase
           .from('profiles')
@@ -51,7 +51,7 @@ function Sidebar1() {
         setProfileData(data);
 
       } catch (error) {
-        console.error('Error fetching profile:', error.message);
+        console.error('Sidebar1.jsx - Error fetching profile:', error.message);
       }
     };
 
