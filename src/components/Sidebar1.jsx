@@ -36,7 +36,7 @@ function Sidebar1() {
     const fetchProfileData = async () => {
       try {
         // Wait for 1 second before making the fetch request
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 1500));
 
         const { data, error } = await supabase
           .from('profiles')
@@ -81,7 +81,7 @@ function Sidebar1() {
                 </svg>
               </button>
               <a href="#" className="flex ms-2 md:me-24">
-                <img src="../public/login-background.jpg" className="h-8 w-8 me-3" alt="Logo" />
+                <img src="/login-background.jpg" className="h-8 w-8 me-3" alt="Logo" />
                 <span className="self-center text-xl font-extrabold text-purple-800 sm:text-2xl whitespace-nowrap dark:text-white">groove</span>
               </a>
             </div>
@@ -152,3 +152,5 @@ function Sidebar1() {
 }
 
 export default Sidebar1;
+
+//used component from : https://flowbite.com/docs/components/sidebar/
