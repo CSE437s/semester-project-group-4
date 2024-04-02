@@ -230,11 +230,11 @@ const Feed = () => {
                                     />
                                 </div>
                                 <div className="shiftRight" style={{ marginTop: 10 }}>
-                                    <h3>Comments:</h3>
+                                    <h3 id="CommentTitle">Comments:</h3>
                                     <ul>
                                         {comments[song.songUUID] &&
                                             comments[song.songUUID].map((comment, index) => (
-                                                <li key={index}>{comment.comment}</li>
+                                                <li className="individualComment" key={index}>{comment.comment}</li>
                                             ))}
                                     </ul>
                                     <div style={{ display: 'flex' }}>
