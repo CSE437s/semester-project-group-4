@@ -64,4 +64,8 @@
     .main-content {
         margin-top: 20%;
     }
+    .profile-picture > img {
+        width: 25vw;
+        height: 25vw;
+    }
 }
