@@ -20,3 +20,42 @@
     font-size: 24px;
     margin-bottom: 20px;
 }
+
+.profile-picture {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-info {
+    text-align: center;
+}
+
+.profile-picture > img {
+    width: 10vw;
+    height: 10vw;
+    border-radius: 50%;
+}
+
+.spotifyButton {
+    margin-top: 2%;
+}
+
+.add-friends > input {
+    border-radius: 20px;
+    outline-style: solid;
+    outline-width: 2px;
+    width: 30vw;
+    height: 35px;
+    margin-right: 2%;
+}
+
+.list-group > li {
+    font-family: 'FigTree', sans-serif;
+    font-size: 20px;
+    margin-bottom: 1%;
+}
+
+.list-group > li > button {
+    margin-left: 1%;
+}

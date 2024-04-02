@@ -300,8 +300,10 @@ export default function Profile({ session }) {
                     <h2>Profile</h2>
                 </div>
                 <div className="profile-section">
-                    <button onClick={loginWithSpotifyClick} className="profileButton text-white py-2 px-4">Connect to Spotify</button>
-                    <ProfilePicture/>
+                    <div className="profile-info">
+                        <ProfilePicture/>
+                        <button onClick={loginWithSpotifyClick} className="profileButton spotifyButton text-white py-2 px-4">Connect to Spotify</button>
+                    </div>
                     <div className="add-friends mt-10">
                         <h3 className="profileText">Add Friend</h3>
                         <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
