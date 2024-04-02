@@ -13,7 +13,10 @@
   height: 100%;
 }
 
-html, body, #app, #app>div {
+html,
+body,
+#app,
+#app>div {
   height: 100%
 }
 
@@ -27,9 +30,11 @@ html, body, #app, #app>div {
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -38,6 +43,7 @@ html, body, #app, #app>div {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -58,13 +64,11 @@ html, body, #app, #app>div {
 }
 
 
-#page_content_id{
-  margin-top: 30px !important;
-  margin-left: 250px !important;
-}
 
 @media only screen and (max-width: 640px) {
-  #page_content_id {
-    margin-left: 0 !important; /* Adjust margin-left as needed */
+  #media-sidebar-wrapper {
+    font-size: 5px;
+    font-weight: 100;
+    color:red;
   }
 }

@@ -71,7 +71,7 @@ export default function Auth() {
           <div className="mt-10">
             <button
               type="submit"
-              className="w-full shadow-xl py-3 px-4 text-sm font-semibold rounded text-white bg-purple-600 hover:bg-purple-700 focus:outline-none"
+              className="w-full shadow-xl py-3 px-4 text-sm font-semibold rounded text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
               disabled={loading}>
               {loading ? (isLogin ? 'Logging in...' : 'Registering...') : (isLogin ? 'Log in' : 'Register')}
             </button>
