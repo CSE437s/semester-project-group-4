@@ -3,7 +3,7 @@
     flex-direction: column;
     width: 250px; /* Adjust width as needed */
     background-color: #5C63FF;
-    padding: 3% 2%;
+    padding: 1% 2%;
     box-sizing: border-box; /* Ensure padding doesn't add to the width */
     height: 100%;
     position: sticky;
@@ -54,13 +54,18 @@
 .sideBarPage {
     font-family: 'FigTree', sans-serif;
     font-weight: 500;
-    font-size: x-large;
+    font-size: large;
     letter-spacing: 2px;
     color: white;
     padding: 15px 0; /* Reduced padding for less space between items */
     margin-left: 2%; /* To align text */
     text-decoration: none;
     width: 100%;
+}
+
+.sideBarPage:hover {
+    font-weight: 700;
+    letter-spacing: 3px;
 }
 
 /* This is for the div that contains the Sign out button */
@@ -73,7 +78,7 @@
 .signOutButton {
     font-family: 'FigTree', sans-serif;
     font-weight: 500;
-    font-size: x-large;
+    font-size: large;
     letter-spacing: 2px;
     color: white;
     background: none;
@@ -84,6 +89,6 @@
     margin-left: 2%; /* To align text */
 }
 
-.signOutButton:hover {
+/* .signOutButton:hover {
     text-decoration: underline;
-}
+} */
