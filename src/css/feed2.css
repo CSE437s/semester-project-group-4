@@ -8,6 +8,10 @@
 .commentBtn {
     width: 180px !important;
     padding: 5px;
+    background-color: #5e26ff;
+    color: white;
+    border-radius: 20px;
+    white-space: nowrap;
 }
 
 .song_list {
