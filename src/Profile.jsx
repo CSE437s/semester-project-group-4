@@ -396,8 +396,11 @@ export default function Profile({ session }) {
                                 <li key={requestUserId} className="list-group-item d-flex justify-content-between align-items-center my-2">
                                     <span>Pending request from {requestUserId}</span>
                                     <div>
-                                        <button onClick={() => handleAcceptRequest(requestUserId)} className="btn btn-success btn-sm mx-2">Accept</button>
-                                        <button onClick={() => handleRejectRequest(requestUserId)} className="btn btn-danger btn-sm">Reject</button>
+                                        {/* <button onClick={() => handleAcceptRequest(requestUserId)} className="btn btn-success btn-sm mx-2">Accept</button>
+                                        <button onClick={() => handleRejectRequest(requestUserId)} className="btn btn-danger btn-sm">Reject</button> */}
+                                        <button onClick={() => handleAcceptRequest(requestUserId)} className="bg-green-500 text-white px-3 py-1 rounded-sm text-sm mx-2">Accept</button>
+                                        <button onClick={() => handleRejectRequest(requestUserId)} className="bg-red-500 text-white px-3 py-1 rounded-sm text-sm">Reject</button>
+
                                     </div>
                                 </li>
                             ))}
