@@ -3,7 +3,7 @@
     flex-direction: column;
     width: 250px; /* Adjust width as needed */
     background-color: #5C63FF;
-    padding: 1% 2%;
+    padding: 17px 2%;
     box-sizing: border-box; /* Ensure padding doesn't add to the width */
     height: 100%;
     position: sticky;
@@ -22,13 +22,13 @@
     .sidebarName {
         padding-top: 10px;
         padding-right: 15px;
-        font-size: 25px !important;
+        font-size: 22px !important;
     }
     .sideBarPages {
         flex-direction: row !important;
     }
     .sideBarPage { 
-        font-size: 20px !important;
+        font-size: 16px !important;
     }
 }
 
