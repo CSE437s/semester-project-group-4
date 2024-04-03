@@ -21,9 +21,9 @@ export default function Profile({ session }) {
     const clientId = "1892c29e22e44ec686fa22a8e891b0f9";
     //const clientId = process.env.REACT_APP_SPOTIFY_API_ID; // Your client id
 
-    // const redirectUri = "https://semester-project-group-4.vercel.app/Share"; //takes us back here after agreeing to Spotify
+    const redirectUri = "https://semester-project-group-4.vercel.app/Share"; //takes us back here after agreeing to Spotify
 
-    const redirectUri = "http://localhost:5173/Share"; //takes us back here after agreeing to Spotify
+    // const redirectUri = "http://localhost:5173/Share"; //takes us back here after agreeing to Spotify
 
     const scope = 'user-read-private user-read-email user-top-read';
 
