@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
+import FriendSearch from './components/FriendSearch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faTrash } from '@fortawesome/free-solid-svg-icons';
 import ProfilePicture from './components/ProfilePicture';
@@ -15,8 +16,6 @@ const Friends = () => {
     const [friends, setFriends] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
     const [myusername, setmyUsername] = useState(null);
-    const [newUsername, setNewUsername] = useState('');
-    // const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -189,7 +188,7 @@ const Friends = () => {
     }
 
     async function handleSendFriendRequest() {
-        // Find the user by username
+        // Find the recipient friend's UUID from their username
         const { data: friendData, error } = await supabase
             .from('profiles')
             .select('id')
@@ -275,21 +274,20 @@ const Friends = () => {
         setIsEditing(false);
     }
 
-
     return (
         <div className="app-container">
             <Sidebar />
             <div id="page_content_id" className="main-content">
                 <div className="header">
                     <h2>My Friends</h2>
-                    {/* <p className="headerText">View what your friends have been listening to</p> */}
                 </div>
                 <div className="friendContent">
-                    <div className="add-friends mt-10">
+                    {/* <div className="add-friends mt-10">
                         <h3 className="profileText">Add Friend</h3>
                         <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
                         <button onClick={handleSendFriendRequest} className="profileButton text-white py-2 px-4">Add Friend</button>
-                    </div>
+                    </div> */}
+                    <FriendSearch />
                     <div className="friendsList mt-10">
                         <h3 className="profileText">My Friends</h3>
                         <ul className="list-group mt-4">
@@ -312,7 +310,6 @@ const Friends = () => {
                                     <div>
                                         <button onClick={() => handleAcceptRequest(requestUserId)} className="bg-green-500 text-white px-3 py-1 rounded-sm text-sm mx-2">Accept</button>
                                         <button onClick={() => handleRejectRequest(requestUserId)} className="bg-red-500 text-white px-3 py-1 rounded-sm text-sm">Reject</button>
-
                                     </div>
                                 </li>
                             ))}

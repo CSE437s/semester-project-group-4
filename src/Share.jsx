@@ -58,7 +58,7 @@ const Share = () => {
 
     if(data.access_token != undefined) {
       // Store tokens in localStorage
-      localStorage.setItem('access_token', data.access_token);
+      localStorage.setItem('access_token', data.access_token); //STORE ONN SUPABASE
       localStorage.setItem('refresh_token', data.refresh_token);
 
       console.log("Access token stored:", localStorage.getItem('access_token'));
@@ -96,7 +96,7 @@ const Share = () => {
    }
 
   async function getUserTopSongs() {
-    let accessToken = localStorage.getItem('access_token');
+    let accessToken = localStorage.getItem('access_token'); //RETRIEVE FROM SUPABASAE
     console.log("accesss token: " + accessToken);
   
     const response = await fetch(TRACKS, {
