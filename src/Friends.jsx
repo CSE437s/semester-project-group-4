@@ -271,7 +271,6 @@ const Friends = () => {
         console.log("data", data)
         console.log("muuseraname", myusername);
         console.log("data.user", data.username);
-        setIsEditing(false);
     }
 
     return (
@@ -282,11 +281,6 @@ const Friends = () => {
                     <h2>My Friends</h2>
                 </div>
                 <div className="friendContent">
-                    {/* <div className="add-friends mt-10">
-                        <h3 className="profileText">Add Friend</h3>
-                        <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
-                        <button onClick={handleSendFriendRequest} className="profileButton text-white py-2 px-4">Add Friend</button>
-                    </div> */}
                     <FriendSearch />
                     <div className="friendsList mt-10">
                         <h3 className="profileText">My Friends</h3>

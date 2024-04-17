@@ -1,64 +1,69 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import Fuse from 'fuse.js'; // Assuming Fuse.js is installed
+
+import { supabase } from '../supabaseClient'; // Replace with your Supabase client initialization
 
 const FriendSearch = () => {
-  const [session, setSession] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [friends, setFriends] = useState([]);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-    })
-  }, [])
+  const options = {
+    keys: ['username'], // Search by username
+    threshold: 0.4, // Adjust the minimum match score (0-1)
+  };
+
+  const fuse = React.useMemo(() => {
+    return searchTerm ? new Fuse(profiles, options) : null;
+  }, [searchTerm, profiles]); // Rebuild fuse on searchTerm or profiles change
 
   useEffect(() => {
     const fetchFriends = async () => {
       const { data, error } = await supabase
         .from('friends')
-        .select('is_friends_with')
-        .eq('id', session.user.id);
+        .select('friend_id')
+        .eq('user_id', supabase.auth.user().id);
+
       if (error) {
         console.error('Error fetching friends:', error);
         return;
       }
+
       setFriends(data.map((friend) => friend.friend_id));
-      alert(friends);
     };
+
     fetchFriends();
   }, []);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      if (!searchTerm) {
-        setSearchResults([]);
-        return;
-      }
-
+    const fetchProfiles = async () => {
       const { data, error } = await supabase
-        .from('profiles')
-        .select('id', 'username')
-        .ilike('username', `%${searchTerm}%`)
-        .neq('id', session.user.id);
+        .from('Profiles')
+        .select('id', 'username');
 
       if (error) {
         console.error('Error fetching users:', error);
         return;
       }
 
-      setSearchResults(
-        data.filter((user) => !friends.includes(user.id))
-      );
+      const profiles = data.filter((user) => user.id !== supabase.auth.user().id);
+      setSearchResults(profiles); // Store all profiles for Fuse search
     };
 
-    fetchUsers();
-  }, [searchTerm, friends]);
+    fetchProfiles();
+  }, []);
+
+  const handleSearch = () => {
+    if (!fuse) return;
+
+    const results = fuse.search(searchTerm);
+    setSearchResults(results.map((result) => result.item));
+  };
 
   const handleAddFriend = async (userId) => {
     const { error } = await supabase
       .from('friends')
-      .insert([{ user_id: session.user.id, friend_id: userId }]);
+      .insert([{ user_id: supabase.auth.user().id, friend_id: userId }]);
 
     if (error) {
       console.error('Error adding friend:', error);
@@ -76,6 +81,7 @@ const FriendSearch = () => {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
+      <button onClick={handleSearch}>Search</button>
       {searchResults.length > 0 && (
         <ul>
           {searchResults.map((user) => (
