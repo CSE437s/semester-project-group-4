@@ -24,7 +24,7 @@ const FriendSearch = () => {
         return;
       }
       setFriends(data.map((friend) => friend.friend_id));
-      alert(friends);
+      console.log("friends-logA1",friends);
     };
     fetchFriends();
   }, []);
@@ -46,6 +46,7 @@ const FriendSearch = () => {
         console.error('Error fetching users:', error);
         return;
       }
+      console.log("raw usernames data", data);
 
       setSearchResults(
         data.filter((user) => !friends.includes(user.id))
@@ -55,18 +56,45 @@ const FriendSearch = () => {
     fetchUsers();
   }, [searchTerm, friends]);
 
-  const handleAddFriend = async (userId) => {
-    const { error } = await supabase
-      .from('friends')
-      .insert([{ user_id: session.user.id, friend_id: userId }]);
+  async function handleSendFriendRequest() {
+    // Find the recipient friend's UUID from their username
+    const { data: friendData, error } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('username', username)
+      .single();
 
     if (error) {
-      console.error('Error adding friend:', error);
+      console.error('Error fetching friend:', error);
       return;
     }
 
-    setFriends([...friends, userId]);
-  };
+    if (!friendData) {
+      alert('No user found with this username');
+      return;
+    }
+
+    const friendId = friendData.id;
+
+    // Check if friend request already sent
+    const existingRequest = pendingRequests.includes(friendId);
+    if (existingRequest) {
+      alert('Friend request already sent');
+      return;
+    }
+
+    // Send friend request
+    const { data: requestData, error: requestError } = await supabase
+      .from('friend_requests')
+      .insert([{ from_user: session.user.id, to_user: friendId }]);
+
+    if (requestError) {
+      console.error('Error sending friend request:', requestError);
+    } else {
+      console.log('Friend request sent successfully:', requestData);
+      getPendingRequests();
+    }
+  }
 
   return (
     <div>
@@ -82,7 +110,7 @@ const FriendSearch = () => {
             <li key={user.id}>
               {user.username}
               {!friends.includes(user.id) && (
-                <button onClick={() => handleAddFriend(user.id)}>
+                <button onClick={() => handleSendFriendRequest(user.id)}>
                   Add Friend
                 </button>
               )}
