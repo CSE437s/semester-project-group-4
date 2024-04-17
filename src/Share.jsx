@@ -8,9 +8,13 @@ import SongLayout from './components/SongLayout';
  import axios from 'axios'; // for API requests
  import qs from 'qs';
  import {Buffer} from 'buffer';
+ import { useCookies } from 'react-cookie';
 
 const Share = () => {
   const [topSongs, setTopSongs] = useState([]);
+  const [spotifyTokenHook, setSpotifyTokenHook] = useState([]);
+  const [refreshTokenHook, setRefreshTokenHook] = useState([]);
+
 
   //const clientId = process.env.REACT_APP_SPOTIFY_API_ID; // Your client id
   const clientId = "1892c29e22e44ec686fa22a8e891b0f9";
@@ -60,6 +64,7 @@ const Share = () => {
       // Store tokens in localStorage
       localStorage.setItem('access_token', data.access_token); //STORE ONN SUPABASE
       localStorage.setItem('refresh_token', data.refresh_token);
+      //use http only cookie instead of localstorage
 
       console.log("Access token stored:", localStorage.getItem('access_token'));
       console.log("Refresh token stored:", localStorage.getItem('refresh_token'));
