@@ -14,7 +14,9 @@ const Share = () => {
 
   //const clientId = process.env.REACT_APP_SPOTIFY_API_ID; // Your client id
   const clientId = "1892c29e22e44ec686fa22a8e891b0f9";
-  const redirectUri = "http://localhost:5173/Share"; //will need to change this when hosting on vercel
+  // const redirectUri = "http://localhost:5173/Share"; //will need to change this when hosting on vercel
+  const redirectUri = "https://semester-project-group-4.vercel.app/Share"; //takes us back here after agreeing to Spotify
+
   let tokenEndpoint = "https://accounts.spotify.com/api/token";
   const TRACKS = 'https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=10&offset=0';
 
