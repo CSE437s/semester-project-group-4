@@ -40,7 +40,6 @@ const Share = () => {
     // stored in the previous step
     let codeVerifier = localStorage.getItem('code_verifier');
 
-
     const response = await fetch(tokenEndpoint, {
       method: 'POST',
       headers: {
