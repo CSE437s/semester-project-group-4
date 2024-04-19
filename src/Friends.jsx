@@ -46,7 +46,7 @@ const Friends = () => {
             const pendingUsernames = await Promise.all(pendingUserIds.map(async id => {
                 const { data: userData, error: userError } = await supabase
                     .from('profiles')
-                    .select('username')
+                    .select('username, id')
                     .eq('id', id)
                     .single();
                 if (userError) {
