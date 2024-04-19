@@ -103,10 +103,13 @@ const FriendSearch = () => {
       <input
         type="text"
         style={{ width: '300px' }}
-        className="bg-white border border-gray-700 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" placeholder="Search for users"
+        className="bg-white border border-gray-700 text-black font-bold text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-black placeholder:font-bold"
+        placeholder="Search for users"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
+
+
 
 
       {searchResults.length > 0 && (

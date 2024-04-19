@@ -993,6 +993,10 @@ video {
   font-weight: 600;
 }
 
+.font-bold{
+  font-weight: 700;
+}
+
 .leading-\[2\.15\]{
   line-height: 2.15;
 }
@@ -1035,6 +1039,21 @@ video {
 .text-neutral-200{
   --tw-text-opacity: 1;
   color: rgb(229 229 229 / var(--tw-text-opacity));
+}
+
+.text-black{
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+.placeholder-black::-moz-placeholder{
+  --tw-placeholder-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-placeholder-opacity));
+}
+
+.placeholder-black::placeholder{
+  --tw-placeholder-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-placeholder-opacity));
 }
 
 .shadow-lg{
@@ -1205,6 +1224,14 @@ html, body, #app, #app>div {
 
 .file\:\[margin-inline-end\:0\.75rem\]::file-selector-button{
   margin-inline-end: 0.75rem;
+}
+
+.placeholder\:font-bold::-moz-placeholder{
+  font-weight: 700;
+}
+
+.placeholder\:font-bold::placeholder{
+  font-weight: 700;
 }
 
 .hover\:bg-blue-600:hover{
