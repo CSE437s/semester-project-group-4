@@ -24,7 +24,7 @@ const FriendSearch = () => {
         return;
       }
       setFriends(data.map((friend) => friend.friend_id));
-      console.log("friendsList",friendsList);
+      console.log("friendsList", friendsList);
     };
     fetchFriends();
   }, [session]);
@@ -38,9 +38,9 @@ const FriendSearch = () => {
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('"id"', 'username')
+        .select('id, username')
         .ilike('username', `%${searchTerm}%`)
-        // .neq('id', session.user.id);
+        .neq('id', session.user.id);
 
       if (error) {
         console.error('Error fetching users:', error);
