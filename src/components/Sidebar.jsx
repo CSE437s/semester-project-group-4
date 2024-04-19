@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient'; 
 import '../css/Sidebar.css';
-
+import { FaSignOutAlt } from 'react-icons/fa'
 function Sidebar() {
   const navigate = useNavigate();
 
@@ -21,8 +21,9 @@ function Sidebar() {
       </div>
       {/* Sign-out button at the bottom */}
       <div className="sideBarSignOut">
-        <button onClick={handleLogout} className="sideBarPage signOutButton">
-          Sign out
+        <button title="Sign Out" onClick={handleLogout} className="sideBarPage signOutButton">
+          {/* Sign out */}
+          <FaSignOutAlt />
         </button>
       </div>
     </div>

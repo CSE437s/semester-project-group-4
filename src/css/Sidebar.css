@@ -1,39 +1,14 @@
 .sidebarMain {
     display: flex;
     flex-direction: column;
-    width: 250px; /* Adjust width as needed */
+    width: 250px;
     background-color: #5C63FF;
     padding: 17px 2%;
-    box-sizing: border-box; /* Ensure padding doesn't add to the width */
+    box-sizing: border-box;
     height: 100%;
     position: sticky;
     top: 0;
     left: 0;
-}
-
-@media (max-width: 600px) {
-    .sidebarMain {
-        flex-direction: row;
-        width: 100%;
-        height: 10%;
-        position: fixed;
-        margin-bottom: 10%;
-    }
-    .sidebarName {
-        padding-top: 10px;
-        padding-right: 15px;
-        font-size: 22px !important;
-    }
-    .sideBarPages {
-        flex-direction: row !important;
-    }
-    .sideBarPage { 
-        font-size: 16px !important;
-    }
-}
-
-.app-container {
-    overflow: visible;
 }
 
 .sidebarName {
@@ -42,11 +17,13 @@
     color: white;
     font-size: xxx-large;
     letter-spacing: 2px;
-    margin-bottom: 3%; /* Reduced margin-bottom */
+    margin-bottom: 3%;
+    /* Adjust margin-bottom as needed */
 }
 
 .sideBarPages {
-    flex-grow: 1; /* Allow this container to fill the space */
+    flex-grow: 1;
+    /* Allow this container to fill the space */
     display: flex;
     flex-direction: column;
 }
@@ -57,8 +34,10 @@
     font-size: large;
     letter-spacing: 2px;
     color: white;
-    padding: 15px 0; /* Reduced padding for less space between items */
-    margin-left: 2%; /* To align text */
+    padding: 15px 0;
+    /* Adjust padding for spacing between items */
+    margin-left: 2%;
+    /* To align text */
     text-decoration: none;
     width: 100%;
 }
@@ -68,11 +47,11 @@
     letter-spacing: 3px;
 }
 
-/* This is for the div that contains the Sign out button */
 .signOutButtonContainer {
     padding: 8px 0;
     width: 100%;
-    margin-top: auto; /* Pushes the container to the bottom */
+    margin-top: auto;
+    /* Pushes the container to the bottom */
 }
 
 .signOutButton {
@@ -86,9 +65,52 @@
     text-align: left;
     width: 100%;
     cursor: pointer;
-    margin-left: 2%; /* To align text */
+    margin-left: 2%;
 }
 
-/* .signOutButton:hover {
-    text-decoration: underline;
-} */
+@media (max-width: 600px) {
+    .sidebarMain {
+        flex-direction: row;
+        width: 100%;
+        height: 10%;
+        position: fixed;
+        bottom: 0;
+        /* Adjusted to bottom to avoid overlap with main content */
+        z-index: 1000;
+        /* Ensures the sidebar stays on top */
+    }
+
+    .sidebarName,
+    .sideBarPages,
+    .sideBarSignOut {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sidebarName {
+        padding-right: 15px;
+        font-size: 22px !important;
+        /* Larger text for visibility */
+    }
+
+    .sideBarPages {
+        flex-direction: row !important;
+    }
+
+    .sideBarPage {
+        font-size: 16px !important;
+        /* Smaller text to fit in row layout */
+        padding: 15px 10px;
+        /* Adjust padding to fit within row */
+        margin: 0;
+        /* Remove margin for alignment in row */
+    }
+
+    .signOutButton {
+        justify-content: center;
+        /* Center button text */
+    }
+}
