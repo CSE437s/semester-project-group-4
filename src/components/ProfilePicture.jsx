@@ -147,7 +147,7 @@ const ProfilePicture = () => {
 
 
             )}
-            {/* <input id="fileInput" type="file" style={{ display: 'none' }} onChange={handleFileUpload} /> */}
+            <input id="fileInput" type="file" style={{ display: 'none' }} onChange={handleFileUpload} />
         </div>
     );
 };
