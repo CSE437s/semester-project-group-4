@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import '../css/FriendSearch.css'
+import { FaUserPlus } from 'react-icons/fa';
 
 const FriendSearch = () => {
   const [session, setSession] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [friendsList, setFriends] = useState([]);
+  const [pendingRequests, setPendingRequests] = useState([]);
+
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -57,26 +61,41 @@ const FriendSearch = () => {
     fetchUsers();
   }, [searchTerm, friendsList]);
 
-  async function handleSendFriendRequest() {
-    // Find the recipient friend's UUID from their username
-    const { data: friendData, error } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('username', username)
-      .single();
+  useEffect(() => {
+    getPendingRequests();
+}, [session]);
+
+  async function getPendingRequests() {
+    const { data: pendingData, error } = await supabase
+      .from('friend_requests')
+      .select('from_user')
+      .eq('to_user', session.user.id);
 
     if (error) {
-      console.error('Error fetching friend:', error);
+      console.error('Error fetching pending requests:', error);
       return;
     }
 
-    if (!friendData) {
-      alert('No user found with this username');
-      return;
+    if (pendingData) {
+      const pendingUserIds = pendingData.map(request => request.from_user);
+      const pendingUsernames = await Promise.all(pendingUserIds.map(async id => {
+        const { data: userData, error: userError } = await supabase
+          .from('profiles')
+          .select('username')
+          .eq('id', id)
+          .single();
+        if (userError) {
+          console.error(`Error fetching username for user id ${id}:`, userError);
+          return null;
+        }
+        return userData ? userData.username : null;
+      }));
+      setPendingRequests(pendingUsernames.filter(username => username !== null));
+      console.log("pendingRequests: " + pendingUsernames.filter(username => username !== null));
     }
+  }
 
-    const friendId = friendData.id;
-
+  async function handleSendFriendRequest(friendId) {
     // Check if friend request already sent
     const existingRequest = pendingRequests.includes(friendId);
     if (existingRequest) {
@@ -97,6 +116,8 @@ const FriendSearch = () => {
     }
   }
 
+
+
   return (
     <div>
 
@@ -110,22 +131,23 @@ const FriendSearch = () => {
       />
 
 
-
-
       {searchResults.length > 0 && (
-        <ul>
+        <ul className="search-results">
           {searchResults.map((user) => (
-            <li key={user.id}>
+            <li key={user.id} className="user-item">
               {user.username}
               {!friendsList.includes(user.id) && (
-                <button onClick={() => handleSendFriendRequest(user.id)}>
-                  Add Friend
+                <button className="add-friend-button" onClick={() => handleSendFriendRequest(user.id)}>
+                  <FaUserPlus /> Add Friend
                 </button>
               )}
             </li>
           ))}
         </ul>
       )}
+
+
+
     </div>
   );
 };
