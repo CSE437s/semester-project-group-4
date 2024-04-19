@@ -5,7 +5,7 @@ const FriendSearch = () => {
   const [session, setSession] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [friends, setFriends] = useState([]);
+  const [friendsList, setFriends] = useState([]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -24,10 +24,10 @@ const FriendSearch = () => {
         return;
       }
       setFriends(data.map((friend) => friend.friend_id));
-      console.log("friends-logA1",friends);
+      console.log("friendsList",friendsList);
     };
     fetchFriends();
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -38,9 +38,9 @@ const FriendSearch = () => {
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('id', 'username')
+        .select('"id"', 'username')
         .ilike('username', `%${searchTerm}%`)
-        .neq('id', session.user.id);
+        // .neq('id', session.user.id);
 
       if (error) {
         console.error('Error fetching users:', error);
@@ -49,12 +49,13 @@ const FriendSearch = () => {
       console.log("raw usernames data", data);
 
       setSearchResults(
-        data.filter((user) => !friends.includes(user.id))
+        data.filter((user) => !friendsList.includes(user.id))
       );
+      console.log("search results", searchResults)
     };
 
     fetchUsers();
-  }, [searchTerm, friends]);
+  }, [searchTerm, friendsList]);
 
   async function handleSendFriendRequest() {
     // Find the recipient friend's UUID from their username
@@ -109,7 +110,7 @@ const FriendSearch = () => {
           {searchResults.map((user) => (
             <li key={user.id}>
               {user.username}
-              {!friends.includes(user.id) && (
+              {!friendsList.includes(user.id) && (
                 <button onClick={() => handleSendFriendRequest(user.id)}>
                   Add Friend
                 </button>
