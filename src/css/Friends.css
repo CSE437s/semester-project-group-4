@@ -38,3 +38,34 @@
 #trash_btn {
     margin-left: 10px;
 }
+
+.hoverBackground {
+    background-color: white;
+    /* Set default background color */
+    border-radius: 2rem;
+    max-width: 300px;
+    transition: background-color 0.3s ease-in-out;
+    /* Transition properties */
+}
+
+.hoverBackground:hover {
+    background-color: rgba(174, 162, 221, 0.043);
+    /* Light purple on hover */
+}
+
+.list-group-item {
+    position: relative;
+    /* Enable relative positioning for the line */
+}
+
+.list-group-item::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    /* Adjust the value for desired distance below the li */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 1px;
+    background-color: #ddd;
+}
