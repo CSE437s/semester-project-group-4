@@ -32,45 +32,59 @@ function App() {
 
 
   useEffect(() => {
-    const fetchOnboarded = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('hasOnboarded')
-          .eq('id', session.user.id)
-          .single();
-        if (error) {
-          console.error('Error fetching onboarding boolean:', error);
-          return;
+    if (session != null) {
+      const fetchOnboarded = async () => {
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('hasOnboarded')
+            .eq('id', session.user.id)
+            .single();
+          if (error) {
+            console.error('Error fetching onboarding boolean:', error);
+            return;
+          }
+          setHasOnboarded(data.hasOnboarded);
+        } catch (error) {
+          console.error('Unexpected error fetching onboarding status:', error);
         }
-        setHasOnboarded(data.hasOnboarded);
-      } catch (error) {
-        console.error('Unexpected error fetching onboarding status:', error);
-      }
-    };
+      };
+    } else {
+      setTimeout(function () {
+        fetchOnboarded();
+      }, 1000);
+
+    }
+
     fetchOnboarded();
-  }, [session]); 
+  }, [session]);
+
 
   return (
     <Router>
-
       <div className="container_main">
         {!session ? (
           <Auth />
-        ) : ( 
-          <Routes>
-            <Route path="/" element={<Navigate to="/Profile" />} />
-            <Route path="/Auth" element={<Auth />} />
-            <Route path="/Share" element={<Share key={session.user.id} session={session} />} />
-            <Route path="/Account" element={<Account key={session.user.id} session={session} />} />
-            <Route path="/Profile" element={<Profile key={session.user.id} session={session} />} />
-            <Route path="/Feed" element={<Feed key={session.user.id} session={session} />} />
-            <Route path="/Friends" element={<Friends key={session.user.id} session={session} />} />
-            <Route path="/User" element={<User key={session.user.id} session={session} />} />
-            <Route path="/FriendSearch" element={<FriendSearch key={session.user.id} session={session} />} />
-
-
-          </Routes>
+        ) : hasOnboarded !== null ? (
+          hasOnboarded ? (
+            <Routes>
+              <Route path="/" element={<Navigate to="/Profile" />} />
+              <Route path="/Auth" element={<Auth />} />
+              <Route path="/Share" element={<Share key={session.user.id} session={session} />} />
+              <Route path="/Account" element={<Account key={session.user.id} session={session} />} />
+              <Route path="/Profile" element={<Profile key={session.user.id} session={session} />} />
+              <Route path="/Feed" element={<Feed key={session.user.id} session={session} />} />
+              <Route path="/Friends" element={<Friends key={session.user.id} session={session} />} />
+              <Route path="/User" element={<User key={session.user.id} session={session} />} />
+              <Route path="/FriendSearch" element={<FriendSearch key={session.user.id} session={session} />} />
+            </Routes>
+          ) : (
+            <Routes>
+              <Route path="/Onboarding" element={<Onboarding key={session.user.id} session={session} />} />
+            </Routes>
+          )
+        ) : (
+          <div>Loading...</div>
         )}
       </div>
     </Router>
