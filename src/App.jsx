@@ -10,12 +10,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Friends from './Friends'
 import User from './User';
 import FriendSearch from './components/FriendSearch';
+import Onboarding from './Onboarding';
 // import Sidebar from './components/Sidebar';
 // import SongLayout from './components/SongLayout';
 // import { createRoot } from 'react-dom/client';
 
 function App() {
   const [session, setSession] = useState(null);
+  const [hasOnboarded, setHasOnboarded] = useState(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -27,13 +29,35 @@ function App() {
     })
   }, [])
 
+
+
+  useEffect(() => {
+    const fetchOnboarded = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('hasOnboarded')
+          .eq('id', session.user.id)
+          .single();
+        if (error) {
+          console.error('Error fetching onboarding boolean:', error);
+          return;
+        }
+        setHasOnboarded(data.hasOnboarded);
+      } catch (error) {
+        console.error('Unexpected error fetching onboarding status:', error);
+      }
+    };
+    fetchOnboarded();
+  }, [session]); 
+
   return (
     <Router>
 
       <div className="container_main">
         {!session ? (
           <Auth />
-        ) : (
+        ) : ( 
           <Routes>
             <Route path="/" element={<Navigate to="/Profile" />} />
             <Route path="/Auth" element={<Auth />} />

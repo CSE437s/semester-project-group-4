@@ -106,6 +106,8 @@ export default function Profile({ session }) {
                                 <p className="text-gray-500">{profile.soulArtist}</p>
                             </span>
 
+                            <p id="joined">Joined {new Date(profile.created_at).toLocaleDateString()}</p>
+
                         </div>
 
                         {/* <div className="p-4 border-t mx-8 mt-2">
