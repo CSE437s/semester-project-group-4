@@ -9,29 +9,103 @@ export default function Onboarding({ session }) {
 
     const [username, setUsername] = useState('');
     const [profilePicture, setProfilePicture] = useState(null);
-    const [isValidUsername, setIsValidUsername] = useState(true); 
+    const [isValidUsername, setIsValidUsername] = useState(true);
 
     const handleUsernameChange = (e) => {
         let username = e.target.value;
         const regex = /^[a-zA-Z0-9]+$/;
 
-        // Check if the username length is under 10 characters and matches the regex
         let isValid = username.length <= 10 && regex.test(username);
+
         setIsValidUsername(isValid);
 
-        if (isValid) {
-            setUsername(username)
-        } else {
-            console.log("username must be 10 or less")
-        }
-
+        // Use a callback function with setUsername to allow removing the first character
+        setUsername(prevUsername => {
+            if (isValid || username === '') {
+                return username;
+            } else if (prevUsername.length > username.length) {
+                // If user is deleting a character, allow it regardless of validity
+                return username;
+            } else {
+                return prevUsername;
+            }
+        });
     };
 
     const handleProfilePictureChange = async (e) => {
         // You can handle image upload logic here
         const file = e.target.files[0];
-        setProfilePicture(file);
+        const resizedFile = await resizeImage(file);
+
+        // Generate a random string for filename
+        const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 5);
+        const filePath = `${randomString}.${resizedFile.name.split('.').pop()}`; // Add original extension
+
+        let { error: uploadError } = await supabase.storage
+            .from('profile_pictures')
+            .upload(filePath, resizedFile);
+
+        if (uploadError) {
+            console.error('Error uploading file:', uploadError);
+            alert("Sorry, there was an error updating your image");
+            return;
+        }
+
+        let publicURL = "https://ykpzemmokoonptpzqths.supabase.co/storage/v1/object/public/profile_pictures/" + filePath;
+        publicURL = publicURL.replace(/\s/g, "%20");
+        let { error: updateError } = await supabase
+            .from('profiles')
+            .update({ picture: publicURL })
+            .eq('id', session.user.id);
+
+        if (updateError) {
+            console.error('Error updating profile picture:', updateError);
+            alert("Sorry, there was an error updating your image");
+        } else {
+            setProfilePicture(publicURL);
+        }
     };
+
+    const resizeImage = async (file) => {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const MAX_WIDTH = 100;
+                    const MAX_HEIGHT = 100;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob((blob) => {
+                        const resizedFile = new File([blob], file.name, { type: file.type });
+                        resolve(resizedFile);
+                    }, file.type);
+                };
+            };
+        });
+    };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -74,7 +148,7 @@ export default function Onboarding({ session }) {
         <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
             <h1 id="groove1">groove</h1>
             <h2 id="title1" className="">You haven't finished your profile yet</h2>
-            {!isValidUsername  && <p className="text-red-500">Username must be 10 characters or less and contain only letters and numbers.</p>}
+            {!isValidUsername && <p id="warning" className="">Must be 10 characters or less and contain only letters and numbers</p>}
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="username" className="block text-sm font-medium text-gray-700">

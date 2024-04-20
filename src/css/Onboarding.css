@@ -17,3 +17,11 @@
 #sb{
     background-color: #5c63ff;
 }
+
+#warning{
+    color:red;
+    font-size: 15px;
+    font-weight: 600;
+    background-color: rgb(247, 247, 212);
+    border-radius: 2rem;
+}

@@ -596,11 +596,6 @@ video {
   margin: 0px;
 }
 
-.mx-4{
-  margin-left: 1rem;
-  margin-right: 1rem;
-}
-
 .mx-8{
   margin-left: 2rem;
   margin-right: 2rem;
@@ -632,12 +627,20 @@ video {
   margin-bottom: 0.75rem;
 }
 
+.mb-4{
+  margin-bottom: 1rem;
+}
+
 .ml-1{
   margin-left: 0.25rem;
 }
 
 .mr-3{
   margin-right: 0.75rem;
+}
+
+.mt-1{
+  margin-top: 0.25rem;
 }
 
 .mt-10{
@@ -658,14 +661,6 @@ video {
 
 .mt-6{
   margin-top: 1.5rem;
-}
-
-.mb-4{
-  margin-bottom: 1rem;
-}
-
-.mt-1{
-  margin-top: 0.25rem;
 }
 
 .block{
@@ -696,6 +691,10 @@ video {
   height: 8rem;
 }
 
+.h-48{
+  height: 12rem;
+}
+
 .h-full{
   height: 100%;
 }
@@ -704,20 +703,12 @@ video {
   height: 100vh;
 }
 
-.h-48{
-  height: 12rem;
-}
-
 .w-1\/2{
   width: 50%;
 }
 
 .w-32{
   width: 8rem;
-}
-
-.w-4{
-  width: 1rem;
 }
 
 .w-96{
@@ -744,12 +735,12 @@ video {
   max-width: 32rem;
 }
 
-.max-w-sm{
-  max-width: 24rem;
-}
-
 .max-w-md{
   max-width: 28rem;
+}
+
+.max-w-sm{
+  max-width: 24rem;
 }
 
 .flex-auto{
@@ -764,10 +755,6 @@ video {
   cursor: pointer;
 }
 
-.flex-col{
-  flex-direction: column;
-}
-
 .items-center{
   align-items: center;
 }
@@ -778,10 +765,6 @@ video {
 
 .justify-between{
   justify-content: space-between;
-}
-
-.justify-around{
-  justify-content: space-around;
 }
 
 .gap-4{
@@ -912,10 +895,6 @@ video {
   background-clip: padding-box;
 }
 
-.fill-current{
-  fill: currentColor;
-}
-
 .object-cover{
   -o-object-fit: cover;
      object-fit: cover;
@@ -1019,11 +998,6 @@ video {
   line-height: 1.25rem;
 }
 
-.text-2xl{
-  font-size: 1.5rem;
-  line-height: 2rem;
-}
-
 .font-bold{
   font-weight: 700;
 }
@@ -1057,11 +1031,6 @@ video {
 .text-blue-600{
   --tw-text-opacity: 1;
   color: rgb(37 99 235 / var(--tw-text-opacity));
-}
-
-.text-blue-900{
-  --tw-text-opacity: 1;
-  color: rgb(30 58 138 / var(--tw-text-opacity));
 }
 
 .text-gray-500{
@@ -1340,27 +1309,7 @@ html, body, #app, #app>div {
   }
 }
 
-@media (min-width: 640px){
-  .sm\:mx-auto{
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .sm\:max-w-sm{
-    max-width: 24rem;
-  }
-}
-
 @media (min-width: 768px){
-  .md\:mx-auto{
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .md\:max-w-sm{
-    max-width: 24rem;
-  }
-
   .md\:grid-cols-2{
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1368,28 +1317,6 @@ html, body, #app, #app>div {
   .md\:py-6{
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
-  }
-}
-
-@media (min-width: 1024px){
-  .lg\:mx-auto{
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .lg\:max-w-sm{
-    max-width: 24rem;
-  }
-}
-
-@media (min-width: 1280px){
-  .xl\:mx-auto{
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .xl\:max-w-sm{
-    max-width: 24rem;
   }
 }
 
