@@ -196,6 +196,7 @@ export default function Friends({ session }) {
 
         // Redirect the user
         window.location.href = targetUrl;
+        // <Link to="/User?{uuid}" className="sideBarPage">Feed</Link>
     }
 
     return (
@@ -218,11 +219,11 @@ export default function Friends({ session }) {
                                     <div className="d-flex align-items-center">
                                         <img onClick={() => redirectToUser(friend.id)} className="pfp mr-3" src={friend.picture ? friend.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'} alt={`${friend.username}'s Profile Picture`} />
                                         {friend.username}
-                                        <button title="delete user" id="trash_btn" onClick={() => handleRemoveFriend(friend.id)} className="btn btn-danger btn-sm">
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </button>
-                                    </div>
 
+                                    </div>
+                                    <button title="delete user" id="trash_btn" onClick={() => handleRemoveFriend(friend.id)} className="btn btn-danger btn-sm">
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </button>
                                 </li>
                             ))}
                         </ul>

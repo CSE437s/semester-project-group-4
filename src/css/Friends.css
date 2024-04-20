@@ -65,7 +65,8 @@
     /* Adjust the value for desired distance below the li */
     left: 50%;
     transform: translateX(-50%);
-    width: 200px;
+    width: 250px;
+    margin-left:20px;
     height: 1px;
     background-color: #ddd;
 }
