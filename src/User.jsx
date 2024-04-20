@@ -6,72 +6,72 @@ import Sidebar from './components/Sidebar';
 
 export default function Profile({ session }) {
     const [profile, setProfile] = useState(null);
+    const [uuid, setUUID] = useState(null);
     //use get url to encode uuid of user into url 
     //read url to get uuid
     //then call supabase to select data for that uuid
     console.log(session.user.id)
 
-    // Get the URL
-    const url = window.location.href;
 
-    // Find the index of the question mark
-    const questionMarkIndex = url.indexOf('?');
+    useEffect(() => {
+        function fetchUserID() {
 
-    // If there's a question mark in the URL
-    if (questionMarkIndex !== -1) {
-        // Extract everything after the question mark
-        const queryString = url.slice(questionMarkIndex + 1);
+            // Get the URL
+            const url = window.location.href;
 
-        // Set everything after the question mark to the uuid variable
-        const uuid = queryString;
+            // Find the index of the question mark
+            const questionMarkIndex = url.indexOf('?');
 
-        // Print the UUID
-        console.log("the displayed user's Id", uuid);
-    } else {
-        console.log("No UUID found in the URL.");
-    }
+            // If there's a question mark in the URL
+            if (questionMarkIndex !== -1) {
+                // Extract everything after the question mark
+                const queryString = url.slice(questionMarkIndex + 1);
 
-    async function fetchUserProfile() {
-        try {
-            const { data, error } = await supabase
-                .from("profiles")
-                .select("*")
-                .eq("id", session.user.id)
-                .single(); // Assuming you expect only one result
+                // Set everything after the question mark to the uuid variable
+                setUUID(queryString);
 
-            if (error) {
+                // Print the UUID
+                console.log("the displayed user's Id", uuid);
+            } else {
+                console.log("No UUID found in the URL.");
+            }
+
+        }
+
+        fetchUserID();
+    }, [session]);
+
+    useEffect(() => {
+        async function fetchUserProfile() {
+            try {
+                const { data, error } = await supabase
+                    .from("profiles")
+                    .select("*")
+                    .eq("id", uuid)
+                    .single(); // Assuming you expect only one result
+
+                if (error) {
+                    console.error("Error fetching user profile:", error.message);
+                    return null;
+                }
+
+                if (data) {
+                    setProfile(data);
+                    console.log("data: ", data)
+                } else {
+                    console.error("User profile not found");
+                    return null;
+                }
+            } catch (error) {
                 console.error("Error fetching user profile:", error.message);
                 return null;
             }
-
-            if (data) {
-                // Profile found
-                // return data;
-                setProfile(data);
-                console.log("data: ", data)
-            } else {
-                console.error("User profile not found");
-                return null;
-            }
-        } catch (error) {
-            console.error("Error fetching user profile:", error.message);
-            return null;
         }
-    }
 
-    // Usage
-    fetchUserProfile()
-        .then(profile => {
-            if (profile) {
-                console.log("User profile:", profile);
-                // Do something with the profile data
-            } else {
-                console.log("No user profile found");
-            }
-        })
-        .catch(error => {
-            console.error("Error fetching user profile:", error.message);
-        });
+        fetchUserProfile();
+    }, [session, uuid]);
+
+    let cover_image_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVul-mhuS68NxbT3BhIBcg0HClx0Vkwk7NRq60FkuEEg&s"
 
 
     return (
@@ -83,14 +83,14 @@ export default function Profile({ session }) {
                         <div className="rounded-t-lg h-32 overflow-hidden">
                             <img
                                 className="object-cover object-top w-full"
-                                src={profile.cover_image_url}
+                                src={cover_image_url}
                                 alt="Cover"
                             />
                         </div>
                         <div className="mx-auto w-32 h-32 relative -mt-16 border-4 border-white rounded-full overflow-hidden">
                             <img
                                 className="object-cover object-center h-32"
-                                src={profile.profile_picture}
+                                src={profile.picture}
                                 alt="Profile"
                             />
                         </div>
@@ -130,11 +130,11 @@ export default function Profile({ session }) {
                                 <div>{profile.likes_count}</div>
                             </li>
                         </ul>
-                        <div className="p-4 border-t mx-8 mt-2">
+                        {/* <div className="p-4 border-t mx-8 mt-2">
                             <button className="w-1/2 block mx-auto rounded-full bg-gray-900 hover:shadow-lg font-semibold text-white px-6 py-2">
-                                Follow
+                                Friend Request
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 )}
             </div>
