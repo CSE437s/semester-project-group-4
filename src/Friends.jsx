@@ -173,16 +173,20 @@ const Friends = () => {
             try {
                 const friendProfilesArray = await Promise.all(friendProfilesPromises);
                 friendProfilesArray.sort((a, b) => a.id - b.id);
-                const friendUsernames = friendProfilesArray.map(profile => profile.data.username);
-                console.log('friendProfilesArray:', friendProfilesArray);
-                console.log(friendUsernames);
-                setFriends(friendUsernames);
-                setFriendCount(friendUsernames.length);
+                // Modify to include both username and picture
+                const friendData = friendProfilesArray.map(profile => ({
+                    username: profile.data.username,
+                    picture: profile.data.picture // Assuming you have 'picture' field in your profile data
+                }));
+                console.log('friendProfilesArray:', friendData);
+                setFriends(friendData); // Update state with friend data including pictures
+                setFriendCount(friendData.length);
             } catch (error) {
                 console.error('Error fetching profiles for friends:', error);
             }
         }
     }
+
 
     async function fetchUsername() {
         const { data, error } = await supabase
@@ -226,17 +230,19 @@ const Friends = () => {
                         <h3 className="profileText">My Friends</h3>
                         <ul className="list-group mt-4">
                             {friends.map(friend => (
-                                <li key={friend} className="list-group-item d-flex justify-content-between align-items-center my-2">
+                                <li key={friend.username} className="list-group-item d-flex justify-content-between align-items-center my-2">
                                     <img
                                         className="pfp"
                                         src={friend.picture ? friend.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'}
+                                        alt={`${friend.username}'s Profile Picture`}
                                     />
-                                    {friend}
-                                    <button onClick={() => handleRemoveFriend(friend)} className="btn btn-danger btn-sm">
+                                    {friend.username}
+                                    <button onClick={() => handleRemoveFriend(friend.username)} className="btn btn-danger btn-sm">
                                         <FontAwesomeIcon icon={faTrash} />
                                     </button>
                                 </li>
                             ))}
+
                         </ul>
                     </div>
 
