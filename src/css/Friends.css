@@ -69,3 +69,7 @@
     height: 1px;
     background-color: #ddd;
 }
+
+.pfp{
+    cursor: pointer;
+}

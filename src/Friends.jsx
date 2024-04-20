@@ -111,25 +111,7 @@ const Friends = () => {
     }
 
 
-    async function handleRemoveFriend(friendUsername) {
-        // Fetch friend's UUID from the friends table
-        const { data: friendsData, error: friendError } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('username', friendUsername)
-            .single();
-
-        if (friendError) {
-            console.error('Error fetching friend UUID:', friendError);
-            return;
-        }
-
-        if (!friendsData) {
-            console.error('Friend not found.');
-            return;
-        }
-
-        const friendId = friendsData.id;
+    async function handleRemoveFriend(friendId) {
 
         const { error } = await supabase
             .from('friends')
@@ -171,10 +153,11 @@ const Friends = () => {
             try {
                 const friendProfilesArray = await Promise.all(friendProfilesPromises);
                 friendProfilesArray.sort((a, b) => a.id - b.id);
-                // Modify to include both username and picture
+             
                 const friendData = friendProfilesArray.map(profile => ({
                     username: profile.data.username,
-                    picture: profile.data.picture // Assuming you have 'picture' field in your profile data
+                    picture: profile.data.picture,
+                    id: profile.data.id
                 }));
                 console.log('friendProfilesArray:', friendData);
                 setFriends(friendData); // Update state with friend data including pictures
@@ -202,6 +185,9 @@ const Friends = () => {
     }
 
     function redirectToUser(uuid) {
+        if(!uuid){
+            return
+        }
         // Get the current domain
         const currentDomain = window.location.origin;
 
@@ -230,9 +216,9 @@ const Friends = () => {
                             {friends.map(friend => (
                                 <li key={friend.username} className="hoverBackground list-group-item d-flex justify-content-between align-items-center my-2">
                                     <div className="d-flex align-items-center">
-                                        <img className="pfp mr-3" src={friend.picture ? friend.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'} alt={`${friend.username}'s Profile Picture`} />
+                                        <img onClick={() => redirectToUser(friend.id)} className="pfp mr-3" src={friend.picture ? friend.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'} alt={`${friend.username}'s Profile Picture`} />
                                         {friend.username}
-                                        <button title="delete user" id="trash_btn" onClick={() => handleRemoveFriend(friend.username)} className="btn btn-danger btn-sm">
+                                        <button title="delete user" id="trash_btn" onClick={() => handleRemoveFriend(friend.id)} className="btn btn-danger btn-sm">
                                             <FontAwesomeIcon icon={faTrash} />
                                         </button>
                                     </div>
