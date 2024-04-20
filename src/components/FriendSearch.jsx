@@ -42,7 +42,7 @@ const FriendSearch = () => {
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, username')
+        .select('id, username, picture')
         .ilike('username', `%${searchTerm}%`)
         .neq('id', session.user.id);
 
@@ -63,7 +63,7 @@ const FriendSearch = () => {
 
   useEffect(() => {
     getPendingRequests();
-}, [session]);
+  }, [session]);
 
   async function getPendingRequests() {
     const { data: pendingData, error } = await supabase
@@ -116,8 +116,6 @@ const FriendSearch = () => {
     }
   }
 
-
-
   return (
     <div>
 
@@ -135,6 +133,12 @@ const FriendSearch = () => {
         <ul className="search-results">
           {searchResults.map((user) => (
             <li key={user.id} className="user-item">
+              <img
+                className="pfp"
+                // src={user.picture ? user.picture : '../assets/null_pfp.png'}
+                src={user.picture ? user.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'}
+              />
+
               {user.username}
               {!friendsList.includes(user.id) && (
                 <button className="add-friend-button" onClick={() => handleSendFriendRequest(user.id)}>
@@ -153,3 +157,7 @@ const FriendSearch = () => {
 };
 
 export default FriendSearch;
+
+
+/*<a  href="https://icons8.com/icon/tZuAOUGm9AuS/user-default">User Default</a> icon by <a href="https://icons8.com">Icons8</a>*/
+
