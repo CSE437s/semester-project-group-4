@@ -26,3 +26,15 @@
     background-color: rgb(247, 247, 212);
     border-radius: 2rem;
 }
+
+#not_background {
+    margin-top: 200px;
+}
+
+@media only screen and (max-width: 767px) {
+    #not_background {
+        margin-top: 0;
+        height:100%
+        /* Override margin-top for mobile devices */
+    }
+}

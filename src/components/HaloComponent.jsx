@@ -17,8 +17,12 @@ const HaloComponent = () => {
           mouseControls: true,
           touchControls: true,
           gyroControls: false,
-          minHeight: 200,
-          minWidth: 200
+          minHeight: 30,
+          minWidth: 30,
+          color: 0x0000ff, // Change the color to a less intense value
+          // backgroundColor: 0x000000, // Change the background color to a less intense value
+          amplitudeFactor: 0.9, // Reduce the amplitude factor to make the effect less pronounced
+          speed: 0.5 // Reduce the speed to make the effect less dynamic
         });
       };
       document.body.appendChild(vantaScript);

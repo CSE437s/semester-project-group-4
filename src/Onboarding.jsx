@@ -146,60 +146,66 @@ export default function Onboarding({ session }) {
     };
 
     return (
-        <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
-
-            <div id="foreground">
-                <h1 id="groove1">groove</h1>
-                <h2 id="title1" className="">You haven't finished your profile yet</h2>
-                {!isValidUsername && <p id="warning" className="">Must be 10 characters or less and contain only letters and numbers</p>}
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                            Username
-                        </label>
-                        <input
-                            type="text"
-                            id="username"
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                            placeholder="Create your username"
-                            value={username}
-                            onChange={handleUsernameChange}
-                            required
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="profilePicture" className="block text-sm font-medium text-gray-700">
-                            Profile Picture
-                        </label>
-                        <input
-                            type="file"
-                            id="profilePicture"
-                            accept="image/*"
-                            className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                            onChange={handleProfilePictureChange}
-                        />
-                    </div>
-                    <div className="flex justify-between">
-                        <button
-                            id="sb"
-                            type="submit"
-                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
-                        >
-                            Submit
-                        </button>
-                        <button
-                            type="button"
-                            onClick={handleSkip}
-                            className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 focus:outline-none focus:bg-gray-400"
-                        >
-                            Skip
-                        </button>
-                    </div>
-                </form>
+        <div className="relative overflow-hidden h-screen">
+            <div id="not_background" className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl relative z-10">
+                <div id="foreground">
+                    <h1 id="groove1">groove</h1>
+                    <h2 id="title1" className="">You haven't finished your profile yet</h2>
+                    {!isValidUsername && <p id="warning" className="">Must be 10 characters or less and contain only letters and numbers</p>}
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-4">
+                            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                                Username
+                            </label>
+                            <input
+                                type="text"
+                                id="username"
+                                className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                                placeholder="Create your username"
+                                value={username}
+                                onChange={handleUsernameChange}
+                                required
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="profilePicture" className="block text-sm font-medium text-gray-700">
+                                Profile Picture
+                            </label>
+                            <input
+                                type="file"
+                                id="profilePicture"
+                                accept="image/*"
+                                className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                                onChange={handleProfilePictureChange}
+                            />
+                        </div>
+                        <div className="flex justify-between">
+                            <button
+                                id="sb"
+                                type="submit"
+                                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                            >
+                                Submit
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleSkip}
+                                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 focus:outline-none focus:bg-gray-400"
+                            >
+                                Skip
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <HaloComponent />
-
+            <div className="fixed top-0 left-0 w-screen h-screen z-0">
+                <div className="absolute top-0 left-0 w-full h-full">
+                    <HaloComponent />
+                </div>
+            </div>
         </div>
+
+
 
     );
 };
