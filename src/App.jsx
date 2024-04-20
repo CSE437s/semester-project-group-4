@@ -11,9 +11,6 @@ import Friends from './Friends'
 import User from './User';
 import FriendSearch from './components/FriendSearch';
 import Onboarding from './Onboarding';
-// import Sidebar from './components/Sidebar';
-// import SongLayout from './components/SongLayout';
-// import { createRoot } from 'react-dom/client';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -32,9 +29,9 @@ function App() {
 
 
   useEffect(() => {
-    const fetchOnboarded = async () => {
-      try {
-        if (session !== null) {
+    if (session !== null) {
+      const fetchOnboarded = async () => {
+        try {
           const { data, error } = await supabase
             .from('profiles')
             .select('hasOnboarded')
@@ -45,22 +42,13 @@ function App() {
             return;
           }
           setHasOnboarded(data.hasOnboarded);
+        } catch (error) {
+          console.error('Unexpected error fetching onboarding status:', error);
         }
-      } catch (error) {
-        console.error('Unexpected error fetching onboarding status:', error);
-      }
-    };
-
-    fetchOnboarded(); // Call fetchOnboarded once on component mount
-
-    // Only redirect if session exists and hasOnboarded is false
-    if (session !== null && !hasOnboarded) {
-      const currentDomain = window.location.origin;
-      const targetUrl = `${currentDomain}/Onboarding`;
-      window.location.href = targetUrl;
+      };
+      fetchOnboarded();
     }
-  }, [session, hasOnboarded]); // Include hasOnboarded in dependencies
-
+  }, [session]);
 
 
   return (
@@ -81,6 +69,7 @@ function App() {
             <Route path="/User" element={<User key={session.user.id} session={session} />} />
             <Route path="/FriendSearch" element={<FriendSearch key={session.user.id} session={session} />} />
             <Route path="/Onboarding" element={<Onboarding key={session.user.id} session={session} />} />
+            {hasOnboarded === false && <Route path="/Onboarding" element={<Onboarding key={session.user.id} session={session} />} />}
           </Routes>
         )}
       </div>
