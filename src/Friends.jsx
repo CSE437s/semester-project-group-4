@@ -10,19 +10,19 @@ import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai';
 import { RiCheckLine, RiCloseLine } from 'react-icons/ri';
 import './css/Friends.css'
 
-const Friends = () => {
-    const [session, setSession] = useState(null);
+export default function Friends({ session }) {
+    // const [session, setSession] = useState(null);
     const [friendCount, setFriendCount] = useState(0);
     const [username, setUsername] = useState('');
     const [friends, setFriends] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
     const [myusername, setmyUsername] = useState(null);
 
-    useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session)
-        })
-    }, [])
+    // useEffect(() => {
+    //     supabase.auth.getSession().then(({ data: { session } }) => {
+    //         setSession(session)
+    //     })
+    // }, [])
 
     useEffect(() => {
         getFriends();
@@ -153,7 +153,7 @@ const Friends = () => {
             try {
                 const friendProfilesArray = await Promise.all(friendProfilesPromises);
                 friendProfilesArray.sort((a, b) => a.id - b.id);
-             
+
                 const friendData = friendProfilesArray.map(profile => ({
                     username: profile.data.username,
                     picture: profile.data.picture,
@@ -185,14 +185,14 @@ const Friends = () => {
     }
 
     function redirectToUser(uuid) {
-        if(!uuid){
+        if (!uuid) {
             return
         }
         // Get the current domain
         const currentDomain = window.location.origin;
 
         // Build the target URL
-        const targetUrl = `${currentDomain}/User/${uuid}`;
+        const targetUrl = `${currentDomain}/User?${uuid}`;
 
         // Redirect the user
         window.location.href = targetUrl;
@@ -231,46 +231,50 @@ const Friends = () => {
                     <div className="pending-requests mt-10">
                         <h3 className="profileText">Pending Requests</h3>
 
-                        {pendingRequests.map(requestUser => (
-                            <li
-                                key={requestUser.id}
-                                className="list-group-item d-flex justify-content-between align-items-center my-2"
-                                style={{
-                                    border: '1px solid #555',
-                                    borderRadius: '0.5rem',
-                                    maxWidth: '500px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    height: '3rem'
-                                }}
-                            >
-                                <span className="li_content" style={{ flex: '1' }}>Pending request from {requestUser.username}</span>
-
-                                <div style={{ margin: '4px' }}>
-                                    <button
-                                        onClick={() => handleAcceptRequest(requestUser.id)}
-                                        className="rounded-full bg-purple-500 text-white px-6 py-2 thicker-icon-button"
+                        {pendingRequests.length === 0 ? (
+                            <p>You have no pending requests</p>
+                        ) : (
+                            <ul className="list-group">
+                                {pendingRequests.map(requestUser => (
+                                    <li
+                                        key={requestUser.id}
+                                        className="list-group-item d-flex justify-content-between align-items-center my-2"
+                                        style={{
+                                            border: '1px solid #555',
+                                            borderRadius: '0.5rem',
+                                            maxWidth: '500px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            height: '3rem'
+                                        }}
                                     >
-                                        <RiCheckLine />
-                                    </button>
+                                        <span className="li_content" style={{ flex: '1' }}>Pending request from {requestUser.username}</span>
 
-                                    <button
-                                        onClick={() => handleRejectRequest(requestUser.id)}
-                                        className="rounded-full bg-gray-500 text-white px-6 py-2 thicker-icon-button"
-                                    >
-                                        <RiCloseLine />
-                                    </button>
-                                </div>
-                            </li>
-                        ))}
+                                        <div style={{ margin: '4px' }}>
+                                            <button
+                                                onClick={() => handleAcceptRequest(requestUser.id)}
+                                                className="rounded-full bg-purple-500 text-white px-6 py-2 thicker-icon-button"
+                                            >
+                                                <RiCheckLine />
+                                            </button>
 
-
-
+                                            <button
+                                                onClick={() => handleRejectRequest(requestUser.id)}
+                                                className="rounded-full bg-gray-500 text-white px-6 py-2 thicker-icon-button"
+                                            >
+                                                <RiCloseLine />
+                                            </button>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
+
                 </div>
             </div>
         </div >
     );
 };
 
-export default Friends;
+// export default Friends;
