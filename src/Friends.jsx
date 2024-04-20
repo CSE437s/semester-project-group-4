@@ -212,21 +212,23 @@ export default function Friends({ session }) {
                     <div className="friendsList mt-10">
                         <h3 className="profileText">My Friends</h3>
 
+                        {friends.length === 0 ? (
+                            <p className="noFriendsText">You have no friends :(</p>
+                        ) : (
+                            <ul className="list-group mt-4">
+                                {friends.map(friend => (
+                                    <li key={friend.username} className="hoverBackground list-group-item d-flex justify-content-between align-items-center my-2">
+                                        <div className="d-flex align-items-center">
+                                            <img onClick={() => redirectToUser(friend.id)} className="pfp mr-3" src={friend.picture ? friend.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'} alt={`${friend.username}'s Profile Picture`} />
+                                            {friend.username}
 
-                        <ul className="list-group mt-4">
-                            {friends.map(friend => (
-                                <li key={friend.username} className="hoverBackground list-group-item d-flex justify-content-between align-items-center my-2">
-                                    <div className="d-flex align-items-center">
-                                        <img onClick={() => redirectToUser(friend.id)} className="pfp mr-3" src={friend.picture ? friend.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'} alt={`${friend.username}'s Profile Picture`} />
-                                        {friend.username}
-
-                                    </div>
-                                    <button title="delete user" id="trash_btn" onClick={() => handleRemoveFriend(friend.id)} className="btn btn-danger btn-sm">
-                                        <FontAwesomeIcon icon={faTrash} />
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
+                                        </div>
+                                        <button title="delete user" id="trash_btn" onClick={() => handleRemoveFriend(friend.id)} className="btn btn-danger btn-sm">
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>)}
                     </div>
 
                     <div className="pending-requests mt-10">

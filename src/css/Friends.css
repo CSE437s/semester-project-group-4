@@ -58,7 +58,7 @@
     /* Enable relative positioning for the line */
 }
 
-.list-group-item::after {
+.hoverBackground::after {
     content: "";
     position: absolute;
     bottom: -5px;
