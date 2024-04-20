@@ -28,7 +28,7 @@
 }
 
 #not_background {
-    margin-top: 200px;
+    margin: auto;
 }
 
 @media only screen and (max-width: 767px) {
@@ -38,3 +38,10 @@
         /* Override margin-top for mobile devices */
     }
 }
+
+#parent {
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }

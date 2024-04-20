@@ -5,12 +5,11 @@ import './css/Onboarding.css'
 import HaloComponent from './components/HaloComponent';
 
 export default function Onboarding({ session }) {
-    //type in your username and add your PFP here
-    //or you can choose skip
-
     const [username, setUsername] = useState('');
     const [profilePicture, setProfilePicture] = useState(null);
     const [isValidUsername, setIsValidUsername] = useState(true);
+    const [songBio, setSongBio] = useState('');
+    const [soulArtist, setsoulArtist] = useState('');
 
     const handleUsernameChange = (e) => {
         let username = e.target.value;
@@ -114,7 +113,7 @@ export default function Onboarding({ session }) {
         console.log("Profile Picture:", profilePicture);
         const { data, error } = await supabase
             .from('profiles')
-            .update({ hasOnboarded: 'true', username: username })
+            .update({ hasOnboarded: 'true', username: username, soulArtist: soulArtist,  bio: songBio})
             .eq('id', session.user.id)
         if (error) {
             console.error('Error updating onboarding boolean:', error);
@@ -145,8 +144,18 @@ export default function Onboarding({ session }) {
         }
     };
 
+    const handleSoul = (e) => {
+        let soul = e.target.value;
+        setsoulArtist(soul);
+    };
+
+    const handleBio = (e) => {
+        let bio = e.target.value;
+        setSongBio(bio);
+    };
+
     return (
-        <div className="relative overflow-hidden h-screen">
+        <div id="parent" className="relative overflow-hidden h-screen">
             <div id="not_background" className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl relative z-10">
                 <div id="foreground">
                     <h1 id="groove1">groove</h1>
@@ -167,6 +176,35 @@ export default function Onboarding({ session }) {
                                 required
                             />
                         </div>
+
+                        <div className="mb-4">
+                            <label htmlFor="soul" className="block text-sm font-medium text-gray-700">
+                                Soul Artist
+                            </label>
+                            <input
+                                type="text"
+                                id="soul"
+                                className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                                placeholder="My soul artist is..."
+                                value={soulArtist}
+                                onChange={handleSoul}
+                            />
+                        </div>
+
+                        <div className="mb-4">
+                            <label htmlFor="Bio" className="block text-sm font-medium text-gray-700">
+                                Song Bio
+                            </label>
+                            <textarea
+                                type="text"
+                                id="Bio"
+                                className="mt-1 p-4 block w-full border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                                placeholder="My tastes in music are..."
+                                value={songBio}
+                                onChange={handleBio}
+                            />
+                        </div>
+
                         <div className="mb-4">
                             <label htmlFor="profilePicture" className="block text-sm font-medium text-gray-700">
                                 Profile Picture
@@ -179,6 +217,7 @@ export default function Onboarding({ session }) {
                                 onChange={handleProfilePictureChange}
                             />
                         </div>
+
                         <div className="flex justify-between">
                             <button
                                 id="sb"

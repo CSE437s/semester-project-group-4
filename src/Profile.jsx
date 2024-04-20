@@ -408,6 +408,7 @@ export default function Profile({ session }) {
                             )}
                         </div>
                         <button onClick={loginWithSpotifyClick} className="profileButton spotifyButton text-white py-2 px-4">Connect to Spotify</button>
+                        <Link to="/Friends" className="purple-button"> My Friends </Link>
                     </div>
                     <div id="myFriendsLink">
 
@@ -417,7 +418,7 @@ export default function Profile({ session }) {
                         >
                             My Friends
                         </button> */}
-                        <Link to="/Friends" className="">My Friends</Link>
+                        
 
                     </div>
                 </div>
