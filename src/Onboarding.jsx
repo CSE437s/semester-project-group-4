@@ -1,6 +1,7 @@
 import { supabase } from './supabaseClient';
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import './css/Onboarding.css'
 
 export default function Onboarding({ session }) {
     //type in your username and add your PFP here
@@ -8,32 +9,72 @@ export default function Onboarding({ session }) {
 
     const [username, setUsername] = useState('');
     const [profilePicture, setProfilePicture] = useState(null);
+    const [isValidUsername, setIsValidUsername] = useState(true); 
 
     const handleUsernameChange = (e) => {
-        setUsername(e.target.value);
+        let username = e.target.value;
+        const regex = /^[a-zA-Z0-9]+$/;
+
+        // Check if the username length is under 10 characters and matches the regex
+        let isValid = username.length <= 10 && regex.test(username);
+        setIsValidUsername(isValid);
+
+        if (isValid) {
+            setUsername(username)
+        } else {
+            console.log("username must be 10 or less")
+        }
+
     };
 
-    const handleProfilePictureChange = (e) => {
+    const handleProfilePictureChange = async (e) => {
         // You can handle image upload logic here
         const file = e.target.files[0];
         setProfilePicture(file);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic here
         console.log("Username:", username);
         console.log("Profile Picture:", profilePicture);
+        const { data, error } = await supabase
+            .from('profiles')
+            .update({ hasOnboarded: 'true', username: username })
+            .eq('id', session.user.id)
+        if (error) {
+            console.error('Error updating onboarding boolean:', error);
+            return;
+        } else {
+            const currentDomain = window.location.origin;
+            const targetUrl = `${currentDomain}/Profile`;
+            window.location.href = targetUrl;
+        }
     };
 
-    const handleSkip = () => {
-        // Handle skip logic here
-        console.log("Skipping...");
+    const handleSkip = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('profiles')
+                .update({ hasOnboarded: 'true' })
+                .eq('id', session.user.id)
+            if (error) {
+                console.error('Error updating onboarding boolean:', error);
+                return;
+            } else {
+                const currentDomain = window.location.origin;
+                const targetUrl = `${currentDomain}/Profile`;
+                window.location.href = targetUrl;
+            }
+        } catch (error) {
+            console.error('Unexpected error updating onboarding status:', error);
+        }
     };
 
     return (
         <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
-            <h2 className="text-2xl font-semibold mb-4">Profile Form</h2>
+            <h1 id="groove1">groove</h1>
+            <h2 id="title1" className="">You haven't finished your profile yet</h2>
+            {!isValidUsername  && <p className="text-red-500">Username must be 10 characters or less and contain only letters and numbers.</p>}
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="username" className="block text-sm font-medium text-gray-700">
@@ -43,7 +84,7 @@ export default function Onboarding({ session }) {
                         type="text"
                         id="username"
                         className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                        placeholder="Enter your username"
+                        placeholder="Create your username"
                         value={username}
                         onChange={handleUsernameChange}
                         required
@@ -63,6 +104,7 @@ export default function Onboarding({ session }) {
                 </div>
                 <div className="flex justify-between">
                     <button
+                        id="sb"
                         type="submit"
                         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
                     >

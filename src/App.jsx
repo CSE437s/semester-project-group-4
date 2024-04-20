@@ -12,9 +12,9 @@ import User from './User';
 import FriendSearch from './components/FriendSearch';
 import Onboarding from './Onboarding';
 
+
 function App() {
   const [session, setSession] = useState(null);
-  const [hasOnboarded, setHasOnboarded] = useState(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -25,31 +25,6 @@ function App() {
       setSession(session)
     })
   }, [])
-
-
-
-  useEffect(() => {
-    if (session !== null) {
-      const fetchOnboarded = async () => {
-        try {
-          const { data, error } = await supabase
-            .from('profiles')
-            .select('hasOnboarded')
-            .eq('id', session.user.id)
-            .single();
-          if (error) {
-            console.error('Error fetching onboarding boolean:', error);
-            return;
-          }
-          setHasOnboarded(data.hasOnboarded);
-        } catch (error) {
-          console.error('Unexpected error fetching onboarding status:', error);
-        }
-      };
-      fetchOnboarded();
-    }
-  }, [session]);
-
 
   return (
     <Router>
@@ -69,7 +44,6 @@ function App() {
             <Route path="/User" element={<User key={session.user.id} session={session} />} />
             <Route path="/FriendSearch" element={<FriendSearch key={session.user.id} session={session} />} />
             <Route path="/Onboarding" element={<Onboarding key={session.user.id} session={session} />} />
-            {hasOnboarded === false && <Route path="/Onboarding" element={<Onboarding key={session.user.id} session={session} />} />}
           </Routes>
         )}
       </div>

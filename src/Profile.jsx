@@ -341,6 +341,34 @@ export default function Profile({ session }) {
         }
     };
 
+    useEffect(() => {
+        const fetchOnboarded = async () => {
+            try {
+                if (session !== null) {
+                    const { data, error } = await supabase
+                        .from('profiles')
+                        .select('hasOnboarded')
+                        .eq('id', session.user.id)
+                        .single();
+                    if (error) {
+                        console.error('Error fetching onboarding boolean:', error);
+                        return;
+                    } else {
+                        if (session !== null && !data.hasOnboarded) {
+                            const currentDomain = window.location.origin;
+                            const targetUrl = `${currentDomain}/Onboarding`;
+                            window.location.href = targetUrl;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Unexpected error fetching onboarding status:', error);
+            }
+        };
+
+        fetchOnboarded();
+    }, [session]);
+
     return (
         <div className="app-container bg-light">
             <Sidebar />
