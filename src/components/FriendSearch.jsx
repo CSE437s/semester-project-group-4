@@ -10,7 +10,7 @@ const FriendSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [friendsList, setFriends] = useState([]);
-  const [pendingRequests, setPendingRequests] = useState([]);
+  const [pendingRequests, setExistingRequests] = useState([]);
 
 
   useEffect(() => {
@@ -64,44 +64,30 @@ const FriendSearch = () => {
   }, [searchTerm, friendsList]);
 
   useEffect(() => {
-    getPendingRequests();
+    getExistingRequests();
   }, [session]);
 
-  async function getPendingRequests() {
+  async function getExistingRequests() {
     const { data: pendingData, error } = await supabase
       .from('friend_requests')
-      .select('from_user')
-      .eq('to_user', session.user.id);
+      .select('to_user')
+      .eq('from_user', session.user.id);
 
     if (error) {
       console.error('Error fetching pending requests:', error);
       return;
     }
-
-    if (pendingData) {
-      const pendingUserIds = pendingData.map(request => request.from_user);
-      const pendingUsernames = await Promise.all(pendingUserIds.map(async id => {
-        const { data: userData, error: userError } = await supabase
-          .from('profiles')
-          .select('username')
-          .eq('id', id)
-          .single();
-        if (userError) {
-          console.error(`Error fetching username for user id ${id}:`, userError);
-          return null;
-        }
-        return userData ? userData.username : null;
-      }));
-      setPendingRequests(pendingUsernames.filter(username => username !== null));
-      console.log("pendingRequests: " + pendingUsernames.filter(username => username !== null));
-    }
+    const uuidArray = pendingData.map(request => request.to_user);
+    console.log("the uui array", uuidArray)
+    setExistingRequests(uuidArray);
+    console.log("==============pending requests========", pendingRequests)
   }
 
   async function handleSendFriendRequest(friendId) {
     // Check if friend request already sent
     const existingRequest = pendingRequests.includes(friendId);
     if (existingRequest) {
-      alert('Friend request already sent');
+      alert('You already sent a friend request to this user');
       return;
     }
 
@@ -112,9 +98,11 @@ const FriendSearch = () => {
 
     if (requestError) {
       console.error('Error sending friend request:', requestError);
+      alert("There was an error sending the friend request: ", error)
     } else {
       console.log('Friend request sent successfully:', requestData);
-      getPendingRequests();
+      alert("Friend Request Sent");
+      getExistingRequests();
     }
   }
 
