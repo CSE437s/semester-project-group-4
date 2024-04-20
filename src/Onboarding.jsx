@@ -6,6 +6,30 @@ export default function Onboarding({ session }) {
     //type in your username and add your PFP here
     //or you can choose skip
 
+    const [username, setUsername] = useState('');
+    const [profilePicture, setProfilePicture] = useState(null);
+
+    const handleUsernameChange = (e) => {
+        setUsername(e.target.value);
+    };
+
+    const handleProfilePictureChange = (e) => {
+        // You can handle image upload logic here
+        const file = e.target.files[0];
+        setProfilePicture(file);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Handle form submission logic here
+        console.log("Username:", username);
+        console.log("Profile Picture:", profilePicture);
+    };
+
+    const handleSkip = () => {
+        // Handle skip logic here
+        console.log("Skipping...");
+    };
 
     return (
         <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">

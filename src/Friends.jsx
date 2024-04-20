@@ -18,12 +18,6 @@ export default function Friends({ session }) {
     const [pendingRequests, setPendingRequests] = useState([]);
     const [myusername, setmyUsername] = useState(null);
 
-    // useEffect(() => {
-    //     supabase.auth.getSession().then(({ data: { session } }) => {
-    //         setSession(session)
-    //     })
-    // }, [])
-
     useEffect(() => {
         getFriends();
         getPendingRequests();
@@ -196,7 +190,6 @@ export default function Friends({ session }) {
 
         // Redirect the user
         window.location.href = targetUrl;
-        // <Link to="/User?{uuid}" className="sideBarPage">Feed</Link>
     }
 
     return (
