@@ -1,0 +1,11 @@
+#profile-container {
+    height: 75%;
+    margin-top: 7%;
+}
+
+
+#soul p {
+    display: inline;
+    white-space: nowrap;
+    margin-left: 10px;
+}

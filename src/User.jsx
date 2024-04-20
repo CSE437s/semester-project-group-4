@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
+import './css/User.css'
 
 export default function Profile({ session }) {
     const [profile, setProfile] = useState(null);
@@ -12,21 +13,16 @@ export default function Profile({ session }) {
     //then call supabase to select data for that uuid
     console.log(session.user.id)
 
-
     useEffect(() => {
         function fetchUserID() {
-
             // Get the URL
             const url = window.location.href;
-
             // Find the index of the question mark
             const questionMarkIndex = url.indexOf('?');
-
             // If there's a question mark in the URL
             if (questionMarkIndex !== -1) {
                 // Extract everything after the question mark
                 const queryString = url.slice(questionMarkIndex + 1);
-
                 // Set everything after the question mark to the uuid variable
                 setUUID(queryString);
 
@@ -35,9 +31,7 @@ export default function Profile({ session }) {
             } else {
                 console.log("No UUID found in the URL.");
             }
-
         }
-
         fetchUserID();
     }, [session]);
 
@@ -68,7 +62,7 @@ export default function Profile({ session }) {
         fetchUserProfile();
     }, [session, uuid]);
 
-    let cover_image_url=""
+    let cover_image_url = ""
     //  cover_image_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVul-mhuS68NxbT3BhIBcg0HClx0Vkwk7NRq60FkuEEg&s"
     cover_image_url = "https://static.vecteezy.com/system/resources/previews/006/464/063/non_2x/abstract-equalizer-wave-design-music-sound-wave-element-waveform-with-neon-color-gradient-wavy-line-background-free-photo.jpg"
 
@@ -88,10 +82,10 @@ export default function Profile({ session }) {
 
 
                 {profile && (
-                    <div className="max-w-2xl mx-auto mt-16 bg-white shadow-xl rounded-lg text-gray-900">
+                    <div id="profile-container" className="max-w-2xl mx-auto mt-16 bg-white shadow-xl rounded-lg text-gray-900">
                         <div className="rounded-t-lg h-48 overflow-hidden">
                             <img
-                                className="object-cover object-top w-full h-full" 
+                                className="object-cover object-top w-full h-full"
                                 src={cover_image_url}
                                 alt="Cover"
                             />
@@ -107,40 +101,13 @@ export default function Profile({ session }) {
                         </div>
                         <div className="text-center mt-2">
                             <h2 className="font-semibold">{profile.username}</h2>
-                            <p className="text-gray-500">{profile.soulartist}</p>
+                            <span id="soul">
+                                Soul Artist: 
+                                <p className="text-gray-500">{profile.soulArtist}</p>
+                            </span>
+
                         </div>
-                        <ul className="py-4 mt-2 text-gray-700 flex items-center justify-around">
-                            <li className="flex flex-col items-center justify-around">
-                                <svg
-                                    className="w-4 fill-current text-blue-900"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20"
-                                >
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                                </svg>
-                                <div>{profile.followers_count}</div>
-                            </li>
-                            <li className="flex flex-col items-center justify-between">
-                                <svg
-                                    className="w-4 fill-current text-blue-900"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20"
-                                >
-                                    <path d="M7 8a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0 1c2.15 0 4.2.4 6.1 1.09L12 16h-1.25L10 20H4l-.75-4H2L.9 10.09A17.93 17.93 0 0 1 7 9zm8.31.17c1.32.18 2.59.48 3.8.92L18 16h-1.25L16 20h-3.96l.37-2h1.25l1.65-8.83zM13 0a4 4 0 1 1-1.33 7.76 5.96 5.96 0 0 0 0-7.52C12.1.1 12.53 0 13 0z" />
-                                </svg>
-                                <div>{profile.posts_count}</div>
-                            </li>
-                            <li className="flex flex-col items-center justify-around">
-                                <svg
-                                    className="w-4 fill-current text-blue-900"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20"
-                                >
-                                    <path d="M9 12H1v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6h-8v2H9v-2zm0-1H0V5c0-1.1.9-2 2-2h4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1h4a2 2 0 0 1 2 2v6h-9V9H9v2zm3-8V2H8v1h4z" />
-                                </svg>
-                                <div>{profile.likes_count}</div>
-                            </li>
-                        </ul>
+
                         {/* <div className="p-4 border-t mx-8 mt-2">
             <button className="w-1/2 block mx-auto rounded-full bg-gray-900 hover:shadow-lg font-semibold text-white px-6 py-2">
                 Friend Request
