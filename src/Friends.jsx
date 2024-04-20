@@ -199,6 +199,18 @@ const Friends = () => {
         console.log("data.user", data.username);
     }
 
+    function redirectToUser(uuid) {
+        // Get the current domain
+        const currentDomain = window.location.origin;
+
+        // Build the target URL
+        const targetUrl = `${currentDomain}/User/${uuid}`;
+
+        // Redirect the user
+        window.location.href = targetUrl;
+    }
+
+
     return (
         <div className="app-container">
             <Sidebar />
@@ -208,11 +220,17 @@ const Friends = () => {
                 </div>
                 <div className="friendContent">
                     <FriendSearch />
+
+
                     <div className="friendsList mt-10">
                         <h3 className="profileText">My Friends</h3>
                         <ul className="list-group mt-4">
                             {friends.map(friend => (
                                 <li key={friend} className="list-group-item d-flex justify-content-between align-items-center my-2">
+                                    <img
+                                        className="pfp"
+                                        src={friend.picture ? friend.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'}
+                                    />
                                     {friend}
                                     <button onClick={() => handleRemoveFriend(friend)} className="btn btn-danger btn-sm">
                                         <FontAwesomeIcon icon={faTrash} />
@@ -221,6 +239,8 @@ const Friends = () => {
                             ))}
                         </ul>
                     </div>
+
+
                     <div className="pending-requests mt-10">
                         <h3 className="profileText">Pending Requests</h3>
 
