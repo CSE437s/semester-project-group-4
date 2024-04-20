@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+// import { Link, useNavigate } from 'react-router-dom';
 
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
 import FriendSearch from './components/FriendSearch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faTrash } from '@fortawesome/free-solid-svg-icons';
-import ProfilePicture from './components/ProfilePicture';
+// import ProfilePicture from './components/ProfilePicture';
 import './css/Profile3.css';
+import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai';
+import { RiCheckLine, RiCloseLine } from 'react-icons/ri';
 
 const Friends = () => {
     const [session, setSession] = useState(null);
@@ -257,17 +259,23 @@ const Friends = () => {
                     </div>
                     <div className="pending-requests mt-10">
                         <h3 className="profileText">Pending Requests</h3>
-                        <ul className="list-group mt-4">
-                            {pendingRequests.map(requestUserId => (
-                                <li key={requestUserId} className="list-group-item d-flex justify-content-between align-items-center my-2">
-                                    <span>Pending request from {requestUserId}</span>
-                                    <div>
-                                        <button onClick={() => handleAcceptRequest(requestUserId)} className="bg-green-500 text-white px-3 py-1 rounded-sm text-sm mx-2">Accept</button>
-                                        <button onClick={() => handleRejectRequest(requestUserId)} className="bg-red-500 text-white px-3 py-1 rounded-sm text-sm">Reject</button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+
+
+                        {pendingRequests.map(requestUserId => (
+                            <li key={requestUserId} className="list-group-item d-flex justify-content-between align-items-center my-2" style={{ border: '1px solid #555', borderRadius: '0.5rem', maxWidth: '500px', display: 'flex', alignItems: 'center' }}>
+                                <span style={{ flex: '1' }}>Pending request from {requestUserId}</span>
+                                <div>
+                                    <button onClick={() => handleAcceptRequest(requestUserId)} className="bg-green-500 text-white px-3 py-1 rounded-sm text-sm mx-2">
+                                        <RiCheckLine /> Accept
+                                    </button>
+                                    <button onClick={() => handleRejectRequest(requestUserId)} className="bg-red-500 text-white px-3 py-1 rounded-sm text-sm">
+                                        <RiCloseLine /> Reject
+                                    </button>
+                                </div>
+                            </li>
+                        ))}
+
+
                     </div>
                 </div>
             </div>
