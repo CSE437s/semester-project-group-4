@@ -1,12 +1,40 @@
-.rounded-full{
+.rounded-full {
     margin-right: 4px;
 }
 
-.li_content{
+.li_content {
     margin-left: 8px;
     font-weight: 500;
 }
 
-.bg-purple-500{
-    background-color: #5E26FF;
+.bg-purple-500 {
+    background-color: #37246e;
+}
+
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.d-flex {
+    display: flex;
+    align-items: center;
+}
+
+.mr-3 {
+    margin-right: 1rem;
+    /* Maintain existing margin for profile picture */
+}
+
+/* New class for the trash button container */
+.trash-container {
+    display: flex;
+    /* Make the container inline */
+    justify-content: flex-end;
+    /* Align button to the right */
+}
+
+#trash_btn {
+    margin-left: 10px;
 }

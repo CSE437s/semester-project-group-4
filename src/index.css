@@ -630,6 +630,18 @@ video {
   margin-top: 1.5rem;
 }
 
+.mr-2{
+  margin-right: 0.5rem;
+}
+
+.ml-auto{
+  margin-left: auto;
+}
+
+.mr-3{
+  margin-right: 0.75rem;
+}
+
 .block{
   display: block;
 }

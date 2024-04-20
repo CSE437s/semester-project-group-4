@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-// import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
 import FriendSearch from './components/FriendSearch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faTrash } from '@fortawesome/free-solid-svg-icons';
-// import ProfilePicture from './components/ProfilePicture';
-// import './css/Profile3.css';
 import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai';
 import { RiCheckLine, RiCloseLine } from 'react-icons/ri';
 import './css/Friends.css'
@@ -214,7 +212,6 @@ const Friends = () => {
         window.location.href = targetUrl;
     }
 
-
     return (
         <div className="app-container">
             <Sidebar />
@@ -225,26 +222,26 @@ const Friends = () => {
                 <div className="friendContent">
                     <FriendSearch />
 
-
                     <div className="friendsList mt-10">
                         <h3 className="profileText">My Friends</h3>
                         <ul className="list-group mt-4">
                             {friends.map(friend => (
                                 <li key={friend.username} className="list-group-item d-flex justify-content-between align-items-center my-2">
-                                    <img
-                                        className="pfp"
-                                        src={friend.picture ? friend.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'}
-                                        alt={`${friend.username}'s Profile Picture`}
-                                    />
-                                    {friend.username}
-                                    <button onClick={() => handleRemoveFriend(friend.username)} className="btn btn-danger btn-sm">
-                                        <FontAwesomeIcon icon={faTrash} />
-                                    </button>
+                                    <div className="d-flex align-items-center">
+                                        <img className="pfp mr-3" src={friend.picture ? friend.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'} alt={`${friend.username}'s Profile Picture`} />
+                                        {friend.username}
+                                        <button id="trash_btn" onClick={() => handleRemoveFriend(friend.username)} className="btn btn-danger btn-sm">
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </button>
+                                    </div>
+
                                 </li>
                             ))}
-
                         </ul>
                     </div>
+
+
+
 
 
                     <div className="pending-requests mt-10">
