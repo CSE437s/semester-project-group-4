@@ -62,7 +62,6 @@
   border: 1px solid black;
 }
 
-/* 
-.pfp:not([src]) {
-  background-image: url('../assets/null_pfp.png');
-} */
+#input_friend_search{
+  background-color: rgba(50, 9, 125, 0.098);
+}

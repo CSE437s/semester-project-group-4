@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import '../css/FriendSearch.css'
 import { FaUserPlus } from 'react-icons/fa';
+import { FaSearch } from "react-icons/fa";
+
 
 const FriendSearch = () => {
   const [session, setSession] = useState(null);
@@ -119,15 +121,19 @@ const FriendSearch = () => {
   return (
     <div>
 
-      <input
-        type="text"
-        style={{ width: '300px' }}
-        className="bg-white border border-gray-700 text-black font-bold text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-black placeholder:font-bold"
-        placeholder="Search for users"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
+      <div style={{ position: 'relative' }}>
+        <input
+          type="text"
+          style={{ width: '300px' }}
+          id="input_friend_search"
+          className="bg-white border border-gray-700 text-black font-bold text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-black placeholder:font-bold"
+          placeholder="Search for users"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <FaSearch />
 
+      </div>
 
       {searchResults.length > 0 && (
         <ul className="search-results">
@@ -135,7 +141,6 @@ const FriendSearch = () => {
             <li key={user.id} className="user-item">
               <img
                 className="pfp"
-                // src={user.picture ? user.picture : '../assets/null_pfp.png'}
                 src={user.picture ? user.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'}
               />
 
@@ -149,7 +154,6 @@ const FriendSearch = () => {
           ))}
         </ul>
       )}
-
 
 
     </div>
