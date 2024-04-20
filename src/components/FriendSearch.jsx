@@ -121,19 +121,21 @@ const FriendSearch = () => {
   return (
     <div>
 
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: 'relative', width: '300px' }}>
         <input
           type="text"
-          style={{ width: '300px' }}
           id="input_friend_search"
           className="bg-white border border-gray-700 text-black font-bold text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-black placeholder:font-bold"
           placeholder="Search for users"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ width: '100%', paddingRight: '2rem' }}
         />
-        <FaSearch />
-
+        <div style={{ position: 'absolute', top: '50%', right: '0.75rem', transform: 'translateY(-50%)' }}>
+          <FaSearch />
+        </div>
       </div>
+
 
       {searchResults.length > 0 && (
         <ul className="search-results">
