@@ -79,27 +79,7 @@ const Friends = () => {
         await removeRequest(fromUserId);
     }
 
-    async function removeRequest(fromUsername) {
-        // Fetch fromUserId from the profiles table using fromUsername
-        const { data: profilesData, error: profilesError } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('username', fromUsername)
-            .single();
-
-        if (profilesError) {
-            console.error('Error fetching fromUserId:', profilesError);
-            return;
-        }
-
-        // If fromUserId is not found, handle the error
-        if (!profilesData) {
-            console.error('User not found with the given username:', fromUsername);
-            return;
-        }
-
-        const fromUserId = profilesData.id;
-
+    async function removeRequest(fromUserId) {
         // Delete the request from the friend_requests table
         const { error } = await supabase
             .from('friend_requests')
@@ -115,27 +95,7 @@ const Friends = () => {
         }
     }
 
-    async function addFriend(friendUsername) {
-        // Fetch friendID from the profiles table using friendUsername
-        const { data: profilesData, error: profilesError } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('username', friendUsername)
-            .single();
-
-        if (profilesError) {
-            console.error('Error fetching friendID:', profilesError);
-            return;
-        }
-
-        // If friendID is not found, handle the error
-        if (!profilesData) {
-            console.error('Friend not found with the given username:', friendUsername);
-            return;
-        }
-
-        const friendId = profilesData.id;
-
+    async function addFriend(friendId) {
         // Insert records into the friends table
         const { data, error } = await supabase
             .from('friends')
@@ -264,9 +224,9 @@ const Friends = () => {
                     <div className="pending-requests mt-10">
                         <h3 className="profileText">Pending Requests</h3>
 
-                        {pendingRequests.map(requestUserId => (
+                        {pendingRequests.map(requestUser => (
                             <li
-                                key={requestUserId}
+                                key={requestUser.id}
                                 className="list-group-item d-flex justify-content-between align-items-center my-2"
                                 style={{
                                     border: '1px solid #555',
@@ -277,18 +237,18 @@ const Friends = () => {
                                     height: '3rem'
                                 }}
                             >
-                                <span className="li_content" style={{ flex: '1' }}>Pending request from {requestUserId}</span>
+                                <span className="li_content" style={{ flex: '1' }}>Pending request from {requestUser.username}</span>
 
                                 <div style={{ margin: '4px' }}>
                                     <button
-                                        onClick={() => handleAcceptRequest(requestUserId)}
+                                        onClick={() => handleAcceptRequest(requestUser.id)}
                                         className="rounded-full bg-purple-500 text-white px-6 py-2 thicker-icon-button"
                                     >
                                         <RiCheckLine />
                                     </button>
 
                                     <button
-                                        onClick={() => handleRejectRequest(requestUserId)}
+                                        onClick={() => handleRejectRequest(requestUser.id)}
                                         className="rounded-full bg-gray-500 text-white px-6 py-2 thicker-icon-button"
                                     >
                                         <RiCloseLine />
@@ -296,6 +256,7 @@ const Friends = () => {
                                 </div>
                             </li>
                         ))}
+
 
 
                     </div>
