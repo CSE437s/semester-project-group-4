@@ -70,6 +70,7 @@ export default function Auth() {
           </div>
           <div className="mt-10">
             <button
+              id="bigButton"
               type="submit"
               className="w-full shadow-xl py-3 px-4 text-sm font-semibold rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
               disabled={loading}>
@@ -77,12 +78,12 @@ export default function Auth() {
             </button>
           </div>
           {isLogin ? (
-            <p className="text-sm mt-10 text-center">
-              Don't have an account? <a href="#login" className="text-blue-600 font-semibold hover:underline ml-1" onClick={() => setIsLogin(!isLogin)}>Register here</a>
+            <p className="linkText text-sm mt-10 text-center">
+              Don't have an account? <a id="link1" href="#login" className="text-blue-600 font-semibold hover:underline ml-1" onClick={() => setIsLogin(!isLogin)}>Register here</a>
             </p>
           ) : (
-            <p className="text-sm mt-10 text-center">
-              Already have an account? <a href="#register" className="text-blue-600 font-semibold hover:underline ml-1" onClick={() => setIsLogin(!isLogin)}>Log in</a>
+            <p className="linkText text-sm mt-10 text-center">
+              Already have an account? <a id="link2" href="#register" className="text-blue-600 font-semibold hover:underline ml-1" onClick={() => setIsLogin(!isLogin)}>Log in</a>
             </p>
           )}
         </form>

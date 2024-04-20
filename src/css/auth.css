@@ -4,3 +4,16 @@
     }
   }
   
+
+#bigButton{
+  background-color: #5c63ff;
+}
+/* 
+.linkText {
+  color: #5c63ff;
+  color: #000;
+} */
+
+#link1, #link2{
+  color:  #5c63ff;
+}

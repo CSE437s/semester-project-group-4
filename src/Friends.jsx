@@ -279,14 +279,14 @@ const Friends = () => {
                                 <div style={{ margin: '4px' }}>
                                     <button
                                         onClick={() => handleAcceptRequest(requestUserId)}
-                                        className="rounded-full bg-purple-500 text-white px-6 py-2"
+                                        className="rounded-full bg-purple-500 text-white px-6 py-2 thicker-icon-button"
                                     >
                                         <RiCheckLine />
                                     </button>
 
                                     <button
                                         onClick={() => handleRejectRequest(requestUserId)}
-                                        className="rounded-full bg-gray-500 text-white px-6 py-2"
+                                        className="rounded-full bg-gray-500 text-white px-6 py-2 thicker-icon-button"
                                     >
                                         <RiCloseLine />
                                     </button>
