@@ -46,21 +46,24 @@ const Friends = () => {
 
         if (pendingData) {
             const pendingUserIds = pendingData.map(request => request.from_user);
-            const pendingUsernames = await Promise.all(pendingUserIds.map(async id => {
+            const pendingUsers = await Promise.all(pendingUserIds.map(async id => {
                 const { data: userData, error: userError } = await supabase
                     .from('profiles')
                     .select('username, id')
                     .eq('id', id)
                     .single();
                 if (userError) {
-                    console.error(`Error fetching username for user id ${id}:`, userError);
+                    console.error(`Error fetching user data for user id ${id}:`, userError);
                     return null;
                 }
-                return userData ? userData.username : null;
+                return userData ? { username: userData.username, id: userData.id } : null;
             }));
-            setPendingRequests(pendingUsernames.filter(username => username !== null));
-            console.log("pendingRequests: " + pendingUsernames.filter(username => username !== null));
+            // Filter out any null values and set the state
+            const validPendingUsers = pendingUsers.filter(user => user !== null);
+            setPendingRequests(validPendingUsers);
+            console.log("pendingRequests:", validPendingUsers);
         }
+
     }
 
 
