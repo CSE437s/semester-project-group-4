@@ -162,6 +162,7 @@ const Feed = () => {
         try {
             const currentDate = new Date(); // Get the current date
 
+            // Insert the new comment
             const { data, error: insertError } = await supabase
                 .from('feedComments')
                 .insert([{ songUUID: songId, comment: comment, userID: session.user.id }]);
@@ -169,29 +170,20 @@ const Feed = () => {
             if (insertError) {
                 console.error('Error adding comment:', insertError);
             } else {
-                const { data: userData, error: userError } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', session.user.id)
-                    .single();
+                // Clear comments for the song ID from the state
+                const updatedComments = { ...comments };
+                updatedComments[songId] = [];
+                setComments(updatedComments);
 
-                if (userError) {
-                    console.error('Error getting user info for comment:', userError);
-                    setCommentInputs("");
-                    return;
-                }
+                // Fetch comments for the song
+                const newComments = await fetchCommentsForSong(songId);
 
-                // const newComment = {
-                //     comment,
-                //     user: userData,
-                //     userID: session.user.id,
-                //     created_at: currentDate.toISOString()
-                // };
+                // Update comments in the state
+                setComments(prevComments => ({
+                    ...prevComments,
+                    [songId]: newComments
+                }));
 
-                // setComments(prevComments => ({
-                //     ...prevComments,
-                //     [songId]: [...(prevComments[songId] || []), newComment]
-                // }));
                 setCommentInputs("");
             }
         } catch (error) {
@@ -200,6 +192,35 @@ const Feed = () => {
     }
 
 
+    async function fetchCommentsForSong(songId) {
+        const { data: comments, error } = await supabase
+            .from('feedComments')
+            .select('comment, created_at, userID, rownum')
+            .eq('songUUID', songId);
+
+        if (error) {
+            console.error('Error fetching comments for song:', songId, error);
+            return [];
+        }
+
+        const commentsWithUsers = await Promise.all(comments.map(async comment => {
+            // Fetch user information for each comment
+            const { data: user, error: userError } = await supabase
+                .from('profiles')
+                .select('username, picture')
+                .eq('id', comment.userID)
+                .single();
+
+            if (userError) {
+                console.error('Error fetching user information for comment:', comment.rownum, userError);
+                return { ...comment, user: null }; // Return comment without user information
+            }
+
+            return { ...comment, user }; // Merge comment and user information
+        }));
+
+        return commentsWithUsers;
+    }
 
 
     async function deleteComment(rownum, songUUID) {
