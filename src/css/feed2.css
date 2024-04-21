@@ -1,57 +1,69 @@
-.shiftRight {
+/* .shiftRight {
     width: 70%;
     margin-left: auto;
     margin-right: auto;
-}
+} */
 
 
 .commentBtn {
-    width: 180px !important;
-    padding: 5px;
-    background-color: #5e26ff;
-    color: white;
+    /* width: 180px !important; */
+    /* padding: 5px; */
+    /* background-color: #5e26ff; */
+    /* color: #5e26ff;
+     */
+    color: rgb(0, 0, 0);
+    margin-left: -35px;
     border-radius: 20px;
     white-space: nowrap;
 }
 
 .song_list {
-    width: 60%;
+    width: 600px;
     margin-left: auto;
     margin-right: auto;
-
 }
 
 .song-item {
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    /* box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2); */
     border-radius: 20px;
-    background-color: white !important;
+    background-color: rgba(255, 255, 255, 0.538) !important;
+    /*set to white*/
 }
 
 @media only screen and (max-width: 1000px) {
     .song_list {
-        width: 99%;
-    }
-
-    .shiftRight {
-        width: 75%;
-        margin-left: 0 !important;
-        margin-right: 0;
+        width: 100%;
     }
 
 }
 
-@media only screen and (max-width: 1300px) {
-    .shiftRight {
-        margin-left: 40px;
-    }
-
+.individualComment {
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
-.individualComment{
-   margin-bottom: 5px;
-   margin-top: 5px;
-}
-
-#CommentTitle{
+#CommentTitle {
     font-weight: bold;
+}
+
+.inputBox {
+    padding: 10px;
+    border: 0.5px solid #979696;
+    background-color: rgb(255, 255, 255);
+}
+
+#iframe {
+    margin-top: 20px;
+}
+
+.viewBtn {
+    font-size: 17px;
+    font-weight: 600;
+    color: rgb(16, 16, 16);
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+#commentContainer {
+    /* margin-left: 25px; */
 }

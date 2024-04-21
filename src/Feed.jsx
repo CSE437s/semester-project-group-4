@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
-import './index.css'
-import './css/feed2.css'
+import './index.css';
+import './css/feed2.css';
 
 const Feed = () => {
     const [friends, setFriends] = useState([]);
@@ -11,8 +11,8 @@ const Feed = () => {
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
     const [renderPage, setRenderPage] = useState(false);
-    const [commentInputs, setCommentInputs] = useState({}); // Track inputs for each song
-    const [songUUID, setSongUUID] = useState(null);
+    const [commentInputs, setCommentInputs] = useState({});
+    const [expandedComments, setExpandedComments] = useState({});
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -50,8 +50,7 @@ const Feed = () => {
     }, [sharedSongs]);
 
     async function fetchSharedSongs(friends) {
-        const friendIds = friends.map(friend => friend.data.id); // Modify to access friend id correctly
-
+        const friendIds = friends.map(friend => friend.data.id);
 
         const sharedSongPromises = friendIds.map(async id => {
             const { data: songs, error: songsError } = await supabase
@@ -69,7 +68,6 @@ const Feed = () => {
                 return [];
             }
 
-            // Combine the data from shared songs and profiles
             const combinedData = songs.map(song => ({
                 ...song,
                 profile: profiles.find(profile => profile.id === id)
@@ -119,7 +117,7 @@ const Feed = () => {
         const commentsPromises = songIds.map(async id => {
             const { data: comments, error } = await supabase
                 .from('feedComments')
-                .select('comment')
+                .select('comment, created_at')
                 .eq('songUUID', id);
 
             if (error) {
@@ -151,11 +149,11 @@ const Feed = () => {
             if (insertError) {
                 console.error('Error adding comment:', insertError);
             } else {
-                // Update the comments state only for the specific song that the comment is for
                 setComments(prevComments => ({
                     ...prevComments,
                     [songId]: [...(prevComments[songId] || []), { comment, userID: session.user.id }]
                 }));
+                setCommentInputs("");
             }
         } catch (error) {
             console.error('Error adding comment:', error);
@@ -167,6 +165,13 @@ const Feed = () => {
         setCommentInputs(prevInputs => ({
             ...prevInputs,
             [songId]: value
+        }));
+    };
+
+    const toggleComments = (songId) => {
+        setExpandedComments(prevState => ({
+            ...prevState,
+            [songId]: !prevState[songId]
         }));
     };
 
@@ -208,55 +213,62 @@ const Feed = () => {
                                     />
                                     <div>
                                         <p style={{ fontWeight: 'bold', color: '#292926' }}>
-                                            Shared by {song.profile.username}
+                                            {song.profile.username}
                                         </p>
                                         <p>
-                                            {new Date(song.created_at).toLocaleTimeString([], {
-                                                hour: '2-digit',
-                                                minute: '2-digit',
-                                            })} {''}
                                             {new Date(song.created_at).toLocaleDateString()}
                                         </p>
                                     </div>
                                 </div>
-                                <div className="shiftRight" style={{ display: 'flex', justifyContent: 'left', alignItems: 'center', minHeight: '150px' }}> {/* Center content vertically and horizontally */}
+                                <div id="iframe" className="shiftRight" style={{ display: 'flex', justifyContent: 'left', alignItems: 'center', minHeight: '150px' }}> {/* Center content vertically and horizontally */}
                                     <iframe
                                         src={`https://open.spotify.com/embed/track/${song.spotifySongId}`}
-                                        width="300"
-                                        height="80"
+                                        width="600"
+                                        height="360"
                                         frameBorder="0"
                                         allowtransparency="true"
                                         allow="encrypted-media"
                                     />
                                 </div>
-                                <div className="shiftRight" style={{ marginTop: 10 }}>
-                                    <h3 id="CommentTitle">Comments:</h3>
-                                    <ul>
-                                        {comments[song.songUUID] &&
-                                            comments[song.songUUID].map((comment, index) => (
-                                                <li className="individualComment" key={index}>{comment.comment}</li>
-                                            ))}
-                                    </ul>
-                                    <div style={{ display: 'flex' }}>
-                                        <input
-                                            type="text"
-                                            placeholder="Add a comment..."
-                                            value={commentInputs[song.songUUID] || ''}
-                                            onChange={e => handleInputChange(e, song.songUUID)}
-                                            style={{ borderRadius: '4px', padding: '5px', flexGrow: 1 }}
-                                        />
-                                        <button className="commentBtn"
-                                            onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])}
-                                        >
-                                            Add Comment
-                                        </button>
 
-                                    </div>
+                                <button className="viewBtn"
+                                    onClick={() => toggleComments(song.songUUID)}
+                                >
+                                    {expandedComments[song.songUUID] ? "Hide Comments" : "View Comments"}
+                                </button>
+
+                                <div id="commentInput" style={{ display: 'flex' }}>
+                                    <input
+                                        className='inputBox'
+                                        type="text"
+                                        placeholder="What do you think?"
+                                        value={commentInputs[song.songUUID] || ''}
+                                        onChange={e => handleInputChange(e, song.songUUID)}
+                                        style={{ borderRadius: '4px', padding: '5px', flexGrow: 1 }}
+                                    />
+                                    <button className="commentBtn"
+                                        onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])}
+                                    >
+                                        Post
+                                    </button>
                                 </div>
 
+                                {/* {expandedComments[song.songUUID] && (
+                                    
+                                )} */}
+
+                                {expandedComments[song.songUUID] && (
+                                    <div id="commentContainer" style={{ marginTop: 10 }}>
+                                        <ul>
+                                            {comments[song.songUUID] &&
+                                                comments[song.songUUID].map((comment, index) => (
+                                                    <li className="individualComment" key={index}>{comment.comment}</li>
+                                                ))}
+                                        </ul>
+                                    </div>
+                                )}
 
                             </div>
-
                         </div>
                     ))}
                 </div>
