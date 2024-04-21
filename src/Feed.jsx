@@ -160,6 +160,8 @@ const Feed = () => {
 
     async function addComment(songId, comment) {
         try {
+            const currentDate = new Date(); // Get the current date
+
             const { data, error: insertError } = await supabase
                 .from('feedComments')
                 .insert([{ songUUID: songId, comment: comment, userID: session.user.id }]);
@@ -167,26 +169,38 @@ const Feed = () => {
             if (insertError) {
                 console.error('Error adding comment:', insertError);
             } else {
-                const { data2, error } = await supabase
+                const { data: userData, error: userError } = await supabase
                     .from('profiles')
                     .select('*')
                     .eq('id', session.user.id)
+                    .single();
 
-                if (error) {
-                    console.error('Error getting user info for comment:', insertError);
+                if (userError) {
+                    console.error('Error getting user info for comment:', userError);
                     setCommentInputs("");
                     return;
                 }
-                setComments(prevComments => ({
-                    ...prevComments,
-                    [songId]: [...(prevComments[songId] || []), { comment, user: userData[0] }] // Access userData as an array
-                }));
+
+                // const newComment = {
+                //     comment,
+                //     user: userData,
+                //     userID: session.user.id,
+                //     created_at: currentDate.toISOString()
+                // };
+
+                // setComments(prevComments => ({
+                //     ...prevComments,
+                //     [songId]: [...(prevComments[songId] || []), newComment]
+                // }));
                 setCommentInputs("");
             }
         } catch (error) {
             console.error('Error adding comment:', error);
         }
     }
+
+
+
 
     async function deleteComment(rownum, songUUID) {
         try {
