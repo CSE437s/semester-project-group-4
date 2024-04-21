@@ -343,9 +343,9 @@ const Feed = () => {
 
                                 {expandedComments[song.songUUID] && (
                                     <div id="commentContainer" style={{ marginTop: 10 }}>
-                                        <ul>
-                                            {comments[song.songUUID] &&
-                                                comments[song.songUUID].map((comment, index) => (
+                                        {comments[song.songUUID] && comments[song.songUUID].length > 0 ? (
+                                            <ul>
+                                                {comments[song.songUUID].map((comment, index) => (
                                                     <li className="individualComment" key={index}>
                                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                                             <img
@@ -372,11 +372,14 @@ const Feed = () => {
                                                             )}
                                                         </div>
                                                         <p className="commentText">{comment.comment}</p>
-
                                                     </li>
                                                 ))}
-                                        </ul>
+                                            </ul>
+                                        ) : (
+                                            <p>No comments</p>
+                                        )}
                                     </div>
+
                                 )}
 
                             </div>
