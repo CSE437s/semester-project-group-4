@@ -39,7 +39,7 @@
 
 .individualComment {
     margin-bottom: 5px;
-    margin-top: 5px;
+    margin-top: 15px;
 }
 
 #CommentTitle {
@@ -66,4 +66,28 @@
 
 #commentContainer {
     /* margin-left: 25px; */
+}
+
+.commentText{
+    margin-left: 45px;
+}
+
+.besideImage{
+    margin-top:-10px;
+    margin-left: 10px;
+}
+
+.dateText{
+    font-weight: 500;
+    color:#444040;
+    margin-top: -3.8px;
+}
+
+.deleteBtn{
+    height: 30px;
+    width: 30px;
+    font-size: 25px;
+    margin-left: 15px;
+    margin-top: -6px;
+    color:rgb(163, 46, 46);
 }

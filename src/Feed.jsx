@@ -3,6 +3,7 @@ import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
 import './index.css';
 import './css/feed2.css';
+import { MdDeleteForever } from "react-icons/md";
 
 const Feed = () => {
     const [friends, setFriends] = useState([]);
@@ -125,7 +126,23 @@ const Feed = () => {
                 return [];
             }
 
-            return comments;
+            const commentsWithUsers = await Promise.all(comments.map(async comment => {
+                // Fetch user information for each comment
+                const { data: user, error: userError } = await supabase
+                    .from('profiles')
+                    .select('username, picture')
+                    .eq('id', comment.userID)
+                    .single();
+
+                if (userError) {
+                    console.error('Error fetching user information for comment:', comment.rownum, userError);
+                    return { ...comment, user: null }; // Return comment without user information
+                }
+
+                return { ...comment, user }; // Merge comment and user information
+            }));
+
+            return commentsWithUsers;
         });
 
         try {
@@ -135,10 +152,12 @@ const Feed = () => {
                 commentsObject[id] = songComments[index];
             });
             setComments(commentsObject);
+            console.log("THE COMMENT OBJHECT", commentsObject)
         } catch (error) {
             console.error('Error fetching comments for songs:', error);
         }
     }
+
 
     async function addComment(songId, comment) {
         try {
@@ -149,10 +168,10 @@ const Feed = () => {
             if (insertError) {
                 console.error('Error adding comment:', insertError);
             } else {
-                setComments(prevComments => ({
-                    ...prevComments,
-                    [songId]: [...(prevComments[songId] || []), { comment, userID: session.user.id }]
-                }));
+                // setComments(prevComments => ({
+                //     ...prevComments,
+                //     [songId]: [...(prevComments[songId] || []), { comment, userID: session.user.id }]
+                // }));
                 setCommentInputs("");
             }
         } catch (error) {
@@ -242,7 +261,11 @@ const Feed = () => {
                                             {song.profile.username}
                                         </p>
                                         <p>
-                                            {new Date(song.created_at).toLocaleDateString()}
+                                            {new Date(song.created_at).toLocaleDateString('en-US', {
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })
+                                            }
                                         </p>
                                     </div>
                                 </div>
@@ -287,7 +310,7 @@ const Feed = () => {
                                                     <li className="individualComment" key={index}>
                                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                                             <img
-                                                                src={comment.user.picture}
+                                                                src={comment.user.picture ? comment.user.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'}
                                                                 alt=""
                                                                 style={{
                                                                     width: 30,
@@ -296,13 +319,21 @@ const Feed = () => {
                                                                     marginRight: 5
                                                                 }}
                                                             />
-                                                            <p style={{ fontWeight: 'bold', marginRight: 5 }}>{comment.user.username}</p>
-                                                            <p>{new Date(comment.created_at).toLocaleDateString()}</p>
-                                                        </div>
-                                                        <p>{comment.comment}</p>
-                                                        {session && session.user.id === comment.userID && (
-                                                            <button onClick={() => deleteComment(song.songUUID, comment.id)}>Delete</button>
+                                                            <p className="besideImage" style={{ fontWeight: 'bold', marginRight: 5 }}>{comment.user.username}</p>
+                                                            <p className="besideImage dateText">{new Date(comment.created_at).toLocaleDateString('en-US', {
+                                                                month: 'long',
+                                                                day: 'numeric'
+                                                            })
+                                                            }</p>
+                                                            {session && session.user.id === comment.userID && (
+                                                            <button className='deleteBtn' onClick={() => deleteComment(song.songUUID, comment.id)}>
+                                                                <MdDeleteForever />
+                                                                
+                                                            </button>
                                                         )}
+                                                        </div>
+                                                        <p className="commentText">{comment.comment}</p>
+                                                        
                                                     </li>
                                                 ))}
                                         </ul>
