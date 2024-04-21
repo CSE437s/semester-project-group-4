@@ -167,10 +167,20 @@ const Feed = () => {
             if (insertError) {
                 console.error('Error adding comment:', insertError);
             } else {
-                // setComments(prevComments => ({
-                //     ...prevComments,
-                //     [songId]: [...(prevComments[songId] || []), { comment, userID: session.user.id }]
-                // }));
+                const { data2, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+
+                if (error) {
+                    console.error('Error getting user info for comment:', insertError);
+                    setCommentInputs("");
+                    return;
+                }
+                setComments(prevComments => ({
+                    ...prevComments,
+                    [songId]: [...(prevComments[songId] || []), { comment, user: userData[0] }] // Access userData as an array
+                }));
                 setCommentInputs("");
             }
         } catch (error) {
@@ -178,21 +188,18 @@ const Feed = () => {
         }
     }
 
-    async function deleteComment(songId, commentId) {
+    async function deleteComment(rownum, songUUID) {
         try {
             const { error } = await supabase
                 .from('feedComments')
                 .delete()
-                .eq('songUUID', songId)
-                .eq('id', commentId)
-                .eq('userID', session.user.id);
-
+                .eq('rownum', rownum)
             if (error) {
                 console.error('Error deleting comment:', error);
             } else {
                 setComments(prevComments => ({
                     ...prevComments,
-                    [songId]: prevComments[songId].filter(comment => comment.id !== commentId)
+                    [songUUID]: prevComments[songUUID].filter(comment => comment.rownum !== rownum)
                 }));
             }
         } catch (error) {
@@ -292,7 +299,7 @@ const Feed = () => {
                                         placeholder="What do you think?"
                                         value={commentInputs[song.songUUID] || ''}
                                         onChange={e => handleInputChange(e, song.songUUID)}
-                                  
+
                                     />
                                     <button className="commentBtn"
                                         onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])}
@@ -326,9 +333,8 @@ const Feed = () => {
                                                             })
                                                             }</p>
                                                             {session && session.user.id === comment.userID && (
-                                                                <button className='deleteBtn' onClick={() => deleteComment(song.songUUID, comment.id)}>
+                                                                <button className='deleteBtn' onClick={() => deleteComment(comment.rownum, song.songUUID)}>
                                                                     <MdDeleteForever />
-
                                                                 </button>
                                                             )}
                                                         </div>
