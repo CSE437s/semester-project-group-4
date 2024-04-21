@@ -287,7 +287,7 @@ const Feed = () => {
                                 </button>
 
                                 <div id="commentInput" style={{ display: 'flex' }}>
-                                    <input
+                                    <textarea
                                         className='inputBox'
                                         type="text"
                                         placeholder="What do you think?"
@@ -301,6 +301,7 @@ const Feed = () => {
                                         Post
                                     </button>
                                 </div>
+
 
                                 {expandedComments[song.songUUID] && (
                                     <div id="commentContainer" style={{ marginTop: 10 }}>
@@ -326,14 +327,14 @@ const Feed = () => {
                                                             })
                                                             }</p>
                                                             {session && session.user.id === comment.userID && (
-                                                            <button className='deleteBtn' onClick={() => deleteComment(song.songUUID, comment.id)}>
-                                                                <MdDeleteForever />
-                                                                
-                                                            </button>
-                                                        )}
+                                                                <button className='deleteBtn' onClick={() => deleteComment(song.songUUID, comment.id)}>
+                                                                    <MdDeleteForever />
+
+                                                                </button>
+                                                            )}
                                                         </div>
                                                         <p className="commentText">{comment.comment}</p>
-                                                        
+
                                                     </li>
                                                 ))}
                                         </ul>
