@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
-import Sidebar1 from './components/Sidebar1';
-import './index.css'
-import './css/feed2.css'
+import Sidebar from './components/Sidebar';
+import './css/feed.css';
+import { MdDeleteForever } from "react-icons/md";
 
 const Feed = () => {
     const [friends, setFriends] = useState([]);
@@ -11,8 +11,8 @@ const Feed = () => {
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
     const [renderPage, setRenderPage] = useState(false);
-    const [commentInputs, setCommentInputs] = useState({}); // Track inputs for each song
-    const [songUUID, setSongUUID] = useState(null);
+    const [commentInputs, setCommentInputs] = useState({});
+    const [expandedComments, setExpandedComments] = useState({});
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -20,7 +20,7 @@ const Feed = () => {
             setLoading(false);
             setTimeout(() => {
                 setRenderPage(true);
-            }, 1000);
+            }, 500);
         }).catch(error => {
             console.error('Error fetching session:', error);
             setLoading(false);
@@ -50,8 +50,7 @@ const Feed = () => {
     }, [sharedSongs]);
 
     async function fetchSharedSongs(friends) {
-        const friendIds = friends.map(friend => friend.data.id); // Modify to access friend id correctly
-
+        const friendIds = friends.map(friend => friend.data.id);
 
         const sharedSongPromises = friendIds.map(async id => {
             const { data: songs, error: songsError } = await supabase
@@ -69,7 +68,6 @@ const Feed = () => {
                 return [];
             }
 
-            // Combine the data from shared songs and profiles
             const combinedData = songs.map(song => ({
                 ...song,
                 profile: profiles.find(profile => profile.id === id)
@@ -119,7 +117,7 @@ const Feed = () => {
         const commentsPromises = songIds.map(async id => {
             const { data: comments, error } = await supabase
                 .from('feedComments')
-                .select('comment')
+                .select('comment, created_at, userID, rownum')
                 .eq('songUUID', id);
 
             if (error) {
@@ -127,7 +125,23 @@ const Feed = () => {
                 return [];
             }
 
-            return comments;
+            const commentsWithUsers = await Promise.all(comments.map(async comment => {
+                // Fetch user information for each comment
+                const { data: user, error: userError } = await supabase
+                    .from('profiles')
+                    .select('username, picture')
+                    .eq('id', comment.userID)
+                    .single();
+
+                if (userError) {
+                    console.error('Error fetching user information for comment:', comment.rownum, userError);
+                    return { ...comment, user: null }; // Return comment without user information
+                }
+
+                return { ...comment, user }; // Merge comment and user information
+            }));
+
+            return commentsWithUsers;
         });
 
         try {
@@ -137,13 +151,18 @@ const Feed = () => {
                 commentsObject[id] = songComments[index];
             });
             setComments(commentsObject);
+            console.log("THE COMMENT OBJHECT", commentsObject)
         } catch (error) {
             console.error('Error fetching comments for songs:', error);
         }
     }
 
+
     async function addComment(songId, comment) {
         try {
+            const currentDate = new Date(); // Get the current date
+
+            // Insert the new comment
             const { data, error: insertError } = await supabase
                 .from('feedComments')
                 .insert([{ songUUID: songId, comment: comment, userID: session.user.id }]);
@@ -151,14 +170,72 @@ const Feed = () => {
             if (insertError) {
                 console.error('Error adding comment:', insertError);
             } else {
-                // Update the comments state only for the specific song that the comment is for
-                setComments(prevComments => ({
-                    ...prevComments,
-                    [songId]: [...(prevComments[songId] || []), { comment, userID: session.user.id }]
-                }));
+                // Fetch updated comments for the song
+                const newComments = await fetchCommentsForSong(songId);
+
+                // Add the new comment to the existing comments
+                setComments(prevComments => {
+                    const updatedComments = { ...prevComments };
+                    updatedComments[songId] = [...newComments];
+                    return updatedComments;
+                });
+
+                setCommentInputs("");
             }
         } catch (error) {
             console.error('Error adding comment:', error);
+        }
+    }
+
+
+
+    async function fetchCommentsForSong(songId) {
+        const { data: comments, error } = await supabase
+            .from('feedComments')
+            .select('comment, created_at, userID, rownum')
+            .eq('songUUID', songId);
+
+        if (error) {
+            console.error('Error fetching comments for song:', songId, error);
+            return [];
+        }
+
+        const commentsWithUsers = await Promise.all(comments.map(async comment => {
+            // Fetch user information for each comment
+            const { data: user, error: userError } = await supabase
+                .from('profiles')
+                .select('username, picture')
+                .eq('id', comment.userID)
+                .single();
+
+            if (userError) {
+                console.error('Error fetching user information for comment:', comment.rownum, userError);
+                return { ...comment, user: null }; // Return comment without user information
+            }
+
+            return { ...comment, user }; // Merge comment and user information
+        }));
+
+        return commentsWithUsers;
+    }
+
+
+    async function deleteComment(rownum, songUUID) {
+        try {
+            const { error } = await supabase
+                .from('feedComments')
+                .delete()
+                .eq('rownum', rownum)
+            if (error) {
+                console.error('Error deleting comment:', error);
+            } else {
+                setComments(prevComments => ({
+                    ...prevComments,
+                    [songUUID]: prevComments[songUUID].filter(comment => comment.rownum !== rownum)
+                }));
+            }
+        } catch (error) {
+            console.error('Error deleting comment:', error);
         }
     }
 
@@ -170,11 +247,22 @@ const Feed = () => {
         }));
     };
 
+    const toggleComments = (songId) => {
+        setExpandedComments(prevState => ({
+            ...prevState,
+            [songId]: !prevState[songId]
+        }));
+    };
+
     if (loading || !renderPage) {
         return (
             <div className="app-container">
-                <Sidebar1 />
+                <Sidebar />
                 <div className="main-content">
+                    <div className="header">
+                        <h2>Feed</h2>
+                        <p className="headerText">View what your friends have been listening to</p>
+                    </div>
                     <p>Loading...</p>
                 </div>
             </div>
@@ -183,7 +271,7 @@ const Feed = () => {
 
     return (
         <div className="app-container">
-            <Sidebar1 />
+            <Sidebar />
             <div id="page_content_id" className="main-content">
                 <div className="header">
                     <h2>Feed</h2>
@@ -191,12 +279,12 @@ const Feed = () => {
                 </div>
                 <div className="song_list">
                     {sharedSongs.map(song => (
-                        <div key={song.songUUID} className="song-item" style={{ backgroundColor: '#f4f4f4', borderRadius: '15px', padding: '10px', marginBottom: '10px' }}>
+                        <div key={song.songUUID} className="song-item">
                             <div className="shiftRight">
 
                                 <div className="shiftRight" style={{ display: 'flex' }}>
                                     <img
-                                        src={song.profile.picture}
+                                        src={song.profile.picture ? song.profile.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'}
                                         alt=""
                                         style={{
                                             width: 50,
@@ -208,59 +296,97 @@ const Feed = () => {
                                     />
                                     <div>
                                         <p style={{ fontWeight: 'bold', color: '#292926' }}>
-                                            Shared by {song.profile.username}
+                                            {song.profile.username}
                                         </p>
                                         <p>
-                                            {new Date(song.created_at).toLocaleTimeString([], {
-                                                hour: '2-digit',
-                                                minute: '2-digit',
-                                            })} {''}
-                                            {new Date(song.created_at).toLocaleDateString()}
+                                            {new Date(song.created_at).toLocaleDateString('en-US', {
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })
+                                            }
                                         </p>
                                     </div>
                                 </div>
-                                <div className="shiftRight" style={{ display: 'flex', justifyContent: 'left', alignItems: 'center', minHeight: '150px' }}> {/* Center content vertically and horizontally */}
+                                <div id="iframe" className="shiftRight" style={{ display: 'flex', justifyContent: 'left', alignItems: 'center', minHeight: '150px' }}> {/* Center content vertically and horizontally */}
                                     <iframe
                                         src={`https://open.spotify.com/embed/track/${song.spotifySongId}`}
-                                        width="300"
-                                        height="80"
+                                        width="600"
+                                        height="360"
                                         frameBorder="0"
                                         allowtransparency="true"
                                         allow="encrypted-media"
                                     />
                                 </div>
-                                <div className="shiftRight" style={{ marginTop: 10 }}>
-                                    <h3>Comments:</h3>
-                                    <ul>
-                                        {comments[song.songUUID] &&
-                                            comments[song.songUUID].map((comment, index) => (
-                                                <li key={index}>{comment.comment}</li>
-                                            ))}
-                                    </ul>
-                                    <div style={{ display: 'flex' }}>
-                                        <input
-                                            type="text"
-                                            placeholder="Add a comment..."
-                                            value={commentInputs[song.songUUID] || ''}
-                                            onChange={e => handleInputChange(e, song.songUUID)}
-                                            style={{ borderRadius: '4px', padding: '5px', flexGrow: 1 }}
-                                        />
-                                        <button className="commentBtn"
-                                            onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])}
-                                            style={{ backgroundColor: '#d6d6ba', padding: '5px', borderRadius: '4px' }}
-                                        >
-                                            Add Comment
-                                        </button>
-                                    </div>
+
+                                <button className="viewBtn"
+                                    onClick={() => toggleComments(song.songUUID)}
+                                >
+                                    {expandedComments[song.songUUID] ? "Hide Comments" : "View Comments"}
+                                </button>
+
+                                <div id="commentInputDiv" style={{ display: 'flex' }}>
+                                    <textarea
+                                        className='inputBox'
+                                        type="text"
+                                        placeholder="What do you think?"
+                                        value={commentInputs[song.songUUID] || ''}
+                                        onChange={e => handleInputChange(e, song.songUUID)}
+
+                                    />
+                                    <button className="commentBtn"
+                                        onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])}
+                                    >
+                                        Post
+                                    </button>
                                 </div>
 
-                         
-                        </div>
 
+                                {expandedComments[song.songUUID] && (
+                                    <div id="commentContainer" style={{ marginTop: 10 }}>
+                                        {comments[song.songUUID] && comments[song.songUUID].length > 0 ? (
+                                            <ul>
+                                                {comments[song.songUUID].map((comment, index) => (
+                                                    <li className="individualComment" key={index}>
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <img
+                                                                src={comment.user.picture ? comment.user.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'}
+                                                                alt=""
+                                                                style={{
+                                                                    width: 30,
+                                                                    height: 30,
+                                                                    borderRadius: '50%',
+                                                                    marginRight: 5,
+                                                                    border: '1px solid black',
+                                                                }}
+                                                            />
+                                                            <p className="besideImage" style={{ fontWeight: 'bold', marginRight: 5 }}>{comment.user.username}</p>
+                                                            <p className="besideImage dateText">{new Date(comment.created_at).toLocaleDateString('en-US', {
+                                                                month: 'long',
+                                                                day: 'numeric'
+                                                            })
+                                                            }</p>
+                                                            {session && session.user.id === comment.userID && (
+                                                                <button title="delete comment" className='deleteBtn' onClick={() => deleteComment(comment.rownum, song.songUUID)}>
+                                                                    <MdDeleteForever />
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                        <p className="commentText">{comment.comment}</p>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p>No comments</p>
+                                        )}
+                                    </div>
+
+                                )}
+
+                            </div>
                         </div>
                     ))}
+                </div>
             </div>
-        </div>
         </div >
     );
 };

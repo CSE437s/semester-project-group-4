@@ -125,9 +125,26 @@ const ProfilePicture = () => {
     return (
         <div className="profile-picture">
             {profilePic ? (
-                <img src={profilePic} onClick={() => document.getElementById('fileInput').click()} />
+                <img src={profilePic} onClick={() => document.getElementById('fileInput').click()} style={{ border: '1px solid black' }} />
             ) : (
-                <button onClick={() => document.getElementById('fileInput').click()}>Upload Image</button>
+                // <button onClick={() => document.getElementById('fileInput').click()}>Upload Image</button>
+                <div className="mb-3 w-96">
+                    <label
+                        htmlFor="fileInput"
+                        className="mb-2 inline-block text-neutral-700"
+                    >
+                        Upload a Profile Pic
+                    </label>
+                    <input
+                        className="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal text-neutral-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-200 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none"
+                        type="file"
+                        id="fileInput"
+                        onChange={handleFileUpload}
+                    />
+                </div>
+
+
+
             )}
             <input id="fileInput" type="file" style={{ display: 'none' }} onChange={handleFileUpload} />
         </div>
@@ -137,7 +154,7 @@ const ProfilePicture = () => {
 export default ProfilePicture;
 
 
-
+//placeholder='Upload a Profile Pic'
 /*
 
 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload file</label>

@@ -6,10 +6,12 @@ import Account from './Account';
 import Share from './Share';
 import Profile from './Profile';
 import Feed from './Feed';
-import 'flowbite';
-
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-// import { createRoot } from 'react-dom/client';
+import Friends from './Friends'
+import User from './User';
+import FriendSearch from './components/FriendSearch';
+import Onboarding from './Onboarding';
+
 
 function App() {
   const [session, setSession] = useState(null);
@@ -38,6 +40,10 @@ function App() {
             <Route path="/Account" element={<Account key={session.user.id} session={session} />} />
             <Route path="/Profile" element={<Profile key={session.user.id} session={session} />} />
             <Route path="/Feed" element={<Feed key={session.user.id} session={session} />} />
+            <Route path="/Friends" element={<Friends key={session.user.id} session={session} />} />
+            <Route path="/User" element={<User key={session.user.id} session={session} />} />
+            <Route path="/FriendSearch" element={<FriendSearch key={session.user.id} session={session} />} />
+            <Route path="/Onboarding" element={<Onboarding key={session.user.id} session={session} />} />
           </Routes>
         )}
       </div>

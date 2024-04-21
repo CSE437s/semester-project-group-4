@@ -1,0 +1,51 @@
+#groove1 {
+
+    font-size: 60px;
+    font-weight: bolder;
+    color: #5c63ff
+}
+
+#title1 {
+
+    font-size: 20px;
+    font-weight: 200;
+    color: #000000;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    ;
+}
+
+#sb {
+    background-color: #5c63ff;
+}
+
+#warning {
+    color: red;
+    font-size: 15px;
+    font-weight: 600;
+    background-color: rgb(247, 247, 212);
+    border-radius: 2rem;
+}
+
+#not_background {
+    margin: auto;
+}
+
+@media only screen and (max-width: 767px) {
+    #not_background {
+        margin-top: 0;
+        height:100%
+        /* Override margin-top for mobile devices */
+    }
+}
+
+#parent {
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  #Bio{
+    resize: none;
+  }

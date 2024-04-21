@@ -1,0 +1,55 @@
+#profile-container {
+    height: 75%;
+    margin-top: 7%;
+    position: relative;
+}
+
+
+#soul p {
+    display: inline;
+    white-space: nowrap;
+}
+
+#soul {
+    margin-top: 25px !important;
+    margin-bottom: 30px !important;
+}
+
+#soulTag {
+    font-weight: 700;
+    color: rgb(104, 103, 103);
+    margin-right: 5px;
+}
+
+#artist {
+    font-weight: 500;
+    color: rgb(0, 0, 0);
+}
+
+#joined {
+    /* margin-top: 20px; */
+    color: rgb(129, 128, 128);
+    font-size: 15px;
+    font-weight: 550;
+}
+
+#username {
+    margin-bottom: 20px;
+}
+
+#Bio {
+    margin-top: 20px;
+    max-width:300px;
+    margin-left: auto;
+    margin-right: auto;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+#dateJoined {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    /* Ensure it spans the entire width of the parent */
+}
+

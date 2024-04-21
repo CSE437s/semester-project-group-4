@@ -9,7 +9,7 @@
 .main-content {
   flex: 1;
   /* padding: 20px; */
-  padding: 4%;
+  padding: 2% 4% 4%;
   overflow: scroll;
 }
 
@@ -18,7 +18,7 @@ h2 {
   font-family: 'FigTree', sans-serif;
   font-weight: 700;
   color: black;
-  font-size: xxx-large;
+  font-size: xx-large;
   letter-spacing: 2px;
 }
 
@@ -37,6 +37,7 @@ h2 {
   /* Share Page */
   .share-page {
     background-color: white;
+    margin-top: 3%;
     /* padding: 20px; */
   }
   

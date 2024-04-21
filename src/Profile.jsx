@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
 import { supabase } from './supabaseClient';
-import Sidebar1 from './components/Sidebar1';
+import Sidebar from './components/Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faTrash } from '@fortawesome/free-solid-svg-icons';
 import ProfilePicture from './components/ProfilePicture';
@@ -12,7 +14,6 @@ export default function Profile({ session }) {
     const [username, setUsername] = useState('');
     const [friends, setFriends] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
-
     const [myusername, setmyUsername] = useState(null);
     const [newUsername, setNewUsername] = useState('');
     const [isEditing, setIsEditing] = useState(false);
@@ -21,7 +22,9 @@ export default function Profile({ session }) {
     const clientId = "1892c29e22e44ec686fa22a8e891b0f9";
     //const clientId = process.env.REACT_APP_SPOTIFY_API_ID; // Your client id
 
-    const redirectUri = "https://semester-project-group-4.vercel.app/Share"; //takes us back here after agreeing to Spotify
+
+    const currentDomain = window.location.origin;
+    const redirectUri = `${currentDomain}/Share`;
 
     const scope = 'user-read-private user-read-email user-top-read';
 
@@ -337,9 +340,37 @@ export default function Profile({ session }) {
         }
     };
 
+    useEffect(() => {
+        const fetchOnboarded = async () => {
+            try {
+                if (session !== null) {
+                    const { data, error } = await supabase
+                        .from('profiles')
+                        .select('hasOnboarded')
+                        .eq('id', session.user.id)
+                        .single();
+                    if (error) {
+                        console.error('Error fetching onboarding boolean:', error);
+                        return;
+                    } else {
+                        if (session !== null && !data.hasOnboarded) {
+                            const currentDomain = window.location.origin;
+                            const targetUrl = `${currentDomain}/Onboarding`;
+                            window.location.href = targetUrl;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Unexpected error fetching onboarding status:', error);
+            }
+        };
+
+        fetchOnboarded();
+    }, [session]);
+
     return (
         <div className="app-container bg-light">
-            <Sidebar1 />
+            <Sidebar />
             <div id="page_content_id" className="main-content">
                 <div className="header">
                     <h2>Profile</h2>
@@ -347,59 +378,47 @@ export default function Profile({ session }) {
                 <div className="profile-section">
                     <div className="profile-info">
                         <ProfilePicture />
-                        <button onClick={loginWithSpotifyClick} className="profileButton spotifyButton text-white py-2 px-4">Connect to Spotify</button>
-                    </div>
-
-                    <div>
-                        {isEditing ? (
-                            <div>
-                                <input
-                                    type="text"
-                                    value={newUsername}
-                                    onChange={(e) => setNewUsername(e.target.value)}
-                                />
-                                <button onClick={updateUsername}>Save</button>
-                            </div>
-                        ) : (
-                            <div>
-                                <p>Username: {myusername}</p>
-                                <button onClick={() => setIsEditing(true)}>Edit</button>
-                            </div>
-                        )}
-                    </div>
-
-
-                    <div className="add-friends mt-10">
-                        <h3 className="profileText">Add Friend</h3>
-                        <input type="text" placeholder="Enter friend's username" value={username} onChange={e => setUsername(e.target.value)} className="form-control my-3" />
-                        <button onClick={handleSendFriendRequest} className="profileButton text-white py-2 px-4">Add Friend</button>
-                    </div>
-                    <div className="friendsList mt-10">
-                        <h3 className="profileText">My Friends</h3>
-                        <ul className="list-group mt-4">
-                            {friends.map(friend => (
-                                <li key={friend} className="list-group-item d-flex justify-content-between align-items-center my-2">
-                                    {friend}
-                                    <button onClick={() => handleRemoveFriend(friend)} className="btn btn-danger btn-sm">
-                                        <FontAwesomeIcon icon={faTrash} />
+                        <div id="nameChange" className="flex justify-center items-center">
+                            {isEditing ? (
+                                <div className="flex items-center space-x-2">
+                                    <input
+                                        type="text"
+                                        value={newUsername}
+                                        onChange={(e) => setNewUsername(e.target.value)}
+                                        className="border border-gray-300 px-2 py-1 rounded-md focus:outline-none focus:border-blue-500"
+                                    />
+                                    <button
+                                        onClick={updateUsername}
+                                        className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                                    >
+                                        Save
                                     </button>
-                                </li>
-                            ))}
-                        </ul>
+                                </div>
+                            ) : (
+                                <div className="flex items-center space-x-2">
+                                    <p className="text-gray-700">Username: {myusername}</p>
+                                    <button
+                                        onClick={() => setIsEditing(true)}
+                                        className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:bg-gray-400"
+                                    >
+                                        Edit
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                        <button onClick={loginWithSpotifyClick} className="profileButton spotifyButton text-white py-2 px-4">Connect to Spotify</button>
+                        <Link to="/Friends" className="purple-button"> My Friends </Link>
                     </div>
-                    <div className="pending-requests mt-10">
-                        <h3 className="profileText">Pending Requests</h3>
-                        <ul className="list-group mt-4">
-                            {pendingRequests.map(requestUserId => (
-                                <li key={requestUserId} className="list-group-item d-flex justify-content-between align-items-center my-2">
-                                    <span>Pending request from {requestUserId}</span>
-                                    <div>
-                                        <button onClick={() => handleAcceptRequest(requestUserId)} className="btn btn-success btn-sm mx-2">Accept</button>
-                                        <button onClick={() => handleRejectRequest(requestUserId)} className="btn btn-danger btn-sm">Reject</button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+                    <div id="myFriendsLink">
+
+                        {/* <button
+                            onClick={updateUsername}
+                            className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                        >
+                            My Friends
+                        </button> */}
+                        
+
                     </div>
                 </div>
             </div>
