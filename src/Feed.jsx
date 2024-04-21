@@ -21,7 +21,7 @@ const Feed = () => {
             setLoading(false);
             setTimeout(() => {
                 setRenderPage(true);
-            }, 1000);
+            }, 500);
         }).catch(error => {
             console.error('Error fetching session:', error);
             setLoading(false);
@@ -246,7 +246,7 @@ const Feed = () => {
 
                                 <div className="shiftRight" style={{ display: 'flex' }}>
                                     <img
-                                        src={song.profile.picture}
+                                        src={song.profile.picture ? song.profile.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'}
                                         alt=""
                                         style={{
                                             width: 50,

@@ -46,10 +46,19 @@
     font-weight: bold;
 }
 
-.inputBox {
+#commentInput {
     padding: 10px;
     border: 0.5px solid #979696;
     background-color: rgb(255, 255, 255);
+    border-radius: 4px;
+
+    /* background-color: red; */
+}
+
+.inputBox{
+    background-color: rgb(255, 255, 255);
+    border:none;
+    max-width: 90%;
 }
 
 #iframe {
