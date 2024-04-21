@@ -14,7 +14,6 @@ export default function Profile({ session }) {
     const [username, setUsername] = useState('');
     const [friends, setFriends] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
-
     const [myusername, setmyUsername] = useState(null);
     const [newUsername, setNewUsername] = useState('');
     const [isEditing, setIsEditing] = useState(false);

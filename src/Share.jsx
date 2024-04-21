@@ -1,25 +1,14 @@
 import './css/share.css'
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import SongLayout from './components/SongLayout';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import { Link } from 'react-router-dom';
  import axios from 'axios'; // for API requests
  import qs from 'qs';
- import {Buffer} from 'buffer';
- import { useCookies } from 'react-cookie';
 
 const Share = () => {
   const [topSongs, setTopSongs] = useState([]);
-  const [spotifyTokenHook, setSpotifyTokenHook] = useState([]);
-  const [refreshTokenHook, setRefreshTokenHook] = useState([]);
 
-
-  //const clientId = process.env.REACT_APP_SPOTIFY_API_ID; // Your client id
   const clientId = "1892c29e22e44ec686fa22a8e891b0f9";
-
-
   const currentDomain = window.location.origin;
   const redirectUri = `${currentDomain}/Share`;
   let tokenEndpoint = "https://accounts.spotify.com/api/token";

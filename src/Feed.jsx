@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
-import './index.css';
-import './css/feed2.css';
+import './css/feed.css';
 import { MdDeleteForever } from "react-icons/md";
 
 const Feed = () => {
@@ -241,7 +240,7 @@ const Feed = () => {
                 </div>
                 <div className="song_list">
                     {sharedSongs.map(song => (
-                        <div key={song.songUUID} className="song-item" style={{ backgroundColor: '#f4f4f4', borderRadius: '15px', padding: '10px', marginBottom: '10px' }}>
+                        <div key={song.songUUID} className="song-item">
                             <div className="shiftRight">
 
                                 <div className="shiftRight" style={{ display: 'flex' }}>
@@ -286,14 +285,14 @@ const Feed = () => {
                                     {expandedComments[song.songUUID] ? "Hide Comments" : "View Comments"}
                                 </button>
 
-                                <div id="commentInput" style={{ display: 'flex' }}>
+                                <div id="commentInputDiv" style={{ display: 'flex' }}>
                                     <textarea
                                         className='inputBox'
                                         type="text"
                                         placeholder="What do you think?"
                                         value={commentInputs[song.songUUID] || ''}
                                         onChange={e => handleInputChange(e, song.songUUID)}
-                                        style={{ borderRadius: '4px', padding: '5px', flexGrow: 1 }}
+                                  
                                     />
                                     <button className="commentBtn"
                                         onClick={() => addComment(song.songUUID, commentInputs[song.songUUID])}
