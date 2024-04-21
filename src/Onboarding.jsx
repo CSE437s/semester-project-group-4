@@ -113,7 +113,7 @@ export default function Onboarding({ session }) {
         console.log("Profile Picture:", profilePicture);
         const { data, error } = await supabase
             .from('profiles')
-            .update({ hasOnboarded: 'true', username: username, soulArtist: soulArtist,  bio: songBio})
+            .update({ hasOnboarded: 'true', username: username, soulArtist: soulArtist, bio: songBio })
             .eq('id', session.user.id)
         if (error) {
             console.error('Error updating onboarding boolean:', error);
@@ -151,8 +151,13 @@ export default function Onboarding({ session }) {
 
     const handleBio = (e) => {
         let bio = e.target.value;
+        // Ensure bio length does not exceed 800 characters
+        if (bio.length > 100) {
+            bio = bio.slice(0, 100);
+        }
         setSongBio(bio);
     };
+
 
     return (
         <div id="parent" className="relative overflow-hidden h-screen">

@@ -355,7 +355,8 @@ const Feed = () => {
                                                                     width: 30,
                                                                     height: 30,
                                                                     borderRadius: '50%',
-                                                                    marginRight: 5
+                                                                    marginRight: 5,
+                                                                    border: '1px solid black',
                                                                 }}
                                                             />
                                                             <p className="besideImage" style={{ fontWeight: 'bold', marginRight: 5 }}>{comment.user.username}</p>
@@ -365,7 +366,7 @@ const Feed = () => {
                                                             })
                                                             }</p>
                                                             {session && session.user.id === comment.userID && (
-                                                                <button className='deleteBtn' onClick={() => deleteComment(comment.rownum, song.songUUID)}>
+                                                                <button title="delete comment" className='deleteBtn' onClick={() => deleteComment(comment.rownum, song.songUUID)}>
                                                                     <MdDeleteForever />
                                                                 </button>
                                                             )}

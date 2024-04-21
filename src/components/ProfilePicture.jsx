@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import '../index.css'
 
 const ProfilePicture = () => {
     const [profilePic, setProfilePic] = useState(null);
@@ -126,7 +125,7 @@ const ProfilePicture = () => {
     return (
         <div className="profile-picture">
             {profilePic ? (
-                <img src={profilePic} onClick={() => document.getElementById('fileInput').click()} />
+                <img src={profilePic} onClick={() => document.getElementById('fileInput').click()} style={{ border: '1px solid black' }} />
             ) : (
                 // <button onClick={() => document.getElementById('fileInput').click()}>Upload Image</button>
                 <div className="mb-3 w-96">

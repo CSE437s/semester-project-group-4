@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
 import './css/User.css'
@@ -94,21 +93,30 @@ export default function Profile({ session }) {
                             <div className="w-32 h-32 border-4 border-white rounded-full overflow-hidden">
                                 <img
                                     className="object-cover object-center h-32 w-full"
-                                    src={profile.picture}
+                                    src={profile.picture ? profile.picture : 'https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg'}
                                     alt="Profile"
                                 />
                             </div>
                         </div>
                         <div className="text-center mt-2">
-                            <h2 className="font-semibold">{profile.username}</h2>
+                            <h2 id="username" className="font-semibold">{profile.username}</h2>
                             <span id="soul">
-                                Soul Artist: 
-                                <p className="text-gray-500">{profile.soulArtist}</p>
+                                <p id="soulTag"> Soul Artist:</p>
+                                <p id="artist" className="">{profile.soulArtist ? profile.soulArtist : "None selected"}</p>
                             </span>
 
-                            <p id="joined">Joined {new Date(profile.created_at).toLocaleDateString()}</p>
+                            <div id="Bio">
+                                {profile.bio}
+                            </div>
+
+
 
                         </div>
+
+                        <div id="dateJoined" className="text-center mt-2">
+                            <p id="joined">Joined {new Date(profile.created_at).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                        </div>
+
 
                         {/* <div className="p-4 border-t mx-8 mt-2">
             <button className="w-1/2 block mx-auto rounded-full bg-gray-900 hover:shadow-lg font-semibold text-white px-6 py-2">
