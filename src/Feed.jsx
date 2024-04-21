@@ -170,19 +170,15 @@ const Feed = () => {
             if (insertError) {
                 console.error('Error adding comment:', insertError);
             } else {
-                // Clear comments for the song ID from the state
-                const updatedComments = { ...comments };
-                updatedComments[songId] = [];
-                setComments(updatedComments);
-
-                // Fetch comments for the song
+                // Fetch updated comments for the song
                 const newComments = await fetchCommentsForSong(songId);
 
-                // Update comments in the state
-                setComments(prevComments => ({
-                    ...prevComments,
-                    [songId]: newComments
-                }));
+                // Add the new comment to the existing comments
+                setComments(prevComments => {
+                    const updatedComments = { ...prevComments };
+                    updatedComments[songId] = [...newComments];
+                    return updatedComments;
+                });
 
                 setCommentInputs("");
             }
@@ -190,6 +186,7 @@ const Feed = () => {
             console.error('Error adding comment:', error);
         }
     }
+
 
 
     async function fetchCommentsForSong(songId) {
