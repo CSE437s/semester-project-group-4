@@ -117,7 +117,7 @@ const Feed = () => {
         const commentsPromises = songIds.map(async id => {
             const { data: comments, error } = await supabase
                 .from('feedComments')
-                .select('comment, created_at')
+                .select('comment, created_at, userID, rownum')
                 .eq('songUUID', id);
 
             if (error) {
@@ -160,6 +160,28 @@ const Feed = () => {
         }
     }
 
+    async function deleteComment(songId, commentId) {
+        try {
+            const { error } = await supabase
+                .from('feedComments')
+                .delete()
+                .eq('songUUID', songId)
+                .eq('id', commentId)
+                .eq('userID', session.user.id);
+
+            if (error) {
+                console.error('Error deleting comment:', error);
+            } else {
+                setComments(prevComments => ({
+                    ...prevComments,
+                    [songId]: prevComments[songId].filter(comment => comment.id !== commentId)
+                }));
+            }
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+        }
+    }
+
     const handleInputChange = (e, songId) => {
         const { value } = e.target;
         setCommentInputs(prevInputs => ({
@@ -180,6 +202,10 @@ const Feed = () => {
             <div className="app-container">
                 <Sidebar />
                 <div className="main-content">
+                    <div className="header">
+                        <h2>Feed</h2>
+                        <p className="headerText">View what your friends have been listening to</p>
+                    </div>
                     <p>Loading...</p>
                 </div>
             </div>
@@ -253,16 +279,31 @@ const Feed = () => {
                                     </button>
                                 </div>
 
-                                {/* {expandedComments[song.songUUID] && (
-                                    
-                                )} */}
-
                                 {expandedComments[song.songUUID] && (
                                     <div id="commentContainer" style={{ marginTop: 10 }}>
                                         <ul>
                                             {comments[song.songUUID] &&
                                                 comments[song.songUUID].map((comment, index) => (
-                                                    <li className="individualComment" key={index}>{comment.comment}</li>
+                                                    <li className="individualComment" key={index}>
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <img
+                                                                src={comment.user.picture}
+                                                                alt=""
+                                                                style={{
+                                                                    width: 30,
+                                                                    height: 30,
+                                                                    borderRadius: '50%',
+                                                                    marginRight: 5
+                                                                }}
+                                                            />
+                                                            <p style={{ fontWeight: 'bold', marginRight: 5 }}>{comment.user.username}</p>
+                                                            <p>{new Date(comment.created_at).toLocaleDateString()}</p>
+                                                        </div>
+                                                        <p>{comment.comment}</p>
+                                                        {session && session.user.id === comment.userID && (
+                                                            <button onClick={() => deleteComment(song.songUUID, comment.id)}>Delete</button>
+                                                        )}
+                                                    </li>
                                                 ))}
                                         </ul>
                                     </div>
