@@ -1,17 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./src/**/*.{js,ts,jsx,tsx}",
-  "node_modules/flowbite-react/lib/esm/**/*.js"],
+  content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {colors: {
-      'custom-purple': '#5C63FF',
-    },},
+    extend: {},
   },
-  plugins: [require('flowbite/plugin')],
-  
+  plugins: [],
 }
 
-// module.exports = {
-//   darkMode: 'className',
-//   // ...
-// }
