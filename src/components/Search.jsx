@@ -9,26 +9,6 @@ function Search() {
   const [token, setToken] = useState(null);
   const [resultOffset, setResultOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(null);
-  // const [gridColumns, setGridColumns] = useState(1);
-  // const gridRef = useRef(null);
-
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     if (gridRef.current) {
-  //       const containerWidth = gridRef.current.offsetWidth;
-  //       const itemWidth = 300;
-  //       const columns = Math.max(1, Math.floor(containerWidth / itemWidth));
-  //       setGridColumns(columns);
-  //     }
-  //   };
-
-  //   window.addEventListener("resize", handleResize);
-  //   handleResize(); // Call the handleResize function when the component mounts
-
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, []);
 
   //citation: logic and design inspired by https://github.com/Vishesh-Pandey/v-music/tree/master/src/components
   const fetchMusicData = async () => {

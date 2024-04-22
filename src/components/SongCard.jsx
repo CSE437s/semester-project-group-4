@@ -44,11 +44,23 @@ export default function SongCard({ element }) {
     // Share the song here
     console.log('Sharing song...');
     // Assuming you have a function to update the shared songs in your supabase database
-    // await shareSong(); 
+    const { data, error } = await supabase
+      .from('shared_songs')
+      .insert([
+        { id: session.user.id, spotifySongId: element.id }
+      ]);
+
+    if (error) {
+      console.error('Error: ', error);
+    } else {
+      console.log('Song added successfully:', data);
+    }
 
     // After sharing, update the state to indicate it's shared
     setIsShared(true);
   };
+
+
 
   if (loading) {
     return (
@@ -82,9 +94,9 @@ export default function SongCard({ element }) {
           </p>
           {
             isShared ? (
-              <button disabled>Shared</button>
+              <button className='btn' disabled>Shared</button>
             ) : (
-              <button onClick={handleShare}>Share</button>
+              <button className='btn' onClick={handleShare}>Share</button>
             )
           }
 

@@ -47,3 +47,20 @@
     background-color: #fff;
     /* White background for even cards */
 }
+
+.btn {
+    margin-top: 10px;
+    background-color: purple;
+    color: white;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    outline: none;
+    /* Remove the default focus outline */
+}
+
+.btn:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+}
