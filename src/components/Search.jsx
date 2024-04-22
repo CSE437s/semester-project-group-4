@@ -9,12 +9,30 @@ function Search() {
   const [token, setToken] = useState(null);
   const [resultOffset, setResultOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(null);
+  const [gridColumns, setGridColumns] = useState(1);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const containerWidth = document.querySelector('.grid').offsetWidth;
+      const itemWidth = 300;
+      const columns = Math.max(1, Math.floor(containerWidth / itemWidth));
+      setGridColumns(columns);
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
 
   //citation: logic and design inspired by https://github.com/Vishesh-Pandey/v-music/tree/master/src/components
 
-  const handleChange = (event) => {
-    setKeyword(event.target.value);
-  };
+  // const handleChange = (event) => {
+  //   setKeyword(event.target.value);
+  // };
 
   const fetchMusicData = async () => {
     setTracks([]);
@@ -106,11 +124,14 @@ function Search() {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
           </div>
         )}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
+        <div className={`grid grid-cols-${gridColumns} gap-4`}>
           {tracks.map((element) => (
             <SongCard key={element.id} element={element} />
           ))}
         </div>
+
+
         {tracks.length > 0 && (
           <div className="flex justify-center mt-4">
             <button
