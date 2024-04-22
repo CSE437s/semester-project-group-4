@@ -16,14 +16,11 @@ export default function SongCard({ element }) {
           ></iframe>
         </div>
         <div>
-          <h5>
-            {element.name}
-            <div>
-            </div>
-          </h5>
-          <p>{element.album.artists[0].name}</p>
           <p>
-            {element.album.release_date}
+            {new Date(element.album.release_date).toLocaleString('en-US', {
+              month: 'long',
+              year: 'numeric',
+            })}
           </p>
         </div>
       </div>
