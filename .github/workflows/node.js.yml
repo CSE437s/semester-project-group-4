@@ -18,7 +18,7 @@ jobs:
       matrix:
         node-version: [20.x]
 
-    steps:
+steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
@@ -27,17 +27,27 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
     - name: Install dependencies
       run: npm install
 
-    - name: Run the tests
-      run: npm run test -- --coverage
+    - name: Run the tests and generate coverage report
+      run: npm test -- --coverage
 
-    - name: Build
-      run: npm run build
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4.0.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         slug: CSE437s/semester-project-group-4
+
+    - name: Build
+      run: npm run build
+
+
 
