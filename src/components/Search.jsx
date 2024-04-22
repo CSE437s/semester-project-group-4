@@ -80,73 +80,60 @@ function Search() {
     fetchToken();
   }, [setIsLoading]);
 
+
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-dark sticky-top">
-        <div className="container-fluid">
-          <div className="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
-            <input
-              value={keyword}
-              onChange={handleChange}
-              onKeyDown={handleKeyPress}
-              className="form-control me-2 w-75 rounded-md"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button onClick={fetchMusicData} className="btn btn-outline-success">
-              Search
-            </button>
-          </div>
-        </div>
-      </nav>
+      <div className="flex items-center mb-4">
+        <input
+          type="text"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder="Search for songs"
+          className="border border-gray-300 rounded-l px-3 py-2 w-full"
+        />
+        <button
+          onClick={fetchMusicData}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r"
+        >
+          Search
+        </button>
+      </div>
 
-      <div className="container mt-5">
-        <div className="d-none" x-show="isLoading">
-          <div className="flex justify-center items-center h-24">
-            <div className="w-8 h-8 animate-spin border-b-2 border-gray-700 rounded-full"></div>
-            <span className="ml-2 invisible sm:visible">Loading...</span>
+      <div className="container mx-auto">
+        {isLoading && (
+          <div className="flex justify-center items-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
           </div>
-        </div>
-        <div className="row row-cols-1 row-cols-md-3 g-4">
+        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {tracks.map((element) => (
             <SongCard key={element.id} element={element} />
           ))}
         </div>
-        <div className="row justify-content-between" x-show="tracks.length > 0">
-          <button
-            onClick={() => setResultOffset((previous) => previous - 20)}
-            className="disabled:opacity-50 w-full py-2 text-center border border-gray-300 rounded-md hover:bg-gray-100"
-            disabled={resultOffset === 0}
-          >
-            Prev: {resultOffset / 20}
-          </button>
-          <button
-            onClick={() => setResultOffset((previous) => previous + 20)}
-            className="disabled:opacity-50 w-full py-2 text-center border border-gray-300 rounded-md hover:bg-gray-100"
-          >
-            Next: {resultOffset / 20 + 2}
-          </button>
-        </div>
-        <div className="row">
-          <div className="col">
-            <h4 className="text-danger text-center py-2">{message}</h4>
+        {tracks.length > 0 && (
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={() => setResultOffset((prev) => Math.max(0, prev - 20))}
+              disabled={resultOffset === 0}
+              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => setResultOffset((prev) => prev + 20)}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Next
+            </button>
           </div>
-        </div>
+        )}
+        {message && <div className="text-center text-red-500 mt-4">{message}</div>}
       </div>
-
-      <div
-        className="modal fade position-absolute"
-        id="exampleModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-      </div>
-
-
     </>
-  );
+  )
+
+
 }
 
 export default Search;

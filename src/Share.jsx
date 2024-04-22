@@ -180,7 +180,7 @@ const Share = () => {
           <h2>Your Top 10 Songs</h2>
           <SongLayout songs={topSongs} />
         </div>
-        <div id="Search-Layout">
+        <div id="searchcontainer">
           <Search />
         </div>
       </div>
