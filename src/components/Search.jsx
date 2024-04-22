@@ -109,6 +109,7 @@ function Search() {
 
   const handleNext = () => {
     setResultOffset(resultOffset + 20);
+    console.log("handleNext")
     fetchMusicData();
   };
 
