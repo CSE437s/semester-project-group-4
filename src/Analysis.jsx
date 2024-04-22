@@ -3,10 +3,34 @@ import { Line } from 'react-chartjs-2';
 
 const Analysis = ({ location }) => {
     const [audioAnalysis, setAudioAnalysis] = useState(null);
+    const [spotifyTrackId, setUUID] = useState(null);
 
-    const searchParams = new URLSearchParams(location.search);
-    const spotifyTrackId = searchParams.get('song.spotifySongId');
-    console.log("songid",spotifyTrackId);
+
+
+    useEffect(() => {
+        function fetchUserID() {
+            const url = window.location.href;
+            // Find the index of the question mark
+            const questionMarkIndex = url.indexOf('?');
+            // If there's a question mark in the URL
+            if (questionMarkIndex !== -1) {
+                // Extract everything after the question mark
+                const queryString = url.slice(questionMarkIndex + 1);
+                // Set everything after the question mark to the uuid variable
+                setUUID(queryString);
+
+                // Print the UUID
+                console.log("the displayed user's Id", spotifyTrackId);
+            } else {
+                console.log("No UUID found in the URL.");
+            }
+
+        }
+        fetchUserID();
+    }, []);
+    // const searchParams = new URLSearchParams(location.search);
+    // const spotifyTrackId = searchParams.get('song.spotifySongId');
+    console.log("songid", spotifyTrackId);
 
     useEffect(() => {
         const fetchAudioAnalysis = async () => {

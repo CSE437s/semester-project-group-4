@@ -315,12 +315,11 @@ const Feed = () => {
                                         <Link
                                             to={{
                                                 pathname: "/Analysis",
-                                                search: `song.spotifySongId=${song.spotifySongId}`,
+                                                search: `${song.spotifySongId}`,
                                             }}
                                             className="yourClassName"
                                         >
                                             Analyze
-                                            {/* {song.spotifySongId ? song.spotifySongId : "Song Analysis"} */}
                                         </Link>
                                     </div>
                                 </div>

@@ -92,5 +92,9 @@
 .commentText {
     word-wrap: break-word;
     overflow-wrap: break-word;
-  }
-  
+}
+
+
+#analyzebtn {
+    /* margin-left: 10px; */
+}
