@@ -1,40 +1,87 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from './supabaseClient';
-import Sidebar from './components/Sidebar';
+import React, { useState, useEffect } from 'react';
+import { Line } from 'react-chartjs-2';
+import { Chart, LineController, LineElement, PointElement, LinearScale, Title, CategoryScale } from 'chart.js/auto';
 
-export default function Analysis({ session }) {
-    const [uuid, setUUID] = useState(null);
-
+const Analysis = ({ spotifyTrackId }) => {
+    const [audioAnalysis, setAudioAnalysis] = useState(null);
 
     useEffect(() => {
-        function fetchID() {
-            // Get the URL
-            const url = window.location.href;
-            // Find the index of the question mark
-            const questionMarkIndex = url.indexOf('?');
-            // If there's a question mark in the URL
-            if (questionMarkIndex !== -1) {
-                // Extract everything after the question mark
-                const queryString = url.slice(questionMarkIndex + 1);
-                // Set everything after the question mark to the uuid variable
-                setUUID(queryString);
-
-                // Print the UUID
-                console.log("the displayed song's Id", uuid);
-            } else {
-                console.log("No UUID found in the URL.");
+        const fetchAudioAnalysis = async () => {
+            try {
+                const response = await fetch(`https://api.spotify.com/v1/audio-analysis/${spotifyTrackId}`, {
+                    headers: {
+                        'Authorization': 'Bearer <your_access_token_here>'
+                    }
+                });
+                const data = await response.json();
+                setAudioAnalysis(data);
+            } catch (error) {
+                console.error('Error fetching audio analysis:', error);
             }
-        }
-        fetchID();
-    }, []);
+        };
+
+        fetchAudioAnalysis();
+    }, [spotifyTrackId]);
+
+    if (!audioAnalysis) {
+        return <div>Loading...</div>;
+    }
+
+    const { segments } = audioAnalysis;
+
+    const data = {
+        labels: segments.map((segment, index) => `Segment ${index + 1}`),
+        datasets: [
+            {
+                label: 'Loudness',
+                data: segments.map(segment => segment.loudness),
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            },
+            {
+                label: 'Tempo',
+                data: segments.map(segment => segment.tempo),
+                borderColor: 'rgb(54, 162, 235)',
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            },
+            {
+                label: 'Pitch',
+                data: segments.map(segment => segment.pitches.reduce((max, value, index) => value > max ? index : max, 0)),
+                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            },
+        ],
+    };
+
+    const options = {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Song Audio Analysis',
+            },
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Segment',
+                },
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Value',
+                },
+            },
+        },
+    };
 
     return (
-        <div className="app-container bg-light">
-            <Sidebar />
-            <div id="page_content_id" className="main-content">
-
-            </div>
-        </div >
+        <div>
+            <Line data={data} options={options} />
+        </div>
     );
-}
+};
+
+export default Analysis;
