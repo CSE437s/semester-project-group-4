@@ -76,6 +76,17 @@ function Search() {
   }, [setIsLoading]);
 
 
+  const handlePrevious = () => {
+    setResultOffset(Math.max(0, resultOffset - 20));
+    fetchMusicData();
+  };
+
+  const handleNext = () => {
+    setResultOffset(resultOffset + 20);
+    fetchMusicData();
+  };
+
+
   return (
     <>
       <div className="flex items-center mb-4">
@@ -88,7 +99,7 @@ function Search() {
           className="border border-gray-300 rounded-l px-3 py-2 w-full"
         />
         <button
-          onClick={fetchMusicData}
+          onClick={() => { fetchMusicData(); setResultOffset(0); }}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r"
         >
           Search
@@ -110,17 +121,18 @@ function Search() {
         {tracks.length > 0 && (
           <div className="flex justify-center mt-4">
             <button
-              onClick={() => setResultOffset((prev) => Math.max(0, prev - 20))}
+              id="backbtn"
+              onClick={handlePrevious}
               disabled={resultOffset === 0}
               className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
             >
-              Previous
+              Prev: {resultOffset / 20 !== 0 ? resultOffset / 20 : ''}
             </button>
             <button
-              onClick={() => setResultOffset((prev) => prev + 20)}
+              onClick={handleNext}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             >
-              Next
+              Next: {resultOffset / 20 + 1}
             </button>
           </div>
         )}

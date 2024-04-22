@@ -57,3 +57,15 @@ code {
   margin: 0 auto;
   background-color: red;
 } */
+
+#backbtn:disabled{
+  /* visibility: hidden; */
+  background-color: rgba(238, 234, 234, 0.63);
+  color:rgb(149, 147, 147);
+}
+
+.newDate {
+  font-weight: 500;
+  color: #171819;
+
+}

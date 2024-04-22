@@ -86,7 +86,7 @@ export default function SongCard({ element }) {
           ></iframe>
         </div>
         <div>
-          <p>
+          <p className='newDate'>
             {new Date(element.album.release_date).toLocaleString('en-US', {
               month: 'long',
               year: 'numeric',

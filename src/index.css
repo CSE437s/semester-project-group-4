@@ -801,10 +801,6 @@ video {
   cursor: pointer;
 }
 
-.resize{
-  resize: both;
-}
-
 .items-center{
   align-items: center;
 }
