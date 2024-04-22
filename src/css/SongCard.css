@@ -32,6 +32,8 @@
     /* Maintain consistent width */
     text-align: center;
     /* Center content within card */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .cardContainer>div:nth-child(odd) {

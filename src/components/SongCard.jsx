@@ -4,7 +4,7 @@ import '../css/SongCard.css'
 export default function SongCard({ element }) {
   return (
     <div key={element.id} className="cardContainer">
-      <div>
+      <div className="centeredDiv">
         <div className="iframeContainer cardContent">
           <iframe
             src={`https://open.spotify.com/embed/track/${element.id}`}
