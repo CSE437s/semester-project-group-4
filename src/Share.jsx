@@ -2,8 +2,9 @@ import './css/share.css'
 import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import SongLayout from './components/SongLayout';
- import axios from 'axios'; // for API requests
- import qs from 'qs';
+import axios from 'axios'; // for API requests
+import qs from 'qs';
+import Search from './components/Search';
 
 const Share = () => {
   const [topSongs, setTopSongs] = useState([]);
@@ -16,11 +17,11 @@ const Share = () => {
 
   useEffect(() => {
     Promise.all([getToken()])
-    .then((response) => {
-      console.log("PROMISED RESPONSE: ");
-      console.log(response);
-      getUserTopSongs();
-    });
+      .then((response) => {
+        console.log("PROMISED RESPONSE: ");
+        console.log(response);
+        getUserTopSongs();
+      });
   }, []);
 
   //GET USER'S TOP SONGS FROM SPOTIFY
@@ -51,7 +52,7 @@ const Share = () => {
 
     const data = await response.json();
 
-    if(data.access_token != undefined) {
+    if (data.access_token != undefined) {
       // Store tokens in localStorage
       localStorage.setItem('access_token', data.access_token); //STORE ONN SUPABASE
       localStorage.setItem('refresh_token', data.refresh_token);
@@ -69,32 +70,32 @@ const Share = () => {
     //const refreshToken = localStorage.getItem('refresh_token');
     const url = "https://accounts.spotify.com/api/token";
     console.log(refreshToken);
- 
-     const payload = {
-       method: 'POST',
-       headers: {
-         'Content-Type': 'application/x-www-form-urlencoded',
-         'Authorization': 'Basic ' + btoa(clientId + ':' + client_secret)
-       },
-       body: new URLSearchParams({
-         grant_type: 'refresh_token',
-         refresh_token: refreshToken,
-         client_id: clientId
-       }),
-     }
-     const body = await fetch(url, payload);
-     const response = await body.json();
-     console.log("response: ");
+
+    const payload = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + btoa(clientId + ':' + client_secret)
+      },
+      body: new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+        client_id: clientId
+      }),
+    }
+    const body = await fetch(url, payload);
+    const response = await body.json();
+    console.log("response: ");
     console.log(response);
- 
-     localStorage.setItem('access_token', response.accessToken);
-     localStorage.setItem('refresh_token', response.refreshToken);
-   }
+
+    localStorage.setItem('access_token', response.accessToken);
+    localStorage.setItem('refresh_token', response.refreshToken);
+  }
 
   async function getUserTopSongs() {
     let accessToken = localStorage.getItem('access_token'); //RETRIEVE FROM SUPABASAE
     console.log("accesss token: " + accessToken);
-  
+
     const response = await fetch(TRACKS, {
       method: 'GET',
       headers: {
@@ -102,13 +103,13 @@ const Share = () => {
       }
     });
 
-    console.log("top songs repsonse: " );
+    console.log("top songs repsonse: ");
     console.log(response);
-  
+
     const data = await response.json();
     console.log("Data: ");
     console.log(data);
-    if(data.items != undefined) {
+    if (data.items != undefined) {
       setTopSongs(data.items);
     }
   }
@@ -116,21 +117,21 @@ const Share = () => {
   //BELOW ARE FUNCTIONS FOR MANUALLY ADDING TRACKS FROM SPOTIFY
 
   async function getAuth() {
-    try{
+    try {
       //make post request to SPOTIFY API for access token, sending relavent info
       const token_url = 'https://accounts.spotify.com/api/token';
-      const data = qs.stringify({'grant_type':'client_credentials'});
-  
+      const data = qs.stringify({ 'grant_type': 'client_credentials' });
+
       const response = await axios.post(token_url, data, {
-        headers: { 
+        headers: {
           'Authorization': `Basic ${auth_token}`,
-          'Content-Type': 'application/x-www-form-urlencoded' 
+          'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
       //return access token
       return response.data.access_token;
       //console.log(response.data.access_token);   
-    }catch(error){
+    } catch (error) {
       //on fail, log the error in console
       console.log(error);
     }
@@ -140,11 +141,11 @@ const Share = () => {
     //request token using getAuth() function
     const access_token = await getAuth();
     //console.log(access_token);
-  
+
     const api_url = 'https://api.spotify.com/v1/tracks?ids=2VjXGuPVVxyhMgER3Uz2Fe%2C7eqoqGkKwgOaWNNHx90uEZ%2C2LlOeW5rVcvl3QcPNPcDus%2C68ZngF8g3iLiUhOqwutNgW';
 
     //console.log(api_url);
-    try{
+    try {
       const response = await axios.get(api_url, {
         headers: {
           'Authorization': `Bearer ${access_token}`
@@ -152,9 +153,9 @@ const Share = () => {
       });
       //console.log(response.data);
       return response.data;
-    }catch(error){
+    } catch (error) {
       console.log(error);
-    }  
+    }
   };
 
   const storeTracks = async () => {
@@ -179,7 +180,11 @@ const Share = () => {
           <h2>Your Top 10 Songs</h2>
           <SongLayout songs={topSongs} />
         </div>
+        <div id="Search-Layout">
+          <Search />
+        </div>
       </div>
+
     </div>
   );
 };
