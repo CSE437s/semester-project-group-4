@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Chart, LineController, LineElement, PointElement, LinearScale, Title, CategoryScale } from 'chart.js/auto';
 
-const Analysis = ({ spotifyTrackId }) => {
+const Analysis = ({ location }) => {
     const [audioAnalysis, setAudioAnalysis] = useState(null);
+
+    const searchParams = new URLSearchParams(location.search);
+    const spotifyTrackId = searchParams.get('song.spotifySongId');
+    console.log("songid",spotifyTrackId);
 
     useEffect(() => {
         const fetchAudioAnalysis = async () => {
@@ -79,6 +82,7 @@ const Analysis = ({ spotifyTrackId }) => {
 
     return (
         <div>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <Line data={data} options={options} />
         </div>
     );

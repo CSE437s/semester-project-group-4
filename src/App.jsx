@@ -11,7 +11,7 @@ import Friends from './Friends'
 import User from './User';
 import FriendSearch from './components/FriendSearch';
 import Onboarding from './Onboarding';
-
+import Analysis from './Analysis';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -44,6 +44,7 @@ function App() {
             <Route path="/User" element={<User key={session.user.id} session={session} />} />
             <Route path="/FriendSearch" element={<FriendSearch key={session.user.id} session={session} />} />
             <Route path="/Onboarding" element={<Onboarding key={session.user.id} session={session} />} />
+            <Route path="/Analysis" element={<Analysis key={session.user.id} session={session} />} />
           </Routes>
         )}
       </div>

@@ -3,6 +3,8 @@ import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
 import './css/feed.css';
 import { MdDeleteForever } from "react-icons/md";
+import { Link, useNavigate } from 'react-router-dom';
+
 
 const Feed = () => {
     const [friends, setFriends] = useState([]);
@@ -305,6 +307,21 @@ const Feed = () => {
                                             })
                                             }
                                         </p>
+
+
+
+                                    </div>
+                                    <div id="analyzebtn">
+                                        <Link
+                                            to={{
+                                                pathname: "/Analysis",
+                                                search: `song.spotifySongId=${song.spotifySongId}`,
+                                            }}
+                                            className="yourClassName"
+                                        >
+                                            Analyze
+                                            {/* {song.spotifySongId ? song.spotifySongId : "Song Analysis"} */}
+                                        </Link>
                                     </div>
                                 </div>
                                 <div id="iframe" className="shiftRight" style={{ display: 'flex', justifyContent: 'left', alignItems: 'center', minHeight: '150px' }}> {/* Center content vertically and horizontally */}
