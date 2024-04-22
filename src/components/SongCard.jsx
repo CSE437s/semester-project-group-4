@@ -1,18 +1,16 @@
 import { supabase } from '../supabaseClient'; // Ensure this path is correct for your project
 import React, { useState, useEffect } from 'react';
+import '../css/SongCard.css'
 
-const SongCard = ({ element }) => {
+export default function SongCard({ element }) {
   const [isShared, setIsShared] = useState(false);
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
-
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      // console.log(session);
       setLoading(false);
-      checkIfShared()
     }).catch(error => {
       console.error('Error fetching session:', error);
       setLoading(false);
@@ -21,6 +19,8 @@ const SongCard = ({ element }) => {
 
   // Function to check if the song is already shared
   const checkIfShared = async () => {
+    if (!session) return; // If session is not yet defined, don't proceed
+
     const { data, error } = await supabase
       .from('shared_songs')
       .select('spotifySongId')
@@ -35,14 +35,13 @@ const SongCard = ({ element }) => {
     setIsShared(data && data.length > 0);
   };
 
-  // useEffect(() => {
-  //   checkIfShared(); // Check on component mount
-  // }, [session]); // Run only once on mount
+  useEffect(() => {
+    checkIfShared(); // Check if shared when session changes
+  }, [session]);
 
   // Function to handle sharing the song
   const handleShare = async () => {
     // Share the song here
-    // For now, let's just console log
     console.log('Sharing song...');
     // Assuming you have a function to update the shared songs in your supabase database
     // await shareSong(); 
@@ -52,8 +51,12 @@ const SongCard = ({ element }) => {
   };
 
   if (loading) {
-    return (<div className="app-container"><div className="main-content"><p>Loading...</p></div>
-    </div>
+    return (
+      <div className="app-container">
+        <div className="main-content">
+          <p>Loading...</p>
+        </div>
+      </div>
     );
   }
 
@@ -77,15 +80,18 @@ const SongCard = ({ element }) => {
               year: 'numeric',
             })}
           </p>
-          {isShared ? (
-            <button disabled>Shared</button>
-          ) : (
-            <button onClick={handleShare}>Share</button>
-          )}
+          {
+            isShared ? (
+              <button disabled>Shared</button>
+            ) : (
+              <button onClick={handleShare}>Share</button>
+            )
+          }
+
         </div>
       </div>
     </div>
   );
 };
 
-export default SongCard;
+
