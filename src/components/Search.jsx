@@ -12,8 +12,10 @@ function Search() {
 
   //citation: logic and design inspired by https://github.com/Vishesh-Pandey/v-music/tree/master/src/components
   const fetchMusicData = async () => {
+    alert(resultOffset)
+    alert(keyword)
     setTracks([]);
-    window.scrollTo(0, 0);
+    // window.scrollTo(0, 0);
     setIsLoading(true);
     try {
       const response = await fetch(
@@ -40,11 +42,35 @@ function Search() {
     }
   };
 
+  const fetchMusicDataNew = async () => {
+    alert(resultOffset)
+    alert(keyword)
+    setResultOffset(0);
+    setTracks([]);
+    // window.scrollTo(0, 0);
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `https://api.spotify.com/v1/search?q=${keyword}&type=track&offset=${resultOffset}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-  const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
-      setResultOffset(0);
-      fetchMusicData();
+      if (!response.ok) {
+        throw new Error("Could not find songs");
+      }
+
+      const jsonData = await response.json();
+
+      setTracks(jsonData.tracks.items);
+      setMessage(""); // Reset error message when songs are found
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -86,6 +112,13 @@ function Search() {
     fetchMusicData();
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      setResultOffset(0);
+      fetchMusicDataNew();
+    }
+  };
+
 
   return (
     <>
@@ -99,11 +132,15 @@ function Search() {
           className="border border-gray-300 rounded-l px-3 py-2 w-full"
         />
         <button
-          onClick={() => { fetchMusicData(); setResultOffset(0); }}
+          onClick={() => {
+            setResultOffset(0);
+            fetchMusicDataNew();
+          }}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r"
         >
           Search
         </button>
+
       </div>
 
       <div className="container mx-auto">
