@@ -82,87 +82,69 @@ function Search() {
 
   return (
     <>
-      <nav className="navbar navbar-dark navbar-expand-lg bg-dark sticky-top">
+      <nav className="navbar navbar-expand-lg bg-dark sticky-top">
         <div className="container-fluid">
-          <div
-            className="collapse navbar-collapse d-flex justify-content-center"
-            id="navbarSupportedContent"
-          >
+          <div className="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
             <input
               value={keyword}
               onChange={handleChange}
               onKeyDown={handleKeyPress}
-              className="form-control me-2 w-75"
+              className="form-control me-2 w-75 rounded-md"
               type="search"
               placeholder="Search"
               aria-label="Search"
             />
-            <button
-              onClick={fetchMusicData}
-              className="btn btn-outline-success"
-            >
+            <button onClick={fetchMusicData} className="btn btn-outline-success">
               Search
             </button>
           </div>
         </div>
       </nav>
 
-      <div className="container">
-        <div className={`row ${isLoading ? "" : "d-none"}`}>
-          <div className="col-12 py-5 text-center">
-            <div
-              className="spinner-border"
-              style={{ width: "3rem", height: "3rem" }}
-              role="status"
-            >
-              <span className="visually-hidden">Loading...</span>
-            </div>
+      <div className="container mt-5">
+        <div className="d-none" x-show="isLoading">
+          <div className="flex justify-center items-center h-24">
+            <div className="w-8 h-8 animate-spin border-b-2 border-gray-700 rounded-full"></div>
+            <span className="ml-2 invisible sm:visible">Loading...</span>
           </div>
         </div>
-        <div className="row">
-          {tracks.map((element) => {
-            return <SongCard key={element.id} element={element} />;
-          })}
+        <div className="row row-cols-1 row-cols-md-3 g-4">
+          {tracks.map((element) => (
+            <SongCard key={element.id} element={element} />
+          ))}
         </div>
-        <div className="row" hidden={tracks.length === 0}>
-          <div className="col">
-            <button
-              onClick={() => {
-                setResultOffset((previous) => previous - 20);
-                fetchMusicData();
-              }}
-              className="btn btn-outline-success w-100"
-              disabled={resultOffset === 0}
-            >
-              Prev: {resultOffset / 20}
-            </button>
-          </div>
-          <div className="col">
-            <button
-              onClick={() => {
-                setResultOffset((previous) => previous + 20);
-                fetchMusicData();
-              }}
-              className="btn btn-outline-success w-100"
-            >
-              Next: {resultOffset / 20 + 2}
-            </button>
-          </div>
+        <div className="row justify-content-between" x-show="tracks.length > 0">
+          <button
+            onClick={() => setResultOffset((previous) => previous - 20)}
+            className="disabled:opacity-50 w-full py-2 text-center border border-gray-300 rounded-md hover:bg-gray-100"
+            disabled={resultOffset === 0}
+          >
+            Prev: {resultOffset / 20}
+          </button>
+          <button
+            onClick={() => setResultOffset((previous) => previous + 20)}
+            className="disabled:opacity-50 w-full py-2 text-center border border-gray-300 rounded-md hover:bg-gray-100"
+          >
+            Next: {resultOffset / 20 + 2}
+          </button>
         </div>
         <div className="row">
           <div className="col">
-            <h4 className="text-center text-danger py-2">{message}</h4>
+            <h4 className="text-danger text-center py-2">{message}</h4>
           </div>
         </div>
       </div>
+
       <div
         className="modal fade position-absolute"
         id="exampleModal"
-        tabIndex={-1}
+        tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
       </div>
+
+
     </>
   );
 }
