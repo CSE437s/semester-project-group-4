@@ -220,7 +220,7 @@ export default function Friends({ session }) {
                                     >
                                         <img
                                             className="pfp margin-image"
-                                            
+                                            onClick={() => redirectToUser(requestUser.id)}
                                             src={requestUser.picture ? requestUser.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'}
                                         />
                                         <span className="li_content" style={{ flex: '1' }}> {requestUser.username}</span>

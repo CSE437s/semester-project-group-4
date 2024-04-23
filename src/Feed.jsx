@@ -346,7 +346,7 @@ const Feed = () => {
                                         </p>
 
                                     </div>
-                                    <div id="analyzebtn">
+                                    {/* <div id="analyzebtn">
                                         <Link
                                             to={{
                                                 pathname: "/Analysis",
@@ -356,7 +356,7 @@ const Feed = () => {
                                         >
                                             Analyze
                                         </Link>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div id="iframe" className="shiftRight" style={{ display: 'flex', justifyContent: 'left', alignItems: 'center', minHeight: '150px' }}> {/* Center content vertically and horizontally */}
                                     <iframe

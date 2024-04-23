@@ -13,6 +13,8 @@ export default function Profile({ session }) {
     const [newUsername, setNewUsername] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [profile, setProfile] = useState(null);
+    const [editedSoulArtist, setEditedSoulArtist] = useState('');
+    const [editedBio, setEditedBio] = useState('');
 
     //SPOTIFY
 
@@ -150,7 +152,7 @@ export default function Profile({ session }) {
                 }
                 if (data) {
                     setProfile(data);
-                    console.log("data: ", data)
+                    console.log("profile: ", data)
                 } else {
                     console.error("User profile not found");
                     return null;
@@ -186,6 +188,20 @@ export default function Profile({ session }) {
         fetchUserProfile();
     }, [session]);
 
+    const updateProfile = async () => {
+        try {
+            const { error } = await supabase
+                .from('profiles')
+                .update({ soulArtist: editedSoulArtist, bio: editedBio })
+                .eq('id', session.user.id);
+            if (error) {
+                throw error;
+            }
+            setIsEditing(false);
+        } catch (error) {
+            console.error('Error updating profile:', error.message);
+        }
+    };
 
     return (
         <div className="app-container bg-light">
@@ -242,18 +258,29 @@ export default function Profile({ session }) {
                         <Link to="/Friends" className="purple-button"> My Friends </Link>
                     </div>
                     <div className="text-center mt-2">
-                        <div id="friendCount" className="text-center mt-2">
-                            <p>{friendCount} Friends</p>
+                        <div className="section-container">
+                            <div id="friendCount" className="text-center mt-2">
+                                <p>{friendCount} Friends</p>
+                            </div>
                         </div>
-                        <span className="soul">
-                            <p className="bold"> Soul Artist:</p>
-                            <p className="artist">{profile.soulArtist ? profile.soulArtist : "None selected"}</p>
-                        </span>
+                        {profile && (
+                            <div>
+                                {/* Soul Artist Section */}
+                                <div className="section-container">
+                                    <p className="section-header">Soul Artist:</p>
+                                    <p className="section-content">{profile.soulArtist ? profile.soulArtist : "None selected"}</p>
+                                </div>
 
-                        <div className="soul">
-                            <p className="bold"> Bio:</p>
-                            <p className="artist"> {profile.bio}</p>
-                        </div>
+                                {/* Bio Section */}
+                                <div className="section-container">
+                                    <p className="section-header">Bio:</p>
+                                    <p className="section-content">{profile.bio}</p>
+                                </div>
+                            </div>
+                        )}
+
+
+
                     </div>
                 </div>
             </div>

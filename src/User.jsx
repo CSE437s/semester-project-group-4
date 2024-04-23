@@ -125,7 +125,7 @@ export default function Profile({ session }) {
                         <div className="text-center mt-2">
                             <h2 id="username" className="font-semibold">{profile.username}</h2>
                             <div id="friendCount" className="text-center mt-2">
-                                <p>{friendCount} Friends</p>
+                                <p>{friendCount === 1 ? `${friendCount} Friend` : `${friendCount} Friends`}</p>
                             </div>
                             <span id="soul">
                                 <p id="soulTag"> Soul Artist:</p>
