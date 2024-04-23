@@ -62,3 +62,7 @@ h2 {
   #searchcontainer p {
     margin-bottom: 40px;
   }
+
+  .centered{
+    text-align:center;
+  }

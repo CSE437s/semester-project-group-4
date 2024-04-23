@@ -196,14 +196,14 @@ export default function Onboarding({ session }) {
                             />
                         </div>
 
-                        <div className="mb-4">
+                        <div id="BIOcONTAINER" className="mb-4">
                             <label htmlFor="Bio" className="block text-sm font-medium text-gray-700">
                                 Song Bio
                             </label>
                             <textarea
                                 type="text"
                                 id="Bio"
-                                className="mt-1 p-4 block w-full border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                                // className="mt-1 p-4 block w-full border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                                 placeholder="My tastes in music are..."
                                 value={songBio}
                                 onChange={handleBio}

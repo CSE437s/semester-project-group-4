@@ -97,7 +97,7 @@ export default function SongCard({ element }) {
             isShared ? (
               <button className='btn' disabled>Shared</button>
             ) : (
-              <button className='btn' onClick={handleShare}>Share</button>
+              <button className='btn' onClick={handleShare}>Share To Feed</button>
             )
           }
 

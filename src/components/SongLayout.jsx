@@ -76,7 +76,7 @@ const SongLayout = (props) => { //props.songs
                                 loading="lazy"
                             ></iframe>
                         )}
-                        <button onClick={() => shareSong(i)} id={"songShareButton" + i} className=" text-white py-2 px-4 shareButton">Share This Song</button>
+                        <button onClick={() => shareSong(i)} id={"songShareButton" + i} className=" text-white py-2 px-4 shareButton">Share To Feed</button>
                     </div>
                 })}
             </div>

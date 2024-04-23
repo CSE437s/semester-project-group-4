@@ -180,8 +180,13 @@ const Share = () => {
           <SongLayout songs={topSongs} />
         </div>
         <div id="searchcontainer">
-          <h2>Wanna Share a Different Song?</h2>
-          <p className="headerText">Search your favorite song or artist using the search function below</p>
+          {topSongs == null && (
+            <div className='centered'>
+              <h2>Wanna Share a Different Song?</h2>
+              <p className="headerText">Search your favorite song or artist below</p>
+            </div>
+          )}
+
           <Search />
         </div>
       </div>
