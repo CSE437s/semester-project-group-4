@@ -45,6 +45,7 @@ function App() {
             <Route path="/FriendSearch" element={<FriendSearch key={session.user.id} session={session} />} />
             <Route path="/Onboarding" element={<Onboarding key={session.user.id} session={session} />} />
             <Route path="/Analysis" element={<Analysis key={session.user.id} session={session} />} />
+            <Route path="/password-reset" element={<PasswordReset />} />
           </Routes>
         )}
       </div>
