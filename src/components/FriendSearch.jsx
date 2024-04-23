@@ -4,7 +4,6 @@ import '../css/FriendSearch.css'
 import { FaUserPlus } from 'react-icons/fa';
 import { FaSearch } from "react-icons/fa";
 
-
 const FriendSearch = () => {
   const [session, setSession] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');

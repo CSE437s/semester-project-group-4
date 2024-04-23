@@ -15,9 +15,12 @@ export default function Profile({ session }) {
     const [profile, setProfile] = useState(null);
     const [editedSoulArtist, setEditedSoulArtist] = useState('');
     const [editedBio, setEditedBio] = useState('');
-    const [isEditingUsername, setIsEditingUsername] = useState(false);
+    // const [isEditingUsername, setIsEditingUsername] = useState(false);
     const [isEditingSoulArtist, setIsEditingSoulArtist] = useState(false);
     const [isEditingBio, setIsEditingBio] = useState(false);
+    const [newEmail, setNewEmail] = useState('');
+    const [isEditingEmail, setIsEditingEmail] = useState(false);
+
 
     //SPOTIFY
 
@@ -157,7 +160,7 @@ export default function Profile({ session }) {
                     setProfile(data);
                     setEditedSoulArtist(data.soulArtist || '');
                     setEditedBio(data.bio || '');
-                    setNewUsername(data.username || ''); 
+                    setNewUsername(data.username || '');
                     console.log("profile: ", data)
                 } else {
                     console.error("User profile not found");
@@ -226,6 +229,49 @@ export default function Profile({ session }) {
         }
     };
 
+    // const updateEmail = async () => {
+    //     try {
+    //         console.log('supabase object:', supabase);
+    //         const { error } = await supabase.auth.update({
+    //             email: newEmail,
+    //         });
+
+    //         if (error) {
+    //             throw error;
+    //         }
+
+    //         setIsEditingEmail(false);
+    //     } catch (error) {
+    //         console.error('Error updating email:', error.message);
+    //     }
+    // };
+
+    const updateEmail = async () => {
+
+        try {
+            const { data, error } = await supabase.auth.updateUser({
+                email: newEmail
+            })
+
+            // const { error } = await supabase.auth.updateUser(
+            //     session.user.id,
+            //     {
+            //         data: {
+            //             email: newEmail
+            //         }
+            //     }
+            // );
+            setIsEditingEmail(false);
+
+            if (error) throw error;
+
+        } catch (error) {
+            console.error('Error updating email:', error);
+        }
+
+    }
+
+
     return (
         <div className="app-container bg-light">
             <Sidebar />
@@ -275,6 +321,47 @@ export default function Profile({ session }) {
                             )}
                         </div>
 
+
+
+                        <div id="emailChange" className="flex justify-center items-center">
+                            {isEditingEmail ? (
+                                <div className="flex items-center space-x-2">
+                                    <input
+                                        type="email"
+                                        value={newEmail}
+                                        onChange={(e) => setNewEmail(e.target.value)}
+                                        className="border border-gray-300 px-2 py-1 rounded-md focus:outline-none focus:border-blue-500"
+                                    />
+                                    <button
+                                        onClick={updateEmail}
+                                        className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                                    >
+                                        Save
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsEditingEmail(false);
+                                            setNewEmail(""); // Reset input field
+                                        }}
+                                        className="px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:bg-red-600"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex items-center space-x-2">
+                                    <p className="text-gray-700">Email: {session.user.email}</p>
+                                    <button
+                                        onClick={() => setIsEditingEmail(true)}
+                                        className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:bg-gray-400"
+                                    >
+                                        Edit
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+
                         <div className="text-center mt-2 button-container">
                             <button onClick={loginWithSpotifyClick} className="profileButton text-white py-2 px-4">Connect to Spotify</button>
                             <Link to="/Friends" className="purple-button text-white py-2 px-4">My Friends</Link>
@@ -289,10 +376,8 @@ export default function Profile({ session }) {
                             </div>
                         </div>
 
-
-
-
                         {profile && (
+
                             <div>
                                 <div className="section-container">
                                     <p className="section-header">Soul Artist:</p>
