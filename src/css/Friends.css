@@ -48,6 +48,7 @@
 
 .list-group-item {
     position: relative;
+    text-align: center;
 }
 
 .hoverBackground::after {
@@ -64,4 +65,8 @@
 
 .pfp {
     cursor: pointer;
+}
+
+.margin-image{
+    margin-left: 2px;
 }

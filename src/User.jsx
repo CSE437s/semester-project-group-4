@@ -108,9 +108,6 @@ export default function Profile({ session }) {
                             <div id="Bio">
                                 {profile.bio}
                             </div>
-
-
-
                         </div>
 
                         <div id="dateJoined" className="text-center mt-2">

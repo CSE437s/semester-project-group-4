@@ -34,14 +34,14 @@ export default function Friends({ session }) {
             const pendingUsers = await Promise.all(pendingUserIds.map(async id => {
                 const { data: userData, error: userError } = await supabase
                     .from('profiles')
-                    .select('username, id')
+                    .select('username, id, picture')
                     .eq('id', id)
                     .single();
                 if (userError) {
                     console.error(`Error fetching user data for user id ${id}:`, userError);
                     return null;
                 }
-                return userData ? { username: userData.username, id: userData.id } : null;
+                return userData ? { username: userData.username, id: userData.id, picture:userData.picture } : null;
             }));
             const validPendingUsers = pendingUsers.filter(user => user !== null);
             setPendingRequests(validPendingUsers);
@@ -199,7 +199,7 @@ export default function Friends({ session }) {
                     </div>
 
                     <div className="pending-requests mt-10">
-                        <h3 className="profileText">Pending Requests</h3>
+                        <h3 className="profileText">Pending Friend Requests</h3>
 
                         {pendingRequests.length === 0 ? (
                             <p>You have no pending requests</p>
@@ -212,13 +212,18 @@ export default function Friends({ session }) {
                                         style={{
                                             border: '1px solid #555',
                                             borderRadius: '0.5rem',
-                                            maxWidth: '500px',
+                                            maxWidth: '390px',
                                             display: 'flex',
                                             alignItems: 'center',
-                                            height: '3rem'
+                                            height: '4.3rem'
                                         }}
                                     >
-                                        <span className="li_content" style={{ flex: '1' }}>Pending request from {requestUser.username}</span>
+                                        <img
+                                            className="pfp margin-image"
+                                            
+                                            src={requestUser.picture ? requestUser.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'}
+                                        />
+                                        <span className="li_content" style={{ flex: '1' }}> {requestUser.username}</span>
 
                                         <div style={{ margin: '4px' }}>
                                             <button

@@ -39,7 +39,7 @@
 
 #Bio {
     margin-top: 20px;
-    max-width:300px;
+    max-width: 300px;
     margin-left: auto;
     margin-right: auto;
     word-wrap: break-word;
@@ -53,3 +53,9 @@
     /* Ensure it spans the entire width of the parent */
 }
 
+@media only screen and (max-width: 767px) {
+    #profile-container {
+        height: 100vh;
+        margin: 0;
+    }
+}
