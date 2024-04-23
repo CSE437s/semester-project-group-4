@@ -51,3 +51,14 @@ h2 {
     margin-bottom: 20px;
   }
   
+  #searchcontainer {
+    margin-top: 3%;
+  }
+  #searchcontainer h2 {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  #searchcontainer p {
+    margin-bottom: 40px;
+  }
