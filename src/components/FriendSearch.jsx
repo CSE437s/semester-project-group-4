@@ -106,6 +106,16 @@ const FriendSearch = () => {
     }
   }
 
+  function redirectToUser(uuid) {
+    if (!uuid) {
+      return
+    }
+    const currentDomain = window.location.origin;
+    const targetUrl = `${currentDomain}/User?${uuid}`;
+    window.location.href = targetUrl;
+  }
+
+
   return (
     <div>
 
@@ -131,6 +141,7 @@ const FriendSearch = () => {
             <li key={user.id} className="user-item">
               <img
                 className="pfp"
+                onClick={() => redirectToUser(user.id)}
                 src={user.picture ? user.picture : 'https://img.icons8.com/nolan/64/1A6DFF/C822FF/user-default.png'}
               />
 
