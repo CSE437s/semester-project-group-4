@@ -12,6 +12,8 @@ export default function Profile({ session }) {
     const [myusername, setmyUsername] = useState(null);
     const [newUsername, setNewUsername] = useState('');
     const [isEditing, setIsEditing] = useState(false);
+    const [profile, setProfile] = useState(null);
+
     //SPOTIFY
 
     const clientId = "1892c29e22e44ec686fa22a8e891b0f9";
@@ -133,6 +135,58 @@ export default function Profile({ session }) {
         fetchOnboarded();
     }, [session]);
 
+
+    useEffect(() => {
+        async function fetchUserProfile() {
+            try {
+                const { data, error } = await supabase
+                    .from("profiles")
+                    .select("*")
+                    .eq("id", session.user.id)
+                    .single();
+                if (error) {
+                    console.error("Error fetching user profile:", error.message);
+                    return null;
+                }
+                if (data) {
+                    setProfile(data);
+                    console.log("data: ", data)
+                } else {
+                    console.error("User profile not found");
+                    return null;
+                }
+            } catch (error) {
+                console.error("Error fetching user profile:", error.message);
+                return null;
+            }
+        }
+
+        async function fetchFriendCount() {
+            try {
+                const { data, error } = await supabase
+                    .from('friends')
+                    .select('id', { count: 'exact' }) // Count the number of friends
+                    .eq('id', session.user.id);
+                if (error) {
+                    console.error('Error fetching friend count:', error.message);
+                    return;
+                }
+                if (data) {
+                    setFriendCount(data.length);
+                } else {
+                    console.error('No friend count data found');
+                }
+            } catch (error) {
+                console.error('Error fetching friend count:', error.message);
+            }
+        }
+
+
+        fetchFriendCount();
+        fetchUserProfile();
+    }, [session]);
+
+
     return (
         <div className="app-container bg-light">
             <Sidebar />
@@ -187,16 +241,19 @@ export default function Profile({ session }) {
                         <button onClick={loginWithSpotifyClick} className="profileButton spotifyButton text-white py-2 px-4">Connect to Spotify</button>
                         <Link to="/Friends" className="purple-button"> My Friends </Link>
                     </div>
-                    <div id="myFriendsLink">
+                    <div className="text-center mt-2">
+                        <div id="friendCount" className="text-center mt-2">
+                            <p>{friendCount} Friends</p>
+                        </div>
+                        <span className="soul">
+                            <p className="bold"> Soul Artist:</p>
+                            <p className="artist">{profile.soulArtist ? profile.soulArtist : "None selected"}</p>
+                        </span>
 
-                        {/* <button
-                            onClick={updateUsername}
-                            className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
-                        >
-                            My Friends
-                        </button> */}
-
-
+                        <div className="soul">
+                            <p className="bold"> Bio:</p>
+                            <p className="artist"> {profile.bio}</p>
+                        </div>
                     </div>
                 </div>
             </div>
