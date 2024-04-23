@@ -9,10 +9,11 @@ function Search() {
   const [token, setToken] = useState(null);
   const [resultOffset, setResultOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(null);
+  const [shouldFetchData, setShouldFetchData] = useState(false);
 
   //citation: logic and design inspired by https://github.com/Vishesh-Pandey/v-music/tree/master/src/components
   const fetchMusicData = async () => {
-    alert(resultOffset)
+    console.log(resultOffset);
     // alert(keyword)
     setTracks([]);
     // window.scrollTo(0, 0);
@@ -42,44 +43,13 @@ function Search() {
     }
   };
 
-  // const fetchMusicDataNew = async () => {
-    
-  //   // alert(keyword)
-  //   setResultOffset(0);
-  //   alert(resultOffset);
-  //   alert("i called NEW");
-  //   setTracks([]);
-  //   // window.scrollTo(0, 0);
-  //   setIsLoading(true);
-  //   try {
-  //     const response = await fetch(
-  //       `https://api.spotify.com/v1/search?q=${keyword}&type=track&offset=${resultOffset}`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       throw new Error("Could not find songs");
-  //     }
-
-  //     const jsonData = await response.json();
-
-  //     setTracks(jsonData.tracks.items);
-  //     setMessage(""); // Reset error message when songs are found
-  //   } catch (error) {
-  //     setMessage(error.message);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   useEffect(() => {
-    // This effect will run whenever resultOffset changes
-    fetchMusicData();
-  }, [resultOffset]);
+    // This effect will run whenever resultOffset or shouldFetchData changes
+    if (shouldFetchData) {
+      fetchMusicData();
+      setShouldFetchData(false);
+    }
+  }, [resultOffset, shouldFetchData]);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -111,20 +81,23 @@ function Search() {
 
   const handlePrevious = () => {
     setResultOffset(Math.max(0, resultOffset - 20));
-    console.loh("handleprevious")
-    fetchMusicData();
+    console.log("handleprevious")
+    // fetchMusicData();
+    setShouldFetchData(true);
   };
 
   const handleNext = () => {
     setResultOffset(resultOffset + 20);
     console.log("handleNext")
-    fetchMusicData();
+    // fetchMusicData();
+    setShouldFetchData(true);
   };
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
       setResultOffset(0);
-      fetchMusicData();
+      // fetchMusicData();
+      setShouldFetchData(true);
     }
   };
 
