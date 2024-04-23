@@ -193,20 +193,22 @@ export default function Onboarding({ session }) {
                                 placeholder="My soul artist is..."
                                 value={soulArtist}
                                 onChange={handleSoul}
+                                required
                             />
                         </div>
 
                         <div id="BIOcONTAINER" className="mb-4">
-                            <label htmlFor="Bio" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="Bio1" className="block text-sm font-medium text-gray-700">
                                 Song Bio
                             </label>
                             <textarea
                                 type="text"
-                                id="Bio"
-                                // className="mt-1 p-4 block w-full border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                                id="Bio1"
+                                className="mt-1 p-2 w-full block border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                                 placeholder="My tastes in music are..."
                                 value={songBio}
                                 onChange={handleBio}
+                                required
                             />
                         </div>
 

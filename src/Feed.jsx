@@ -3,7 +3,7 @@ import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
 import './css/feed.css';
 import { MdDeleteForever } from "react-icons/md";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 const Feed = () => {
@@ -54,6 +54,21 @@ const Feed = () => {
     async function fetchSharedSongs(friends) {
         const friendIds = friends.map(friend => friend.data.id);
 
+        const currentUserSongsPromise = supabase
+            .from('shared_songs')
+            .select('songUUID, spotifySongId, created_at')
+            .eq('id', session.user.id);
+
+        const currentUserProfilePromise = supabase
+            .from('profiles')
+            .select('id, picture, username')
+            .eq('id', session.user.id);
+
+        const currentUserData = await Promise.all([currentUserSongsPromise, currentUserProfilePromise]);
+
+        const currentUserSongs = currentUserData[0].data || [];
+        const currentUserProfile = currentUserData[1].data[0] || null;
+
         const sharedSongPromises = friendIds.map(async id => {
             const { data: songs, error: songsError } = await supabase
                 .from('shared_songs')
@@ -80,11 +95,22 @@ const Feed = () => {
 
         try {
             const friendSharedSongs = await Promise.all(sharedSongPromises);
-            setSharedSongs(friendSharedSongs.flat());
+            const currentUserSharedSongs = currentUserSongs.map(song => ({
+                ...song,
+                profile: currentUserProfile
+            }));
+            const allSharedSongs = [...friendSharedSongs.flat(), ...currentUserSharedSongs];
+
+            // Sort the combined songs by created_at from newest to oldest
+            allSharedSongs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            setSharedSongs(allSharedSongs);
         } catch (error) {
             console.error('Error fetching shared songs:', error);
         }
     }
+
+
 
     async function getFriends(session) {
         const { data: friendDataList, error } = await supabase
@@ -318,8 +344,6 @@ const Feed = () => {
                                             })
                                             }
                                         </p>
-
-
 
                                     </div>
                                     <div id="analyzebtn">
