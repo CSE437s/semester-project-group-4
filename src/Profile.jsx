@@ -252,21 +252,11 @@ export default function Profile({ session }) {
             const { data, error } = await supabase.auth.updateUser({
                 email: newEmail
             })
-
-            // const { error } = await supabase.auth.updateUser(
-            //     session.user.id,
-            //     {
-            //         data: {
-            //             email: newEmail
-            //         }
-            //     }
-            // );
             setIsEditingEmail(false);
-
             if (error) throw error;
-
         } catch (error) {
             console.error('Error updating email:', error);
+            alert(error);
         }
 
     }
@@ -445,7 +435,7 @@ export default function Profile({ session }) {
                                         </>
                                     ) : (
                                         <>
-                                            <p className="section-content">{profile.bio}</p>
+                                            <p id="bioText" className="section-content">{profile.bio}</p>
                                             <button
                                                 onClick={() => setIsEditingBio(true)}
                                                 className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:bg-gray-400"

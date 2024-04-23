@@ -137,4 +137,9 @@
       align-items: center; /* Center buttons vertically on small screens */
     }
   }
+
+  #bioText{
+    word-wrap: break-word;
+  }
+
   
