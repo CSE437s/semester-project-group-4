@@ -37,7 +37,13 @@
     flex-grow: 1;
     max-width: 550px;
     /* overflow: auto; */
+    resize: none;
+    overflow: hidden;
 }
+
+.inputBox:focus {
+    overflow: auto;
+  }
 
 .commentBtn {
     color: rgb(0, 0, 0);
@@ -65,10 +71,6 @@
     margin-bottom: 20px;
 }
 
-.commentText {
-    margin-left: 45px;
-}
-
 .besideImage {
     margin-top: -10px;
     margin-left: 10px;
@@ -92,9 +94,15 @@
 .commentText {
     word-wrap: break-word;
     overflow-wrap: break-word;
+    margin-left: 45px;
 }
 
 
 #analyzebtn {
     /* margin-left: 10px; */
+    margin-left: auto;
+}
+
+.pfp {
+    cursor: pointer;
 }

@@ -36,9 +36,14 @@ h2 {
   
   /* Share Page */
   .share-page {
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     margin-top: 3%;
+    margin-left: auto;
+    margin-right: auto;
+    /* background-color: red; */
+    width: 100%;
     /* padding: 20px; */
+    text-align: center;
   }
   
   .share-page h2 {

@@ -175,9 +175,8 @@ const Share = () => {
           <h2>Share</h2>
           <p className="headerText">Select one of your top songs from the past week to share</p>
         </div>
-        {/* Share Page */}
         <div className="share-page">
-          <h2>Your Top 10 Songs</h2>
+          <h2>Your Top 10 Spotify Songs</h2>
           <SongLayout songs={topSongs} />
         </div>
         <div id="searchcontainer">

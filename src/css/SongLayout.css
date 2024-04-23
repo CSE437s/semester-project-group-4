@@ -1,8 +1,8 @@
-@import "tailwindcss/base";
+/* @import "tailwindcss/base";
 
 @import "tailwindcss/components";
 
-@import "tailwindcss/utilities";
+@import "tailwindcss/utilities"; */
 
 .col{
     padding: 3%;
@@ -47,3 +47,22 @@
 .card-text{
     font-family: 'FigTree', sans-serif;
 }
+
+#noSongsContainer{
+    margin-bottom: 20px;
+}
+
+#dog{
+    min-width: 300px;
+    min-height: 300px;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+/* .centered{
+    margin-left: auto;
+    margin-right: auto;
+    background-color: red;
+    text-align: center;
+} */

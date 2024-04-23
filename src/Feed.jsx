@@ -256,6 +256,15 @@ const Feed = () => {
         }));
     };
 
+    function redirectToUser(uuid) {
+        if (!uuid) {
+            return
+        }
+        const currentDomain = window.location.origin;
+        const targetUrl = `${currentDomain}/User?${uuid}`;
+        window.location.href = targetUrl;
+    }
+
     if (loading || !renderPage) {
         return (
             <div className="app-container">
@@ -295,6 +304,8 @@ const Feed = () => {
                                             border: '1px solid black',
                                             marginRight: 10,
                                         }}
+                                        onClick={() => redirectToUser(song.profile.id)}
+                                        className='pfp'
                                     />
                                     <div>
                                         <p style={{ fontWeight: 'bold', color: '#292926' }}>
@@ -374,6 +385,8 @@ const Feed = () => {
                                                                     marginRight: 5,
                                                                     border: '1px solid black',
                                                                 }}
+                                                                onClick={() => redirectToUser(comment.userID)}
+                                                                className='pfp'
                                                             />
                                                             <p className="besideImage" style={{ fontWeight: 'bold', marginRight: 5 }}>{comment.user.username}</p>
                                                             <p className="besideImage dateText">{new Date(comment.created_at).toLocaleDateString('en-US', {
