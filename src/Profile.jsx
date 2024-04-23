@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCog, faTrash } from '@fortawesome/free-solid-svg-icons';
 import ProfilePicture from './components/ProfilePicture';
 import './css/Profile3.css';
 
@@ -145,6 +143,7 @@ export default function Profile({ session }) {
                 <div className="profile-section">
                     <div className="profile-info">
                         <ProfilePicture />
+
                         <div id="nameChange" className="flex justify-center items-center">
                             {isEditing ? (
                                 <div className="flex items-center space-x-2">
@@ -160,6 +159,15 @@ export default function Profile({ session }) {
                                     >
                                         Save
                                     </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsEditing(false);
+                                            setNewUsername(""); // Reset input field
+                                        }}
+                                        className="px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:bg-red-600"
+                                    >
+                                        Cancel
+                                    </button>
                                 </div>
                             ) : (
                                 <div className="flex items-center space-x-2">
@@ -173,6 +181,9 @@ export default function Profile({ session }) {
                                 </div>
                             )}
                         </div>
+
+
+
                         <button onClick={loginWithSpotifyClick} className="profileButton spotifyButton text-white py-2 px-4">Connect to Spotify</button>
                         <Link to="/Friends" className="purple-button"> My Friends </Link>
                     </div>
@@ -184,7 +195,7 @@ export default function Profile({ session }) {
                         >
                             My Friends
                         </button> */}
-                        
+
 
                     </div>
                 </div>
