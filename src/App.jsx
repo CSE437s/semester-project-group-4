@@ -12,6 +12,7 @@ import User from './User';
 import FriendSearch from './components/FriendSearch';
 import Onboarding from './Onboarding';
 import Analysis from './Analysis';
+import PasswordReset from './components/PasswordReset';
 
 function App() {
   const [session, setSession] = useState(null);
