@@ -201,6 +201,7 @@ export default function Profile({ session }) {
                 throw error;
             }
             setIsEditingSoulArtist(false);
+            setProfile({ ...profile, soulArtist: editedSoulArtist });
         } catch (error) {
             console.error('Error updating soul artist:', error.message);
         }
@@ -216,6 +217,7 @@ export default function Profile({ session }) {
                 throw error;
             }
             setIsEditingBio(false);
+            setProfile({ ...profile, bio: editedBio });
         } catch (error) {
             console.error('Error updating bio:', error.message);
         }
