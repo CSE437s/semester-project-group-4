@@ -15,6 +15,9 @@ export default function Profile({ session }) {
     const [profile, setProfile] = useState(null);
     const [editedSoulArtist, setEditedSoulArtist] = useState('');
     const [editedBio, setEditedBio] = useState('');
+    const [isEditingUsername, setIsEditingUsername] = useState(false);
+    const [isEditingSoulArtist, setIsEditingSoulArtist] = useState(false);
+    const [isEditingBio, setIsEditingBio] = useState(false);
 
     //SPOTIFY
 
@@ -188,18 +191,33 @@ export default function Profile({ session }) {
         fetchUserProfile();
     }, [session]);
 
-    const updateProfile = async () => {
+    const updateSoulArtist = async () => {
         try {
             const { error } = await supabase
                 .from('profiles')
-                .update({ soulArtist: editedSoulArtist, bio: editedBio })
+                .update({ soulArtist: editedSoulArtist })
                 .eq('id', session.user.id);
             if (error) {
                 throw error;
             }
-            setIsEditing(false);
+            setIsEditingSoulArtist(false);
         } catch (error) {
-            console.error('Error updating profile:', error.message);
+            console.error('Error updating soul artist:', error.message);
+        }
+    };
+
+    const updateBio = async () => {
+        try {
+            const { error } = await supabase
+                .from('profiles')
+                .update({ bio: editedBio })
+                .eq('id', session.user.id);
+            if (error) {
+                throw error;
+            }
+            setIsEditingBio(false);
+        } catch (error) {
+            console.error('Error updating bio:', error.message);
         }
     };
 
@@ -251,9 +269,6 @@ export default function Profile({ session }) {
                                 </div>
                             )}
                         </div>
-
-
-
                         <button onClick={loginWithSpotifyClick} className="profileButton spotifyButton text-white py-2 px-4">Connect to Spotify</button>
                         <Link to="/Friends" className="purple-button"> My Friends </Link>
                     </div>
@@ -263,22 +278,91 @@ export default function Profile({ session }) {
                                 <p>{friendCount} Friends</p>
                             </div>
                         </div>
+
+
+
+
+
                         {profile && (
                             <div>
-                                {/* Soul Artist Section */}
                                 <div className="section-container">
                                     <p className="section-header">Soul Artist:</p>
-                                    <p className="section-content">{profile.soulArtist ? profile.soulArtist : "None selected"}</p>
+                                    {isEditingSoulArtist ? (
+                                        <>
+                                            <input
+                                                type="text"
+                                                value={editedSoulArtist}
+                                                onChange={(e) => setEditedSoulArtist(e.target.value)}
+                                                className="border border-gray-300 px-2 py-1 rounded-md focus:outline-none focus:border-blue-500"
+                                            />
+                                            <button
+                                                onClick={updateProfile}
+                                                className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                                            >
+                                                Save
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    fetchUsername();
+                                                    setIsEditingSoulArtist(false);
+                                                }}
+                                                className="px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:bg-red-600"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <p className="section-content">{profile.soulArtist ? profile.soulArtist : "None selected"}</p>
+                                            <button
+                                                onClick={() => setIsEditingSoulArtist(true)}
+                                                className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:bg-gray-400"
+                                            >
+                                                Edit
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
-
-                                {/* Bio Section */}
                                 <div className="section-container">
                                     <p className="section-header">Bio:</p>
-                                    <p className="section-content">{profile.bio}</p>
+                                    {isEditingBio ? (
+                                        <>
+                                            <textarea
+                                                value={editedBio}
+                                                onChange={(e) => setEditedBio(e.target.value)}
+                                                className="border border-gray-300 px-2 py-1 rounded-md focus:outline-none focus:border-blue-500"
+                                                rows={4}
+                                            />
+                                            <button
+                                                onClick={updateProfile}
+                                                className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                                            >
+                                                Save
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    fetchUsername();
+                                                    setIsEditingBio(false);
+                                                }}
+                                                className="px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:bg-red-600"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <p className="section-content">{profile.bio}</p>
+                                            <button
+                                                onClick={() => setIsEditingBio(true)}
+                                                className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:bg-gray-400"
+                                            >
+                                                Edit
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         )}
-
 
 
                     </div>
