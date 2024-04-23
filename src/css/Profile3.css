@@ -37,11 +37,6 @@
     border-radius: 50%;
 }
 
-/* .spotifyButton {
-    margin-top: 2%;
-    font-weight: 600;
-} */
-
 .add-friends>input {
     border-radius: 20px;
     outline-style: solid;
@@ -75,20 +70,6 @@
 #nameChange {
     margin-top: 30px;
 }
-
-/* 
-.purple-button {
-    background-color: #5E26FF;
-    border-radius: 2rem;
-    color: white;
-    padding: 8px 16px;
-    font-weight: 600;
-    padding-left: 40px;
-    padding-right: 40px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    margin-left: 20px;
-} */
 
 .section-container {
     margin-top: 20px;

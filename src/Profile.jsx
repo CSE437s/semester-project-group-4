@@ -155,6 +155,9 @@ export default function Profile({ session }) {
                 }
                 if (data) {
                     setProfile(data);
+                    setEditedSoulArtist(data.soulArtist || '');
+                    setEditedBio(data.bio || '');
+                    setNewUsername(data.username || ''); 
                     console.log("profile: ", data)
                 } else {
                     console.error("User profile not found");
