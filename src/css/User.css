@@ -1,5 +1,5 @@
 #profile-container {
-    height: 75%;
+    height: 80%;
     margin-top: 7%;
     position: relative;
 }
@@ -19,6 +19,7 @@
     font-weight: 700;
     color: rgb(104, 103, 103);
     margin-right: 5px;
+    font-size: 20px;
 }
 
 #artist {
@@ -57,5 +58,18 @@
     #profile-container {
         height: 100vh;
         margin: 0;
+    }
+}
+
+#friendCount {
+    font-size: 20px;
+    font-weight: 500;
+    color: black;
+    margin-bottom: 10px;
+}
+
+@media only screen and (min-width: 2000px) {
+    #profile-container {
+        height: 50%;
     }
 }

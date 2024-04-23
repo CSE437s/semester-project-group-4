@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
 import './css/User.css'
@@ -7,6 +6,7 @@ import './css/User.css'
 export default function Profile({ session }) {
     const [profile, setProfile] = useState(null);
     const [uuid, setUUID] = useState(null);
+    const [friendCount, setFriendCount] = useState(0); // State for friend count
     //use get url to encode uuid of user into url 
     //read url to get uuid
     //then call supabase to select data for that uuid
@@ -58,6 +58,30 @@ export default function Profile({ session }) {
                 return null;
             }
         }
+
+        async function fetchFriendCount() {
+            try {
+                const { data, error } = await supabase
+                    .from('friends')
+                    .select('id', { count: 'exact' }) // Count the number of friends
+                    .eq('id', uuid);
+                if (error) {
+                    console.error('Error fetching friend count:', error.message);
+                    return;
+                }
+                if (data) {
+                    setFriendCount(data.length);
+                } else {
+                    console.error('No friend count data found');
+                }
+            } catch (error) {
+                console.error('Error fetching friend count:', error.message);
+            }
+        }
+
+
+        fetchFriendCount();
+
         fetchUserProfile();
     }, [session, uuid]);
 
@@ -100,6 +124,9 @@ export default function Profile({ session }) {
                         </div>
                         <div className="text-center mt-2">
                             <h2 id="username" className="font-semibold">{profile.username}</h2>
+                            <div id="friendCount" className="text-center mt-2">
+                                <p>{friendCount} Friends</p>
+                            </div>
                             <span id="soul">
                                 <p id="soulTag"> Soul Artist:</p>
                                 <p id="artist" className="">{profile.soulArtist ? profile.soulArtist : "None selected"}</p>
