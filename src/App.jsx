@@ -13,6 +13,7 @@ import FriendSearch from './components/FriendSearch';
 import Onboarding from './Onboarding';
 import Analysis from './Analysis';
 import PasswordReset from './components/PasswordReset';
+import ResetPassword from './components/ResetPassword';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -47,6 +48,7 @@ function App() {
             <Route path="/Onboarding" element={<Onboarding key={session.user.id} session={session} />} />
             <Route path="/Analysis" element={<Analysis key={session.user.id} session={session} />} />
             <Route path="/password-reset" element={<PasswordReset />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
           </Routes>
         )}
       </div>
