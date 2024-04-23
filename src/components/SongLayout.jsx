@@ -35,7 +35,7 @@ const SongLayout = (props) => { //props.songs
         console.log("songShareButton" + int);
         var id = "songShareButton" + int
         var song = document.getElementById(id);
-        song.innerHTML = "Shared";
+        song.innerHTML = "Shared to Feed";
         song.disabled = true;
         shareWithFriends(props.songs[int])
     }
