@@ -271,8 +271,13 @@ export default function Profile({ session }) {
                                 </div>
                             )}
                         </div>
-                        <button onClick={loginWithSpotifyClick} className="profileButton spotifyButton text-white py-2 px-4">Connect to Spotify</button>
-                        <Link to="/Friends" className="purple-button"> My Friends </Link>
+
+                        <div className="text-center mt-2 button-container">
+                            <button onClick={loginWithSpotifyClick} className="profileButton text-white py-2 px-4">Connect to Spotify</button>
+                            <Link to="/Friends" className="purple-button text-white py-2 px-4">My Friends</Link>
+                        </div>
+
+
                     </div>
                     <div className="text-center mt-2">
                         <div className="section-container">
