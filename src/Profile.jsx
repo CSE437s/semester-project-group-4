@@ -282,7 +282,6 @@ export default function Profile({ session }) {
 
 
 
-
                         {profile && (
                             <div>
                                 <div className="section-container">
@@ -296,7 +295,7 @@ export default function Profile({ session }) {
                                                 className="border border-gray-300 px-2 py-1 rounded-md focus:outline-none focus:border-blue-500"
                                             />
                                             <button
-                                                onClick={updateProfile}
+                                                onClick={updateSoulArtist}
                                                 className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
                                             >
                                                 Save
@@ -334,7 +333,7 @@ export default function Profile({ session }) {
                                                 rows={4}
                                             />
                                             <button
-                                                onClick={updateProfile}
+                                                onClick={updateBio}
                                                 className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
                                             >
                                                 Save
