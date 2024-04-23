@@ -13,7 +13,7 @@ function Search() {
   //citation: logic and design inspired by https://github.com/Vishesh-Pandey/v-music/tree/master/src/components
   const fetchMusicData = async () => {
     alert(resultOffset)
-    alert(keyword)
+    // alert(keyword)
     setTracks([]);
     // window.scrollTo(0, 0);
     setIsLoading(true);
@@ -42,37 +42,44 @@ function Search() {
     }
   };
 
-  const fetchMusicDataNew = async () => {
-    alert(resultOffset)
-    alert(keyword)
-    setResultOffset(0);
-    setTracks([]);
-    // window.scrollTo(0, 0);
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `https://api.spotify.com/v1/search?q=${keyword}&type=track&offset=${resultOffset}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  // const fetchMusicDataNew = async () => {
+    
+  //   // alert(keyword)
+  //   setResultOffset(0);
+  //   alert(resultOffset);
+  //   alert("i called NEW");
+  //   setTracks([]);
+  //   // window.scrollTo(0, 0);
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await fetch(
+  //       `https://api.spotify.com/v1/search?q=${keyword}&type=track&offset=${resultOffset}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
 
-      if (!response.ok) {
-        throw new Error("Could not find songs");
-      }
+  //     if (!response.ok) {
+  //       throw new Error("Could not find songs");
+  //     }
 
-      const jsonData = await response.json();
+  //     const jsonData = await response.json();
 
-      setTracks(jsonData.tracks.items);
-      setMessage(""); // Reset error message when songs are found
-    } catch (error) {
-      setMessage(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     setTracks(jsonData.tracks.items);
+  //     setMessage(""); // Reset error message when songs are found
+  //   } catch (error) {
+  //     setMessage(error.message);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  useEffect(() => {
+    // This effect will run whenever resultOffset changes
+    fetchMusicData();
+  }, [resultOffset]);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -104,6 +111,7 @@ function Search() {
 
   const handlePrevious = () => {
     setResultOffset(Math.max(0, resultOffset - 20));
+    console.loh("handleprevious")
     fetchMusicData();
   };
 
@@ -116,15 +124,16 @@ function Search() {
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
       setResultOffset(0);
-      fetchMusicDataNew();
+      fetchMusicData();
     }
   };
 
 
   return (
     <>
-      <div className="flex items-center mb-4">
+      <div id="form" className="flex items-center mb-4">
         <input
+          id="field"
           type="text"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
@@ -135,7 +144,7 @@ function Search() {
         <button
           onClick={() => {
             setResultOffset(0);
-            fetchMusicDataNew();
+            fetchMusicData();
           }}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r"
         >

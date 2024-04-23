@@ -58,14 +58,25 @@ code {
   background-color: red;
 } */
 
-#backbtn:disabled{
+#backbtn:disabled {
   /* visibility: hidden; */
   background-color: rgba(238, 234, 234, 0.63);
-  color:rgb(149, 147, 147);
+  color: rgb(149, 147, 147);
 }
 
 .newDate {
   font-weight: 500;
   color: #171819;
 
+}
+
+/* #field {
+  
+
+} */
+
+#form {
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
 }

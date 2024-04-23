@@ -1,19 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-
+import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import Sidebar from './components/Sidebar';
 import FriendSearch from './components/FriendSearch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCog, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { RiCheckLine, RiCloseLine } from 'react-icons/ri';
 import './css/Friends.css'
 
 export default function Friends({ session }) {
-    // const [session, setSession] = useState(null);
     const [friendCount, setFriendCount] = useState(0);
-    const [username, setUsername] = useState('');
     const [friends, setFriends] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
     const [myusername, setmyUsername] = useState(null);
@@ -24,13 +19,11 @@ export default function Friends({ session }) {
         fetchUsername();
     }, [session]);
 
-
     async function getPendingRequests() {
         const { data: pendingData, error } = await supabase
             .from('friend_requests')
             .select('from_user')
             .eq('to_user', session.user.id);
-
         if (error) {
             console.error('Error fetching pending requests:', error);
             return;
@@ -50,24 +43,18 @@ export default function Friends({ session }) {
                 }
                 return userData ? { username: userData.username, id: userData.id } : null;
             }));
-            // Filter out any null values and set the state
             const validPendingUsers = pendingUsers.filter(user => user !== null);
             setPendingRequests(validPendingUsers);
             console.log("pendingRequests:", validPendingUsers);
         }
-
     }
 
-
     async function handleAcceptRequest(fromUserId) {
-        // Add the friendship
         await addFriend(fromUserId);
-        // Remove the request
         await removeRequest(fromUserId);
     }
 
     async function handleRejectRequest(fromUserId) {
-        // Remove the request
         await removeRequest(fromUserId);
     }
 
@@ -78,7 +65,6 @@ export default function Friends({ session }) {
             .delete()
             .eq('from_user', fromUserId)
             .eq('to_user', session.user.id);
-
         if (error) {
             console.error('Error removing request:', error);
         } else {
@@ -95,7 +81,6 @@ export default function Friends({ session }) {
                 { id: session.user.id, is_friends_with: friendId },
                 { id: friendId, is_friends_with: session.user.id }
             ]);
-
         if (error) {
             console.error('Error adding friend:', error);
         } else {
@@ -106,13 +91,11 @@ export default function Friends({ session }) {
 
 
     async function handleRemoveFriend(friendId) {
-
         const { error } = await supabase
             .from('friends')
             .delete()
             .eq('id', session.user.id)
             .eq('is_friends_with', friendId);
-
         if (error) {
             console.error('Error removing friend:', error);
         } else {
@@ -132,18 +115,14 @@ export default function Friends({ session }) {
             .from('friends')
             .select('is_friends_with')
             .eq('id', session.user.id);
-
         if (error) {
             console.error('Error fetching friends:', error);
         }
-
         if (friendDataList) {
             const friendIdsSet = new Set(friendDataList.map(friend => friend.is_friends_with));
-
             const friendProfilesPromises = Array.from(friendIdsSet).map(async id => {
                 return await supabase.from('profiles').select('*').eq('id', id).single();
             });
-
             try {
                 const friendProfilesArray = await Promise.all(friendProfilesPromises);
                 friendProfilesArray.sort((a, b) => a.id - b.id);
@@ -182,13 +161,8 @@ export default function Friends({ session }) {
         if (!uuid) {
             return
         }
-        // Get the current domain
         const currentDomain = window.location.origin;
-
-        // Build the target URL
         const targetUrl = `${currentDomain}/User?${uuid}`;
-
-        // Redirect the user
         window.location.href = targetUrl;
     }
 
@@ -206,7 +180,7 @@ export default function Friends({ session }) {
                         <h3 className="profileText">My Friends</h3>
 
                         {friends.length === 0 ? (
-                            <p className="noFriendsText">You have no friends :(</p>
+                            <p className="noFriendsText">You have no friends 😞</p>
                         ) : (
                             <ul className="list-group mt-4">
                                 {friends.map(friend => (
